@@ -1,0 +1,19 @@
+[versions]
+kotlin = "2.3.0"
+circuit = "0.30.0"
+burst = "2.2.0"
+metro = "0.6.9"
+compose-jb = "1.9.3"
+
+[libraries]
+circuit-codegen = { module = "com.slack.circuit:circuit-codegen", version.ref = "circuit" }
+circuit-codegen-annotations = { module = "com.slack.circuit:circuit-codegen-annotations", version.ref = "circuit" }
+circuit-foundation = { module = "com.slack.circuit:circuit-foundation", version.ref = "circuit" }
+mosaic = "com.jakewharton.mosaic:mosaic-runtime:0.18.0"
+
+[plugins]
+burst = { id = "app.cash.burst", version.ref = "burst" }
+compose = { id = "org.jetbrains.compose", version.ref = "compose-jb" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+metro = { id = "dev.zacsweers.metro", version.ref = "metro" }
