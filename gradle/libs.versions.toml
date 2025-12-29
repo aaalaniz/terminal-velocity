@@ -1,19 +1,23 @@
 [versions]
 kotlin = "2.3.0"
-circuit = "0.30.0"
+ksp = "2.3.4"
+circuit = "0.31.0"
 burst = "2.2.0"
-metro = "0.6.9"
+metro = "0.9.2"
 compose-jb = "1.9.3"
+mosaic = "0.18.0"
 
 [libraries]
 circuit-codegen = { module = "com.slack.circuit:circuit-codegen", version.ref = "circuit" }
 circuit-codegen-annotations = { module = "com.slack.circuit:circuit-codegen-annotations", version.ref = "circuit" }
 circuit-foundation = { module = "com.slack.circuit:circuit-foundation", version.ref = "circuit" }
-mosaic = "com.jakewharton.mosaic:mosaic-runtime:0.18.0"
+mosaic = { module = "com.jakewharton.mosaic:mosaic-runtime", version.ref = "mosaic" }
 
 [plugins]
 burst = { id = "app.cash.burst", version.ref = "burst" }
 compose = { id = "org.jetbrains.compose", version.ref = "compose-jb" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 metro = { id = "dev.zacsweers.metro", version.ref = "metro" }
