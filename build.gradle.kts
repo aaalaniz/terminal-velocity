@@ -25,4 +25,5 @@ dependencies {
     implementation(libs.circuit.foundation)
     ksp(libs.circuit.codegen)
     implementation(libs.circuit.codegen.annotations)
+    runtimeOnly(libs.skiko.mac.arm64)
 }
