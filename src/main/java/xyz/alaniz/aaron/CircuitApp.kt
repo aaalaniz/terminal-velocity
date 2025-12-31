@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import com.slack.circuit.backstack.rememberSaveableBackStack
 import com.slack.circuit.foundation.Circuit
 import com.slack.circuit.foundation.CircuitCompositionLocals
-import com.slack.circuit.foundation.NavigableCircuitContent
+import com.slack.circuit.foundation.CircuitContent
 import com.slack.circuit.foundation.rememberCircuitNavigator
 import com.slack.circuit.runtime.screen.Screen
 
@@ -16,6 +16,10 @@ fun CircuitApp(initialScreen: Screen, circuit: Circuit, onRootPop: () -> Unit) {
     }
 
     CircuitCompositionLocals(circuit) {
-        NavigableCircuitContent(navigator = navigator, backStack = backstack)
+        val screen = backstack.lastOrNull()?.screen
+
+        if (screen != null) {
+            CircuitContent(screen = screen, navigator = navigator)
+        }
     }
 }
