@@ -17,7 +17,11 @@ fun TitleScreenUi(titleScreenState: TitleScreenState, modifier: androidx.compose
     Column {
         Text(value = "Terminal Velocity")
         Spacer(modifier.height(2))
-        Text(value = "Start game", underlineStyle = UnderlineStyle.Straight)
-        Text(value = "Options")
+
+        titleScreenState.selectableOptions.forEach { option ->
+            val underlineStyle = if (option.isFocused) UnderlineStyle.Straight else UnderlineStyle.None
+
+            Text(value = option.label, underlineStyle = underlineStyle)
+        }
     }
 }
