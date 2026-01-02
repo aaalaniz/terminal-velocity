@@ -54,6 +54,13 @@ private fun Modifier.onTitleScreenKeyEvent(titleScreenState: TitleScreenState): 
                 titleScreenState.onEvent(TitleScreenEvent.PreviousTitleOption)
                 return@onKeyEvent true
             }
+            Enter -> {
+                val selectedTitleOption = titleScreenState
+                    .selectableOptions[titleScreenState.selectedTitleScreenOptionIndex]
+                titleScreenState.onEvent(TitleScreenEvent.TitleOptionSelected(
+                    titleScreenOption = selectedTitleOption))
+                return@onKeyEvent true
+            }
             else -> return@onKeyEvent false
         }
     }
