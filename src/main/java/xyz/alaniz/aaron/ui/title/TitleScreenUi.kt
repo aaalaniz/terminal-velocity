@@ -8,6 +8,7 @@ import com.jakewharton.mosaic.modifier.Modifier
 import com.jakewharton.mosaic.ui.Column
 import com.jakewharton.mosaic.ui.Spacer
 import com.jakewharton.mosaic.ui.Text
+import com.jakewharton.mosaic.ui.TextStyle
 import com.jakewharton.mosaic.ui.UnderlineStyle
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.zacsweers.metro.AppScope
@@ -37,8 +38,9 @@ fun TitleScreenUi(titleScreenState: TitleScreenState, modifier: androidx.compose
             } else {
                 UnderlineStyle.None
             }
+            val textStyle = if (index != titleScreenState.selectedTitleScreenOptionIndex) TextStyle.Dim else TextStyle.Unspecified
 
-            Text(value = option.label, underlineStyle = underlineStyle)
+            Text(value = option.label, underlineStyle = underlineStyle, textStyle = textStyle)
         }
     }
 }
