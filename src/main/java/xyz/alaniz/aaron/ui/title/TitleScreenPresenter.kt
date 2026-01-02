@@ -1,8 +1,10 @@
 package xyz.alaniz.aaron.ui.title
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.Navigator
@@ -64,19 +66,19 @@ class TitleScreenPresenter (
 
     @Composable
     override fun present(): TitleScreenState {
-        val selectedTitleScreenOptionIndex = remember {
+        var selectedTitleScreenOptionIndex by remember {
             mutableIntStateOf(0)
         }
 
-        return TitleScreenState(selectedTitleScreenOptionIndex = selectedTitleScreenOptionIndex.value,
+        return TitleScreenState(selectedTitleScreenOptionIndex = selectedTitleScreenOptionIndex,
             selectableOptions = TITLE_SCREEN_OPTIONS) { titleScreenEvent ->
             when (titleScreenEvent) {
                 TitleScreenEvent.NextTitleOption -> {
-                    selectedTitleScreenOptionIndex.value = selectedTitleScreenOptionIndex.value
+                    selectedTitleScreenOptionIndex = selectedTitleScreenOptionIndex
                         .nextIndex(TITLE_SCREEN_OPTIONS)
                 }
                 TitleScreenEvent.PreviousTitleOption -> {
-                    selectedTitleScreenOptionIndex.value = selectedTitleScreenOptionIndex.value.previousIndex()
+                    selectedTitleScreenOptionIndex = selectedTitleScreenOptionIndex.previousIndex()
                 }
                 is TitleScreenEvent.TitleOptionSelected -> when (titleScreenEvent.titleScreenOption) {
                     is TitleScreenOption.StartGame -> navigator.goTo(GameScreen)
