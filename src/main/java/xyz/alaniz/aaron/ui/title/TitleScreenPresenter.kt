@@ -1,42 +1,54 @@
 package xyz.alaniz.aaron.ui.title
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.util.fastCoerceAtMost
 import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.Navigator
+import com.slack.circuit.runtime.popRoot
 import com.slack.circuit.runtime.presenter.Presenter
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
+import xyz.alaniz.aaron.ui.game.GameScreen
+import xyz.alaniz.aaron.ui.settings.SettingsScreen
 
 sealed interface TitleScreenOption {
-    val isFocused: Boolean
     val label: String
 
-    data class StartGame(override val isFocused: Boolean) : TitleScreenOption {
+    data object StartGame : TitleScreenOption {
         override val label = "Start game"
     }
-    data class Settings(override val isFocused: Boolean) : TitleScreenOption {
+    data object Settings : TitleScreenOption {
         override val label = "Settings"
     }
-    data class Quit(override val isFocused: Boolean) : TitleScreenOption {
+    data object Quit : TitleScreenOption {
         override val label = "Quit"
     }
 }
 
-sealed interface TitleScreenState : CircuitUiState {
-    val selectableOptions: List<TitleScreenOption>
+sealed interface TitleScreenEvent {
+    data object PreviousTitleOption : TitleScreenEvent
 
-    data class SelectingOption(override val selectableOptions: List<TitleScreenOption>) : TitleScreenState
+    data object NextTitleOption : TitleScreenEvent
+
+    data class TitleOptionSelected(val titleScreenOption: TitleScreenOption) : TitleScreenEvent
 }
 
-private val INITIAL_TITLE_SCREEN_STATE = TitleScreenState.SelectingOption(selectableOptions = listOf(
-    TitleScreenOption.StartGame(true),
-    TitleScreenOption.Settings(false),
-    TitleScreenOption.Quit(false))
+data class TitleScreenState(
+    val selectedTitleScreenOptionIndex: Int,
+    val selectableOptions: List<TitleScreenOption>,
+    val onEvent: (TitleScreenEvent) -> Unit,
+) : CircuitUiState
+
+private val TITLE_SCREEN_OPTIONS = listOf(
+    TitleScreenOption.StartGame,
+    TitleScreenOption.Settings,
+    TitleScreenOption.Quit
 )
 
 @AssistedInject
@@ -54,9 +66,30 @@ class TitleScreenPresenter (
 
     @Composable
     override fun present(): TitleScreenState {
-        val titleScreenState = remember {
-            mutableStateOf(INITIAL_TITLE_SCREEN_STATE)
+        val selectedTitleScreenOptionIndex = remember {
+            mutableIntStateOf(0)
         }
-        return titleScreenState.value
+
+        return TitleScreenState(selectedTitleScreenOptionIndex = selectedTitleScreenOptionIndex.value,
+            selectableOptions = TITLE_SCREEN_OPTIONS) { titleScreenEvent ->
+            when (titleScreenEvent) {
+                TitleScreenEvent.NextTitleOption -> {
+                    selectedTitleScreenOptionIndex.value = selectedTitleScreenOptionIndex.value
+                        .nextIndex(TITLE_SCREEN_OPTIONS)
+                }
+                TitleScreenEvent.PreviousTitleOption -> {
+                    selectedTitleScreenOptionIndex.value = selectedTitleScreenOptionIndex.value.previousIndex()
+                }
+                is TitleScreenEvent.TitleOptionSelected -> when (titleScreenEvent.titleScreenOption) {
+                    is TitleScreenOption.StartGame -> navigator.goTo(GameScreen)
+                    is TitleScreenOption.Settings -> navigator.goTo(SettingsScreen)
+                    is TitleScreenOption.Quit -> navigator.popRoot()
+                }
+            }
+        }
     }
+
+    private fun Int.nextIndex(list: List<*>): Int = (this + 1).coerceAtMost(list.size - 1)
+
+    private fun Int.previousIndex(): Int = (this - 1).coerceAtLeast(0)
 }

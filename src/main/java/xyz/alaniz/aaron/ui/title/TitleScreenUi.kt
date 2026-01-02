@@ -18,8 +18,12 @@ fun TitleScreenUi(titleScreenState: TitleScreenState, modifier: androidx.compose
         Text(value = "Terminal Velocity")
         Spacer(modifier.height(2))
 
-        titleScreenState.selectableOptions.forEach { option ->
-            val underlineStyle = if (option.isFocused) UnderlineStyle.Straight else UnderlineStyle.None
+        titleScreenState.selectableOptions.forEachIndexed { index, option ->
+            val underlineStyle = if (index == titleScreenState.selectedTitleScreenOptionIndex) {
+                UnderlineStyle.Straight
+            } else {
+                UnderlineStyle.None
+            }
 
             Text(value = option.label, underlineStyle = underlineStyle)
         }
