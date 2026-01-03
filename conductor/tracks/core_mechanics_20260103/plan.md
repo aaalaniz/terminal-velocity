@@ -1,19 +1,13 @@
 # Plan: Core Typing Game Mechanics
 
-## Phase 1: Game State & Logic (Presenter)
+## Phase 1: Game State & Logic (Presenter) [checkpoint: facb305]
 This phase focuses on the business logic of the game, implemented as a Circuit Presenter. No UI will be built in this phase.
 
 - [x] Task: Create `GameEvent` and `GameState` sealed classes/interfaces to define the contract. 812adc9
 - [x] Task: Implement `WordRepository` interface and a simple in-memory implementation with a list of words. 85f4d3c
 - [x] Task: Implement `GamePresenter` logic: c49206b
-    - Handle `GameStarted`: Set state to PLAYING, pick initial word.
-    - Handle `LetterTyped`: Check against `currentWord`.
-        - If correct: append to `userInput`.
-        - If word complete: increment score, clear `userInput`, pick new `currentWord`.
-        - If incorrect: Handle error state (optional for MVP, or just ignore).
-    - Handle `GameReset`: Reset score and state.
 - [x] Task: Write comprehensive unit tests for `GamePresenter` covering all state transitions and edge cases. c49206b
-- [ ] Task: Conductor - User Manual Verification 'Phase 1: Game State & Logic (Presenter)' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 1: Game State & Logic (Presenter)' (Protocol in workflow.md) facb305
 
 ## Phase 2: Terminal UI (Mosaic) & Integration
 This phase builds the visual representation and connects it to the logic.
