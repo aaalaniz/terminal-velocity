@@ -12,7 +12,7 @@ This phase focuses on the business logic of the game, implemented as a Circuit P
         - If word complete: increment score, clear `userInput`, pick new `currentWord`.
         - If incorrect: Handle error state (optional for MVP, or just ignore).
     - Handle `GameReset`: Reset score and state.
-- [ ] Task: Write comprehensive unit tests for `GamePresenter` covering all state transitions and edge cases.
+- [x] Task: Write comprehensive unit tests for `GamePresenter` covering all state transitions and edge cases. c49206b
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Game State & Logic (Presenter)' (Protocol in workflow.md)
 
 ## Phase 2: Terminal UI (Mosaic) & Integration
