@@ -17,5 +17,5 @@ This phase builds the visual representation and connects it to the logic.
     - Display `score`.
     - Render `currentWord` and `userInput` with visual distinction (e.g., Green for typed, Gray for remaining).
 - [x] Task: Wire up keyboard input in `GameUi` to emit `LetterTyped` events. 24445e4
-- [ ] Task: Connect `GamePresenter` and `GameUi` in the main application graph.
+- [x] Task: Connect `GamePresenter` and `GameUi` in the main application graph. c49206b
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Terminal UI (Mosaic) & Integration' (Protocol in workflow.md)
