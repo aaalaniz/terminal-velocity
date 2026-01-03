@@ -7,6 +7,6 @@ import dev.zacsweers.metro.AppScope
 
 @Composable
 @CircuitInject(screen = GameScreen::class, scope = AppScope::class)
-fun GameScreenUi(gameScreenState: GameScreenState, modifier: androidx.compose.ui.Modifier) {
+fun GameScreenUi(state: GameState, modifier: androidx.compose.ui.Modifier) {
     Text("Game screen")
 }
