@@ -28,6 +28,8 @@ dependencies {
     runtimeOnly(compose.desktop.currentOs)
     testImplementation(libs.junit.jupiter)
     testImplementation(libs.kotlin.test)
+    testImplementation(libs.circuit.test)
+    testImplementation(libs.coroutines.test)
 }
 
 tasks.withType<Test> {
