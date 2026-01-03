@@ -83,7 +83,7 @@ class TitleScreenPresenter (
                 is TitleScreenEvent.TitleOptionSelected -> when (titleScreenEvent.titleScreenOption) {
                     is TitleScreenOption.StartGame -> navigator.goTo(GameScreen)
                     is TitleScreenOption.Settings -> navigator.goTo(SettingsScreen)
-                    is TitleScreenOption.Quit -> navigator.popRoot()
+                    is TitleScreenOption.Quit -> navigator.pop()
                 }
             }
         }

@@ -1,7 +1,7 @@
 package xyz.alaniz.aaron.di
 
+import com.slack.circuit.backstack.NavDecoration
 import com.slack.circuit.foundation.Circuit
-import com.slack.circuit.foundation.NavigatorDefaults
 import com.slack.circuit.runtime.presenter.Presenter
 import com.slack.circuit.runtime.ui.Ui
 import dev.zacsweers.metro.AppScope
@@ -17,12 +17,13 @@ interface CircuitProvider {
     @SingleIn(AppScope::class)
     fun provideCircuit(
         presenterFactories: Set<Presenter.Factory>,
-        uiFactories: Set<Ui.Factory>
+        uiFactories: Set<Ui.Factory>,
+        navDecoration: NavDecoration
     ): Circuit {
         return Circuit.Builder()
             .addPresenterFactories(presenterFactories)
             .addUiFactories(uiFactories)
-            .setDefaultNavDecoration(NavigatorDefaults.EmptyDecoration)
+            .setDefaultNavDecoration(navDecoration)
             .build()
     }
 }
