@@ -10,7 +10,11 @@ import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
 
-data object SettingsScreenState : CircuitUiState
+sealed interface SettingsScreenEvent {
+    data object OnBack : SettingsScreenEvent
+}
+
+data class SettingsScreenState(val onEvent: (SettingsScreenEvent) -> Unit) : CircuitUiState
 
 @AssistedInject
 class SettingsScreenPresenter (
@@ -27,6 +31,10 @@ class SettingsScreenPresenter (
 
     @Composable
     override fun present(): SettingsScreenState {
-        return SettingsScreenState
+        return SettingsScreenState { settingsScreenEvent ->
+            when (settingsScreenEvent) {
+                SettingsScreenEvent.OnBack -> navigator.pop()
+            }
+        }
     }
 }

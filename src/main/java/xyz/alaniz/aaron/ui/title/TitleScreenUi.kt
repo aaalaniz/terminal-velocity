@@ -1,7 +1,6 @@
 package xyz.alaniz.aaron.ui.title
 
 import androidx.compose.runtime.Composable
-import com.jakewharton.mosaic.layout.KeyEvent
 import com.jakewharton.mosaic.layout.height
 import com.jakewharton.mosaic.layout.onKeyEvent
 import com.jakewharton.mosaic.modifier.Modifier
@@ -12,16 +11,11 @@ import com.jakewharton.mosaic.ui.TextStyle
 import com.jakewharton.mosaic.ui.UnderlineStyle
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.zacsweers.metro.AppScope
-
-private val Enter = KeyEvent("Enter")
-
-private val ArrowUp = KeyEvent("ArrowUp")
-private val k = KeyEvent("k")
-private val K = KeyEvent("K")
-
-private val ArrowDown = KeyEvent("ArrowDown")
-private val j = KeyEvent("j")
-private val J = KeyEvent("J")
+import xyz.alaniz.aaron.ui.foundation.KeyEvents.ArrowDown
+import xyz.alaniz.aaron.ui.foundation.KeyEvents.ArrowUp
+import xyz.alaniz.aaron.ui.foundation.KeyEvents.Enter
+import xyz.alaniz.aaron.ui.foundation.KeyEvents.j
+import xyz.alaniz.aaron.ui.foundation.KeyEvents.k
 
 @Composable
 @CircuitInject(screen = TitleScreen::class, scope = AppScope::class)
@@ -48,11 +42,11 @@ fun TitleScreenUi(titleScreenState: TitleScreenState, modifier: androidx.compose
 private fun Modifier.onTitleScreenKeyEvent(titleScreenState: TitleScreenState): Modifier {
     return this.onKeyEvent { keyEvent ->
         when (keyEvent) {
-            ArrowDown, J, j -> {
+            ArrowDown, j -> {
                 titleScreenState.onEvent(TitleScreenEvent.NextTitleOption)
                 return@onKeyEvent true
             }
-            ArrowUp, K, k -> {
+            ArrowUp, k -> {
                 titleScreenState.onEvent(TitleScreenEvent.PreviousTitleOption)
                 return@onKeyEvent true
             }
