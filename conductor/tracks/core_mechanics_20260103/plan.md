@@ -16,6 +16,6 @@ This phase builds the visual representation and connects it to the logic.
 - [x] Task: Implement `GameUi` Composable using Mosaic. d372143
     - Display `score`.
     - Render `currentWord` and `userInput` with visual distinction (e.g., Green for typed, Gray for remaining).
-- [ ] Task: Wire up keyboard input in `GameUi` to emit `LetterTyped` events.
+- [x] Task: Wire up keyboard input in `GameUi` to emit `LetterTyped` events. 24445e4
 - [ ] Task: Connect `GamePresenter` and `GameUi` in the main application graph.
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Terminal UI (Mosaic) & Integration' (Protocol in workflow.md)
