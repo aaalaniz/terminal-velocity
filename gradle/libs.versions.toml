@@ -6,12 +6,15 @@ burst = "2.2.0"
 metro = "0.9.2"
 compose-jb = "1.9.3"
 mosaic = "0.18.0"
+junit = "5.10.1"
 
 [libraries]
 circuit-codegen = { module = "com.slack.circuit:circuit-codegen", version.ref = "circuit" }
 circuit-codegen-annotations = { module = "com.slack.circuit:circuit-codegen-annotations", version.ref = "circuit" }
 circuit-foundation = { module = "com.slack.circuit:circuit-foundation", version.ref = "circuit" }
 mosaic = { module = "com.jakewharton.mosaic:mosaic-runtime", version.ref = "mosaic" }
+junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
+kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 
 [plugins]
 burst = { id = "app.cash.burst", version.ref = "burst" }

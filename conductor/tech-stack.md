@@ -10,3 +10,4 @@
 - **Build System:** Gradle (Kotlin DSL) - Provides a flexible and powerful build automation environment.
 - **Static Analysis:** Kotlin Symbol Processing (KSP) - Used for efficient code generation, specifically for Circuit and Metro.
 - **Distribution:** Gradle `application` plugin - Facilitates the creation of standalone executable distributions for macOS, Linux, and Windows.
+- **Testing:** [JUnit 5](https://junit.org/junit5/) and [Kotlin Test](https://kotlinlang.org/api/latest/kotlin.test/) - For unit and integration testing.
