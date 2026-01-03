@@ -4,7 +4,7 @@
 This phase focuses on the business logic of the game, implemented as a Circuit Presenter. No UI will be built in this phase.
 
 - [x] Task: Create `GameEvent` and `GameState` sealed classes/interfaces to define the contract. 812adc9
-- [ ] Task: Implement `WordRepository` interface and a simple in-memory implementation with a list of words.
+- [x] Task: Implement `WordRepository` interface and a simple in-memory implementation with a list of words. 85f4d3c
 - [ ] Task: Implement `GamePresenter` logic:
     - Handle `GameStarted`: Set state to PLAYING, pick initial word.
     - Handle `LetterTyped`: Check against `currentWord`.
