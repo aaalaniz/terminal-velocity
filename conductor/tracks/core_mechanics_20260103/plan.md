@@ -5,7 +5,7 @@ This phase focuses on the business logic of the game, implemented as a Circuit P
 
 - [x] Task: Create `GameEvent` and `GameState` sealed classes/interfaces to define the contract. 812adc9
 - [x] Task: Implement `WordRepository` interface and a simple in-memory implementation with a list of words. 85f4d3c
-- [ ] Task: Implement `GamePresenter` logic:
+- [x] Task: Implement `GamePresenter` logic: c49206b
     - Handle `GameStarted`: Set state to PLAYING, pick initial word.
     - Handle `LetterTyped`: Check against `currentWord`.
         - If correct: append to `userInput`.
