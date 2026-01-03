@@ -13,7 +13,7 @@ This phase focuses on the business logic of the game, implemented as a Circuit P
 This phase builds the visual representation and connects it to the logic.
 
 - [x] Task: Create a basic `GameScreen` Circuit screen definition. bbf13e0
-- [ ] Task: Implement `GameUi` Composable using Mosaic.
+- [x] Task: Implement `GameUi` Composable using Mosaic. d372143
     - Display `score`.
     - Render `currentWord` and `userInput` with visual distinction (e.g., Green for typed, Gray for remaining).
 - [ ] Task: Wire up keyboard input in `GameUi` to emit `LetterTyped` events.
