@@ -12,7 +12,7 @@ This phase focuses on the business logic of the game, implemented as a Circuit P
 ## Phase 2: Terminal UI (Mosaic) & Integration
 This phase builds the visual representation and connects it to the logic.
 
-- [ ] Task: Create a basic `GameScreen` Circuit screen definition.
+- [x] Task: Create a basic `GameScreen` Circuit screen definition. bbf13e0
 - [ ] Task: Implement `GameUi` Composable using Mosaic.
     - Display `score`.
     - Render `currentWord` and `userInput` with visual distinction (e.g., Green for typed, Gray for remaining).
