@@ -69,6 +69,9 @@ class GameScreenPresenter (
                             }
                         }
                     }
+                    GameEvent.ClearError -> {
+                        // TODO: Implement error clearing logic
+                    }
                 }
             }
         )

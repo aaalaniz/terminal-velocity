@@ -23,4 +23,5 @@ sealed interface GameEvent : CircuitUiEvent {
     data class LetterTyped(val char: Char) : GameEvent
     data object GameStarted : GameEvent
     data object GameReset : GameEvent
+    data object ClearError : GameEvent
 }
