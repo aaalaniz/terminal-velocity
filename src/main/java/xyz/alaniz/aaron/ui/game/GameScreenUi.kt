@@ -1,6 +1,7 @@
 package xyz.alaniz.aaron.ui.game
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import com.jakewharton.mosaic.layout.onKeyEvent
 import com.jakewharton.mosaic.modifier.Modifier
 import com.jakewharton.mosaic.ui.Color
@@ -10,12 +11,20 @@ import com.jakewharton.mosaic.ui.Text
 import com.jakewharton.mosaic.ui.TextStyle
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.zacsweers.metro.AppScope
+import kotlinx.coroutines.delay
 import xyz.alaniz.aaron.ui.foundation.KeyEvents.Enter
 
 @Composable
 @CircuitInject(screen = GameScreen::class, scope = AppScope::class)
 fun GameScreenUi(state: GameState, modifier: androidx.compose.ui.Modifier) {
     if (state is GameState.State) {
+        if (state.isError) {
+            LaunchedEffect(state.isError) {
+                delay(150)
+                state.eventSink(GameEvent.ClearError)
+            }
+        }
+
         Column(modifier = Modifier.onKeyEvent { keyEvent ->
             when (keyEvent) {
                 Enter -> {
@@ -52,8 +61,15 @@ fun GameScreenUi(state: GameState, modifier: androidx.compose.ui.Modifier) {
                     Row {
                         // Correctly typed letters: Bright (Default)
                         Text(state.userInput)
-                        // Remaining letters: Dimmed
-                        Text(state.currentWord.drop(state.userInput.length), textStyle = TextStyle.Dim)
+                        // Remaining letters: Dimmed or Red if error
+                        val remainingTextStyle = if (state.isError) TextStyle.Unspecified else TextStyle.Dim
+                        val remainingColor = if (state.isError) Color.Red else Color.Unspecified
+                        
+                        Text(
+                            state.currentWord.drop(state.userInput.length),
+                            textStyle = remainingTextStyle,
+                            color = remainingColor
+                        )
                     }
                 }
                 GameStatus.GAME_OVER -> {
