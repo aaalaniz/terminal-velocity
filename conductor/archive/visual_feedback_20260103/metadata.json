@@ -1,0 +1,8 @@
+{
+  "track_id": "visual_feedback_20260103",
+  "type": "feature",
+  "status": "new",
+  "created_at": "2026-01-03T00:00:00Z",
+  "updated_at": "2026-01-03T00:00:00Z",
+  "description": "Use dimmed text in the typing feedback instead of green. the user should see all dim text first and then the dimness should be replaced by the normal text as they type through the words."
+}
