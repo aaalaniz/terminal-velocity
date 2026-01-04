@@ -61,15 +61,17 @@ fun GameScreenUi(state: GameState, modifier: androidx.compose.ui.Modifier) {
                     Row {
                         // Correctly typed letters: Bright (Default)
                         Text(state.userInput)
-                        // Remaining letters: Dimmed or Red if error
-                        val remainingTextStyle = if (state.isError) TextStyle.Unspecified else TextStyle.Dim
-                        val remainingColor = if (state.isError) Color.Red else Color.Unspecified
-                        
-                        Text(
-                            state.currentWord.drop(state.userInput.length),
-                            textStyle = remainingTextStyle,
-                            color = remainingColor
-                        )
+                        // Remaining letters: Dimmed or current char Red if error
+                        val remaining = state.currentWord.drop(state.userInput.length)
+                        if (remaining.isNotEmpty()) {
+                            if (state.isError) {
+                                // Flash only the first remaining character red
+                                Text(remaining.take(1), color = Color.Red)
+                                Text(remaining.drop(1), textStyle = TextStyle.Dim)
+                            } else {
+                                Text(remaining, textStyle = TextStyle.Dim)
+                            }
+                        }
                     }
                 }
                 GameStatus.GAME_OVER -> {
