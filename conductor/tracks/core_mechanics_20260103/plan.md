@@ -9,13 +9,11 @@ This phase focuses on the business logic of the game, implemented as a Circuit P
 - [x] Task: Write comprehensive unit tests for `GamePresenter` covering all state transitions and edge cases. c49206b
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Game State & Logic (Presenter)' (Protocol in workflow.md) facb305
 
-## Phase 2: Terminal UI (Mosaic) & Integration
+## Phase 2: Terminal UI (Mosaic) & Integration [checkpoint: 4bbc8fc]
 This phase builds the visual representation and connects it to the logic.
 
 - [x] Task: Create a basic `GameScreen` Circuit screen definition. bbf13e0
 - [x] Task: Implement `GameUi` Composable using Mosaic. d372143
-    - Display `score`.
-    - Render `currentWord` and `userInput` with visual distinction (e.g., Green for typed, Gray for remaining).
 - [x] Task: Wire up keyboard input in `GameUi` to emit `LetterTyped` events. 24445e4
 - [x] Task: Connect `GamePresenter` and `GameUi` in the main application graph. c49206b
-- [ ] Task: Conductor - User Manual Verification 'Phase 2: Terminal UI (Mosaic) & Integration' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 2: Terminal UI (Mosaic) & Integration' (Protocol in workflow.md) 4bbc8fc
