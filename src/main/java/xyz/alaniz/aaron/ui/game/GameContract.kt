@@ -9,6 +9,7 @@ sealed interface GameState : CircuitUiState {
         val userInput: String,
         val score: Int,
         val status: GameStatus,
+        val isError: Boolean = false,
         val eventSink: (GameEvent) -> Unit
     ) : GameState
 }
