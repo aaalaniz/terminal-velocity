@@ -6,7 +6,7 @@ Refine the game state to support the visual "flash" effect for errors.
 - [x] Task: Update `GameEvent` to include a `ResetError` event or similar for clearing the flash state. 93a8bb4
 - [x] Task: Update `GameState.State` to include an `isError` or `flashError` boolean flag. e85b614
 - [x] Task: Write failing tests in `GamePresenterTest` for the error flash behavior (flash on incorrect key, auto-reset after delay if needed, or manual reset). 3ec14cc
-- [ ] Task: Implement error state logic in `GameScreenPresenter`.
+- [x] Task: Implement error state logic in `GameScreenPresenter`. 284e37f
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Game State & Events (Presenter)' (Protocol in workflow.md)
 
 ## Phase 2: UI Styling & Visuals (Mosaic)
