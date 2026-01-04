@@ -12,7 +12,7 @@ Refine the game state to support the visual "flash" effect for errors.
 ## Phase 2: UI Styling & Visuals (Mosaic)
 Update the UI to use dimmed/bright text and implement the red flash effect.
 
-- [ ] Task: Refactor `GameScreenUi` to render correct characters as "bright" and untyped characters as "dimmed".
+- [x] Task: Refactor `GameScreenUi` to render correct characters as "bright" and untyped characters as "dimmed". 4058837
 - [ ] Task: Implement the "flash red" effect in `GameScreenUi` when the error flag is set in the state.
 - [ ] Task: Verify the visual transitions manually and ensure they align with the product guidelines (Clean & Minimalist).
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: UI Styling & Visuals (Mosaic)' (Protocol in workflow.md)
