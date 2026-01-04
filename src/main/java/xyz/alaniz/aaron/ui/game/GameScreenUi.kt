@@ -7,6 +7,7 @@ import com.jakewharton.mosaic.ui.Color
 import com.jakewharton.mosaic.ui.Column
 import com.jakewharton.mosaic.ui.Row
 import com.jakewharton.mosaic.ui.Text
+import com.jakewharton.mosaic.ui.TextStyle
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.zacsweers.metro.AppScope
 import xyz.alaniz.aaron.ui.foundation.KeyEvents.Enter
@@ -49,8 +50,10 @@ fun GameScreenUi(state: GameState, modifier: androidx.compose.ui.Modifier) {
                 }
                 GameStatus.PLAYING -> {
                     Row {
-                        Text(state.userInput, color = Color.Green)
-                        Text(state.currentWord.drop(state.userInput.length))
+                        // Correctly typed letters: Bright (Default)
+                        Text(state.userInput)
+                        // Remaining letters: Dimmed
+                        Text(state.currentWord.drop(state.userInput.length), textStyle = TextStyle.Dim)
                     }
                 }
                 GameStatus.GAME_OVER -> {
