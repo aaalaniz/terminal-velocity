@@ -34,24 +34,28 @@ class GameScreenPresenter (
         var currentWord by remember { mutableStateOf("") }
         var userInput by remember { mutableStateOf("") }
         var score by remember { mutableStateOf(0) }
+        var isError by remember { mutableStateOf(false) }
 
         return GameState.State(
             currentWord = currentWord,
             userInput = userInput,
             score = score,
             status = status,
+            isError = isError,
             eventSink = { event ->
                 when (event) {
                     GameEvent.GameStarted -> {
                         status = GameStatus.PLAYING
                         currentWord = repository.nextWord()
                         userInput = ""
+                        isError = false
                     }
                     GameEvent.GameReset -> {
                          status = GameStatus.WAITING
                          score = 0
                          currentWord = ""
                          userInput = ""
+                         isError = false
                     }
                     is GameEvent.LetterTyped -> {
                         if (status == GameStatus.PLAYING) {
@@ -59,18 +63,21 @@ class GameScreenPresenter (
                             if (nextCharIndex < currentWord.length) {
                                 if (currentWord[nextCharIndex] == event.char) {
                                     userInput += event.char
+                                    isError = false
                                     
                                     if (userInput == currentWord) {
                                         score++
                                         currentWord = repository.nextWord()
                                         userInput = ""
                                     }
+                                } else {
+                                    isError = true
                                 }
                             }
                         }
                     }
                     GameEvent.ClearError -> {
-                        // TODO: Implement error clearing logic
+                        isError = false
                     }
                 }
             }

@@ -75,7 +75,7 @@ class GamePresenterTest {
     }
 
     @Test
-    fun `LetterTyped event ignores incorrect input`() = runTest {
+    fun `LetterTyped event triggers error on incorrect input`() = runTest {
         val navigator = FakeNavigator(GameScreen)
         val presenter = GameScreenPresenter(navigator, repository)
         
@@ -91,34 +91,11 @@ class GamePresenterTest {
             // Type 'z' (incorrect, expected 'k')
             state.eventSink(GameEvent.LetterTyped('z'))
             
-            // Should not emit new state
-            expectNoEvents()
-        }
-    }
-
-    @Test
-    fun `LetterTyped event triggers error state on incorrect input`() = runTest {
-        val navigator = FakeNavigator(GameScreen)
-        val presenter = GameScreenPresenter(navigator, repository)
-        
-        presenter.test {
-            var state = awaitItem() as GameState.State
-            state.eventSink(GameEvent.GameStarted)
-            
-             // Wait for playing state
-            while (state.status != GameStatus.PLAYING || state.currentWord.isEmpty()) {
-                state = awaitItem() as GameState.State
-            }
-            
-            // Type 'z' (incorrect)
-            state.eventSink(GameEvent.LetterTyped('z'))
-            
-            // Expect error state
+            // Should emit new state with error
             var errorState = awaitItem() as GameState.State
             while (!errorState.isError) {
                 errorState = awaitItem() as GameState.State
             }
-            
             assertEquals(true, errorState.isError)
         }
     }
