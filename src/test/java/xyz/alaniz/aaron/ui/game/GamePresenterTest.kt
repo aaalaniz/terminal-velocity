@@ -97,6 +97,68 @@ class GamePresenterTest {
     }
 
     @Test
+    fun `LetterTyped event triggers error state on incorrect input`() = runTest {
+        val navigator = FakeNavigator(GameScreen)
+        val presenter = GameScreenPresenter(navigator, repository)
+        
+        presenter.test {
+            var state = awaitItem() as GameState.State
+            state.eventSink(GameEvent.GameStarted)
+            
+             // Wait for playing state
+            while (state.status != GameStatus.PLAYING || state.currentWord.isEmpty()) {
+                state = awaitItem() as GameState.State
+            }
+            
+            // Type 'z' (incorrect)
+            state.eventSink(GameEvent.LetterTyped('z'))
+            
+            // Expect error state
+            var errorState = awaitItem() as GameState.State
+            while (!errorState.isError) {
+                errorState = awaitItem() as GameState.State
+            }
+            
+            assertEquals(true, errorState.isError)
+        }
+    }
+
+    @Test
+    fun `ClearError event resets error state`() = runTest {
+        val navigator = FakeNavigator(GameScreen)
+        val presenter = GameScreenPresenter(navigator, repository)
+        
+        presenter.test {
+            var state = awaitItem() as GameState.State
+            state.eventSink(GameEvent.GameStarted)
+            
+             // Wait for playing state
+            while (state.status != GameStatus.PLAYING || state.currentWord.isEmpty()) {
+                state = awaitItem() as GameState.State
+            }
+            
+            // Type 'z' (incorrect)
+            state.eventSink(GameEvent.LetterTyped('z'))
+            
+            // Wait for error
+            var errorState = awaitItem() as GameState.State
+            while (!errorState.isError) {
+                errorState = awaitItem() as GameState.State
+            }
+            
+            // Clear error
+            errorState.eventSink(GameEvent.ClearError)
+            
+            // Expect no error
+            var clearState = awaitItem() as GameState.State
+            while (clearState.isError) {
+                clearState = awaitItem() as GameState.State
+            }
+            assertEquals(false, clearState.isError)
+        }
+    }
+
+    @Test
     fun `Completing a word increments score and resets input`() = runTest {
         val navigator = FakeNavigator(GameScreen)
         val presenter = GameScreenPresenter(navigator, repository)
