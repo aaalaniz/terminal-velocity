@@ -25,4 +25,11 @@ class InMemoryWordRepositoryTest {
         // Maybe check it contains only letters?
         assertTrue(word.all { it.isLetter() }, "Word should contain only letters")
     }
+
+    @Test
+    fun `getPassage returns a non-empty list of strings`() {
+        val repository = InMemoryWordRepository()
+        val passage = repository.getPassage()
+        assertTrue(passage.isNotEmpty(), "Passage should not be empty")
+    }
 }
