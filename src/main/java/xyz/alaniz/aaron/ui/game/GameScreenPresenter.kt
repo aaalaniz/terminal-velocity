@@ -2,9 +2,12 @@ package xyz.alaniz.aaron.ui.game
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.Snapshot
 import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
@@ -33,18 +36,15 @@ class GameScreenPresenter (
         var status by remember { mutableStateOf(GameStatus.WAITING) }
         var currentWord by remember { mutableStateOf("") }
         var userInput by remember { mutableStateOf("") }
-        var score by remember { mutableStateOf(0) }
+        var score by remember { mutableIntStateOf(0) }
         var isError by remember { mutableStateOf(false) }
 
         var passage by remember { mutableStateOf(emptyList<String>()) }
-        var currentLineIndex by remember { mutableStateOf(0) }
-        var totalCorrectChars by remember { mutableStateOf(0) }
-        var totalKeystrokes by remember { mutableStateOf(0) }
-        var startTime by remember { mutableStateOf(0L) }
-        var elapsedTime by remember { mutableStateOf(0L) }
-
-        // We'll update elapsedTime periodically or on every keystroke for real-time WPM
-        // For simplicity in this track, we'll calculate it on every keystroke.
+        var currentLineIndex by remember { mutableIntStateOf(0) }
+        var totalCorrectChars by remember { mutableIntStateOf(0) }
+        var totalKeystrokes by remember { mutableIntStateOf(0) }
+        var startTime by remember { mutableLongStateOf(0L) }
+        var elapsedTime by remember { mutableLongStateOf(0L) }
 
         fun calculateWpm(): Double {
             if (startTime == 0L) return 0.0
@@ -70,65 +70,68 @@ class GameScreenPresenter (
             passage = passage,
             currentLineIndex = currentLineIndex,
             eventSink = { event ->
-                when (event) {
-                    GameEvent.GameStarted -> {
-                        status = GameStatus.PLAYING
-                        passage = repository.getPassage()
-                        currentLineIndex = 0
-                        currentWord = passage.getOrElse(0) { "" }
-                        userInput = ""
-                        isError = false
-                        totalCorrectChars = 0
-                        totalKeystrokes = 0
-                        startTime = 0L
-                        elapsedTime = 0L
-                    }
-                    GameEvent.GameReset -> {
-                         status = GameStatus.WAITING
-                         score = 0
-                         currentWord = ""
-                         userInput = ""
-                         isError = false
-                         passage = emptyList()
-                         currentLineIndex = 0
-                         totalCorrectChars = 0
-                         totalKeystrokes = 0
-                         startTime = 0L
-                         elapsedTime = 0L
-                    }
-                    is GameEvent.LetterTyped -> {
-                        if (status == GameStatus.PLAYING) {
-                            if (startTime == 0L) {
-                                startTime = System.currentTimeMillis()
-                            }
-                            elapsedTime = System.currentTimeMillis() - startTime
-                            totalKeystrokes++
+                Snapshot.withMutableSnapshot {
+                    when (event) {
+                        GameEvent.GameStarted -> {
+                            status = GameStatus.PLAYING
+                            passage = repository.getPassage()
+                            currentLineIndex = 0
+                            currentWord = passage.getOrElse(0) { "" }
+                            userInput = ""
+                            isError = false
+                            totalCorrectChars = 0
+                            totalKeystrokes = 0
+                            startTime = 0L
+                            elapsedTime = 0L
+                        }
+                        GameEvent.GameReset -> {
+                             status = GameStatus.WAITING
+                             score = 0
+                             currentWord = ""
+                             userInput = ""
+                             isError = false
+                             passage = emptyList()
+                             currentLineIndex = 0
+                             totalCorrectChars = 0
+                             totalKeystrokes = 0
+                             startTime = 0L
+                             elapsedTime = 0L
+                        }
+                        is GameEvent.LetterTyped -> {
+                            if (status == GameStatus.PLAYING) {
+                                val now = System.currentTimeMillis()
+                                if (startTime == 0L) {
+                                    startTime = now
+                                }
+                                elapsedTime = now - startTime
+                                totalKeystrokes++
 
-                            val nextCharIndex = userInput.length
-                            if (nextCharIndex < currentWord.length) {
-                                if (currentWord[nextCharIndex] == event.char) {
-                                    userInput += event.char
-                                    isError = false
-                                    totalCorrectChars++
-                                    
-                                    if (userInput == currentWord) {
-                                        score++
-                                        currentLineIndex++
-                                        if (currentLineIndex < passage.size) {
-                                            currentWord = passage[currentLineIndex]
-                                            userInput = ""
-                                        } else {
-                                            status = GameStatus.GAME_OVER
+                                val nextCharIndex = userInput.length
+                                if (nextCharIndex < currentWord.length) {
+                                    if (currentWord[nextCharIndex] == event.char) {
+                                        userInput += event.char
+                                        isError = false
+                                        totalCorrectChars++
+                                        
+                                        if (userInput == currentWord) {
+                                            score++
+                                            currentLineIndex++
+                                            if (currentLineIndex < passage.size) {
+                                                currentWord = passage[currentLineIndex]
+                                                userInput = ""
+                                            } else {
+                                                status = GameStatus.GAME_OVER
+                                            }
                                         }
+                                    } else {
+                                        isError = true
                                     }
-                                } else {
-                                    isError = true
                                 }
                             }
                         }
-                    }
-                    GameEvent.ClearError -> {
-                        isError = false
+                        GameEvent.ClearError -> {
+                            isError = false
+                        }
                     }
                 }
             }

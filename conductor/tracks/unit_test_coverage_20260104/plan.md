@@ -20,13 +20,13 @@ Focus on the simpler Circuit presenters and their UI states.
 ## Phase 3: Game Screen (Core Logic)
 The most complex part of the application, focusing on the real-time typing loop and game state.
 
-- [ ] Task: Audit and Cleanup existing tests for `ui.game`
-- [ ] Task: Implement comprehensive unit tests for `GameScreenPresenter` (Red/Green/Refactor)
-    - [ ] Sub-task: Test initial state
-    - [ ] Sub-task: Test typing events (correct/incorrect characters)
-    - [ ] Sub-task: Test timer/progress updates
-    - [ ] Sub-task: Test game completion/reset
-- [ ] Task: Conductor - User Manual Verification 'Phase 3: Game Screen (Core Logic)' (Protocol in workflow.md)
+- [x] Task: Audit and Cleanup existing tests for `ui.game` (Rewrote GamePresenterTest and PassageGamePresenterTest)
+- [x] Task: Implement comprehensive unit tests for `GameScreenPresenter` (Red/Green/Refactor)
+    - [x] Sub-task: Test initial state
+    - [x] Sub-task: Test typing events (correct/incorrect characters)
+    - [x] Sub-task: Test timer/progress updates
+    - [x] Sub-task: Test game completion/reset
+- [x] Task: Conductor - User Manual Verification 'Phase 3: Game Screen (Core Logic)' (Protocol in workflow.md)
 
 ## Phase 4: Final Coverage Verification & Cleanup
 Ensuring the 80% target is met and any remaining "silly" tests are addressed.

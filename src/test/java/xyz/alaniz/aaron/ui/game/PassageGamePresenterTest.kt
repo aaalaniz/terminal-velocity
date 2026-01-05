@@ -3,15 +3,12 @@ package xyz.alaniz.aaron.ui.game
 import com.slack.circuit.test.FakeNavigator
 import com.slack.circuit.test.test
 import kotlinx.coroutines.test.runTest
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import xyz.alaniz.aaron.data.WordRepository
 import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 
-@Disabled("Fix in Phase 3 - Logic mismatch with current Presenter implementation")
 class PassageGamePresenterTest {
-    private val passage = listOf("Test passage.", "Second line.")
+    private val passage = listOf("First line.", "Second line.")
     private val repository = object : WordRepository {
         override fun nextWord() = ""
         override fun getPassage() = passage
@@ -23,15 +20,15 @@ class PassageGamePresenterTest {
         val presenter = GameScreenPresenter(navigator, repository)
         
         presenter.test {
-            val initialState = awaitItem() as GameState.State
-            initialState.eventSink(GameEvent.GameStarted)
+            val waitingState = awaitItem() as GameState.State
+            waitingState.eventSink(GameEvent.GameStarted)
             
-            var playingState = awaitItem() as GameState.State
-            while (playingState.status != GameStatus.PLAYING || playingState.currentWord.isEmpty()) {
-                playingState = awaitItem() as GameState.State
+            var state = awaitItem() as GameState.State
+            while (state.status != GameStatus.PLAYING || state.currentWord.isEmpty()) {
+                state = awaitItem() as GameState.State
             }
             
-            assertEquals("Test passage.", playingState.currentWord)
+            assertEquals("First line.", state.currentWord)
         }
     }
 
@@ -41,32 +38,34 @@ class PassageGamePresenterTest {
         val presenter = GameScreenPresenter(navigator, repository)
         
         presenter.test {
-            var state = awaitItem() as GameState.State
-            state.eventSink(GameEvent.GameStarted)
+            val waitingState = awaitItem() as GameState.State
+            waitingState.eventSink(GameEvent.GameStarted)
             
-            while (state.status != GameStatus.PLAYING || state.currentWord.isEmpty()) {
+            var state = awaitItem() as GameState.State
+            while (state.status != GameStatus.PLAYING || state.currentWord != "First line.") {
                 state = awaitItem() as GameState.State
             }
             
             // Type the first line
-            state.currentWord.forEach { char ->
+            "First line.".forEach { char ->
                 state.eventSink(GameEvent.LetterTyped(char))
-                state = awaitItem() as GameState.State
-                if (state.userInput.isEmpty() && state.currentWord == "Second line.") {
-                    // Correct, it advanced
+                
+                // Wait for either the word to update or the final state
+                if (char == '.') {
+                    while (state.currentWord != "Second line.") {
+                        state = awaitItem() as GameState.State
+                    }
+                } else {
+                    // Just wait for some change
+                    val prevInput = state.userInput
+                    while (state.userInput == prevInput && !state.isError) {
+                        state = awaitItem() as GameState.State
+                    }
                 }
             }
             
             assertEquals("Second line.", state.currentWord)
+            assertEquals("", state.userInput)
         }
-    }
-
-    @Test
-    fun `WPM is calculated correctly`() = runTest {
-        // Correct characters / 5 / minutes
-        // If we type 10 characters in 6 seconds (0.1 minutes)
-        // WPM = (10 / 5) / 0.1 = 2 / 0.1 = 20 WPM
-        // This test might be tricky due to time handling in runTest.
-        // We'll need to see how elapsedTime is updated.
     }
 }
