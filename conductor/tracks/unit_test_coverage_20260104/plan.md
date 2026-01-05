@@ -9,13 +9,13 @@ This phase focuses on ensuring the core utilities and data management logic are 
 - [x] Task: Improve unit tests for `WordRepository` and `DataModule` (Red/Green/Refactor)
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Foundation & Data Layer' (Protocol in workflow.md)
 
-## Phase 2: Title & Settings Screens
+## Phase 2: Title & Settings Screens [checkpoint: 63f0e25]
 Focus on the simpler Circuit presenters and their UI states.
 
 - [x] Task: Audit and Cleanup existing tests for `ui.title` and `ui.settings` (No existing tests found)
 - [x] Task: Implement unit tests for `TitleScreenPresenter` (Red/Green/Refactor)
 - [x] Task: Implement unit tests for `SettingsScreenPresenter` (Red/Green/Refactor)
-- [ ] Task: Conductor - User Manual Verification 'Phase 2: Title & Settings Screens' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 2: Title & Settings Screens' (Protocol in workflow.md)
 
 ## Phase 3: Game Screen (Core Logic)
 The most complex part of the application, focusing on the real-time typing loop and game state.
