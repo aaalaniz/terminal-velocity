@@ -1,0 +1,8 @@
+{
+  "track_id": "fix_ctrl_c_20260103",
+  "type": "bug",
+  "status": "new",
+  "created_at": "2026-01-03T00:00:00Z",
+  "updated_at": "2026-01-03T00:00:00Z",
+  "description": "Fix Ctrl+C Exit Behavior"
+}
