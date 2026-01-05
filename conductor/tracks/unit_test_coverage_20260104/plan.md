@@ -12,9 +12,9 @@ This phase focuses on ensuring the core utilities and data management logic are 
 ## Phase 2: Title & Settings Screens
 Focus on the simpler Circuit presenters and their UI states.
 
-- [ ] Task: Audit and Cleanup existing tests for `ui.title` and `ui.settings`
-- [ ] Task: Implement unit tests for `TitleScreenPresenter` (Red/Green/Refactor)
-- [ ] Task: Implement unit tests for `SettingsScreenPresenter` (Red/Green/Refactor)
+- [x] Task: Audit and Cleanup existing tests for `ui.title` and `ui.settings` (No existing tests found)
+- [x] Task: Implement unit tests for `TitleScreenPresenter` (Red/Green/Refactor)
+- [x] Task: Implement unit tests for `SettingsScreenPresenter` (Red/Green/Refactor)
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Title & Settings Screens' (Protocol in workflow.md)
 
 ## Phase 3: Game Screen (Core Logic)
