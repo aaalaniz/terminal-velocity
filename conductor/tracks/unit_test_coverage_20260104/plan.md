@@ -28,7 +28,7 @@ The most complex part of the application, focusing on the real-time typing loop 
     - [x] Sub-task: Test game completion/reset
 - [x] Task: Conductor - User Manual Verification 'Phase 3: Game Screen (Core Logic)' (Protocol in workflow.md)
 
-## Phase 4: Final Coverage Verification & Cleanup
+## Phase 4: Final Coverage Verification & Cleanup [checkpoint: 1594ce2]
 Ensuring the 80% target is met and any remaining "silly" tests are addressed.
 
 - [x] Task: Run final coverage audit and identify any remaining gaps (Presenters and Data layer fully covered)
