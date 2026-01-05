@@ -12,7 +12,9 @@ import com.jakewharton.mosaic.ui.TextStyle
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.zacsweers.metro.AppScope
 import kotlinx.coroutines.delay
+import xyz.alaniz.aaron.ui.foundation.KeyEvents.CtrlC
 import xyz.alaniz.aaron.ui.foundation.KeyEvents.Enter
+import kotlin.system.exitProcess
 
 @Composable
 @CircuitInject(screen = GameScreen::class, scope = AppScope::class)
@@ -27,6 +29,9 @@ fun GameScreenUi(state: GameState, modifier: androidx.compose.ui.Modifier) {
 
         Column(modifier = Modifier.onKeyEvent { keyEvent ->
             when (keyEvent) {
+                CtrlC -> {
+                    exitProcess(0)
+                }
                 Enter -> {
                     if (state.status == GameStatus.WAITING) {
                         state.eventSink(GameEvent.GameStarted)
