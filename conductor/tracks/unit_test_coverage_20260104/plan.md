@@ -17,7 +17,7 @@ Focus on the simpler Circuit presenters and their UI states.
 - [x] Task: Implement unit tests for `SettingsScreenPresenter` (Red/Green/Refactor)
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Title & Settings Screens' (Protocol in workflow.md)
 
-## Phase 3: Game Screen (Core Logic)
+## Phase 3: Game Screen (Core Logic) [checkpoint: 1c8c391]
 The most complex part of the application, focusing on the real-time typing loop and game state.
 
 - [x] Task: Audit and Cleanup existing tests for `ui.game` (Rewrote GamePresenterTest and PassageGamePresenterTest)
