@@ -55,35 +55,54 @@ fun GameScreenUi(state: GameState, modifier: androidx.compose.ui.Modifier) {
                 }
             }
         }) {
-            Text("Score: ${state.score}")
-            Text("")
+            if (state.status == GameStatus.WAITING) {
+                Text("Terminal Velocity - Passage Mode")
+                Text("")
+                Text("Press 'Enter' to Start")
+            } else if (state.status == GameStatus.PLAYING) {
+                Text("WPM: ${state.wpm.toInt()} | Accuracy: ${state.accuracy.toInt()}%")
+                Text("")
 
-            when (state.status) {
-                GameStatus.WAITING -> {
-                    Text("Press 'Enter' to Start")
-                }
-                GameStatus.PLAYING -> {
-                    Row {
-                        // Correctly typed letters: Bright (Default)
-                        Text(state.userInput)
-                        // Remaining letters: Dimmed or current char Red if error
-                        val remaining = state.currentWord.drop(state.userInput.length)
-                        if (remaining.isNotEmpty()) {
-                            if (state.isError) {
-                                // Flash only the first remaining character red
-                                Text(remaining.take(1), color = Color.Red)
-                                Text(remaining.drop(1), textStyle = TextStyle.Dim)
-                            } else {
-                                Text(remaining, textStyle = TextStyle.Dim)
+                // Show a window of 5 lines
+                val windowSize = 5
+                val halfWindow = windowSize / 2
+                val startIndex = (state.currentLineIndex - halfWindow).coerceAtLeast(0)
+                val endIndex = (startIndex + windowSize).coerceAtMost(state.passage.size)
+
+                for (i in startIndex until endIndex) {
+                    if (i == state.currentLineIndex) {
+                        Row {
+                            Text(state.userInput)
+                            val remaining = state.currentWord.drop(state.userInput.length)
+                            if (remaining.isNotEmpty()) {
+                                if (state.isError) {
+                                    Text(remaining.take(1), color = Color.Red)
+                                    Text(remaining.drop(1), textStyle = TextStyle.Dim)
+                                } else {
+                                    Text(remaining, textStyle = TextStyle.Dim)
+                                }
                             }
                         }
+                    } else if (i < state.currentLineIndex) {
+                        // Completed lines
+                        Text(state.passage[i])
+                    } else {
+                        // Future lines
+                        Text(state.passage[i], textStyle = TextStyle.Dim)
                     }
                 }
-                GameStatus.GAME_OVER -> {
-                    Text("GAME OVER!", color = Color.Red)
-                    Text("Score: ${state.score}")
-                    Text("Press 'Enter' to Reset")
-                }
+            } else if (state.status == GameStatus.GAME_OVER) {
+                val totalSeconds = state.elapsedTime / 1000
+                val minutes = totalSeconds / 60
+                val seconds = totalSeconds % 60
+
+                Text("Passage Complete!", color = Color.Green)
+                Text("")
+                Text("Final WPM: ${state.wpm.toInt()}")
+                Text("Accuracy: ${state.accuracy.toInt()}%")
+                Text("Time: ${minutes}m ${seconds}s")
+                Text("")
+                Text("Press 'Enter' to Restart")
             }
         }
     }

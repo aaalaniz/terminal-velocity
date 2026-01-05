@@ -36,19 +36,52 @@ class GameScreenPresenter (
         var score by remember { mutableStateOf(0) }
         var isError by remember { mutableStateOf(false) }
 
+        var passage by remember { mutableStateOf(emptyList<String>()) }
+        var currentLineIndex by remember { mutableStateOf(0) }
+        var totalCorrectChars by remember { mutableStateOf(0) }
+        var totalKeystrokes by remember { mutableStateOf(0) }
+        var startTime by remember { mutableStateOf(0L) }
+        var elapsedTime by remember { mutableStateOf(0L) }
+
+        // We'll update elapsedTime periodically or on every keystroke for real-time WPM
+        // For simplicity in this track, we'll calculate it on every keystroke.
+
+        fun calculateWpm(): Double {
+            if (startTime == 0L) return 0.0
+            val minutes = (elapsedTime / 1000.0) / 60.0
+            if (minutes <= 0) return 0.0
+            return (totalCorrectChars / 5.0) / minutes
+        }
+
+        fun calculateAccuracy(): Double {
+            if (totalKeystrokes == 0) return 100.0
+            return (totalCorrectChars.toDouble() / totalKeystrokes.toDouble()) * 100.0
+        }
+
         return GameState.State(
             currentWord = currentWord,
             userInput = userInput,
             score = score,
             status = status,
             isError = isError,
+            wpm = calculateWpm(),
+            accuracy = calculateAccuracy(),
+            elapsedTime = elapsedTime,
+            passage = passage,
+            currentLineIndex = currentLineIndex,
             eventSink = { event ->
                 when (event) {
                     GameEvent.GameStarted -> {
                         status = GameStatus.PLAYING
-                        currentWord = repository.nextWord()
+                        passage = repository.getPassage()
+                        currentLineIndex = 0
+                        currentWord = passage.getOrElse(0) { "" }
                         userInput = ""
                         isError = false
+                        totalCorrectChars = 0
+                        totalKeystrokes = 0
+                        startTime = 0L
+                        elapsedTime = 0L
                     }
                     GameEvent.GameReset -> {
                          status = GameStatus.WAITING
@@ -56,19 +89,37 @@ class GameScreenPresenter (
                          currentWord = ""
                          userInput = ""
                          isError = false
+                         passage = emptyList()
+                         currentLineIndex = 0
+                         totalCorrectChars = 0
+                         totalKeystrokes = 0
+                         startTime = 0L
+                         elapsedTime = 0L
                     }
                     is GameEvent.LetterTyped -> {
                         if (status == GameStatus.PLAYING) {
+                            if (startTime == 0L) {
+                                startTime = System.currentTimeMillis()
+                            }
+                            elapsedTime = System.currentTimeMillis() - startTime
+                            totalKeystrokes++
+
                             val nextCharIndex = userInput.length
                             if (nextCharIndex < currentWord.length) {
                                 if (currentWord[nextCharIndex] == event.char) {
                                     userInput += event.char
                                     isError = false
+                                    totalCorrectChars++
                                     
                                     if (userInput == currentWord) {
                                         score++
-                                        currentWord = repository.nextWord()
-                                        userInput = ""
+                                        currentLineIndex++
+                                        if (currentLineIndex < passage.size) {
+                                            currentWord = passage[currentLineIndex]
+                                            userInput = ""
+                                        } else {
+                                            status = GameStatus.GAME_OVER
+                                        }
                                     }
                                 } else {
                                     isError = true

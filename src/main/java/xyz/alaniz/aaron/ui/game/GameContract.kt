@@ -10,6 +10,11 @@ sealed interface GameState : CircuitUiState {
         val score: Int,
         val status: GameStatus,
         val isError: Boolean = false,
+        val wpm: Double = 0.0,
+        val accuracy: Double = 100.0,
+        val elapsedTime: Long = 0,
+        val passage: List<String> = emptyList(),
+        val currentLineIndex: Int = 0,
         val eventSink: (GameEvent) -> Unit
     ) : GameState
 }
