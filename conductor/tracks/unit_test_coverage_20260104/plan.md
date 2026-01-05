@@ -1,13 +1,13 @@
 # Plan: Improve Unit Test Coverage (80%)
 
-## Phase 1: Foundation & Data Layer
+## Phase 1: Foundation & Data Layer [checkpoint: 3424284]
 This phase focuses on ensuring the core utilities and data management logic are robustly tested and removing non-meaningful tests.
 
 - [x] Task: Audit and Cleanup existing tests for `data` and `ui.foundation` packages (Removed silly tests)
 - [x] Task: Implement unit tests for `KeyEvents.kt` (Red/Green/Refactor)
 - [x] Task: Implement unit tests for `MosaicNavDecoration.kt` (Reviewed: logic is trivial/UI-bound, inheritance test removed as silly)
 - [x] Task: Improve unit tests for `WordRepository` and `DataModule` (Red/Green/Refactor)
-- [ ] Task: Conductor - User Manual Verification 'Phase 1: Foundation & Data Layer' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 1: Foundation & Data Layer' (Protocol in workflow.md)
 
 ## Phase 2: Title & Settings Screens
 Focus on the simpler Circuit presenters and their UI states.
