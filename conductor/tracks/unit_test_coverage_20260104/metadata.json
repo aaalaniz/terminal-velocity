@@ -1,0 +1,8 @@
+{
+  "track_id": "unit_test_coverage_20260104",
+  "type": "chore",
+  "status": "new",
+  "created_at": "2026-01-04T12:00:00Z",
+  "updated_at": "2026-01-04T12:00:00Z",
+  "description": "Improve unit test coverage to 80% with meaningful states for all behavior."
+}
