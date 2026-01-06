@@ -13,6 +13,7 @@ data object KeyEvents {
 
     val b = KeyEvent("b")
     val r = KeyEvent("r")
-    val ShiftR = KeyEvent("R")
+    @get:JvmName("getCapitalR")
+    val R = KeyEvent("R")
     val CtrlC = KeyEvent("c", ctrl = true)
 }
