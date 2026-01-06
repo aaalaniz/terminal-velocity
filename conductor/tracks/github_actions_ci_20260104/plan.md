@@ -1,12 +1,12 @@
 # Plan: GitHub Actions CI Pipeline
 
-## Phase 1: Setup & Build Verification [checkpoint: ]
+## Phase 1: Setup & Build Verification [checkpoint: acd0abc]
 This phase focuses on establishing the GitHub Actions workflow and ensuring the project can be successfully built in the CI environment.
 
 - [x] Task: Create `.github/workflows/ci.yml` with triggers for push (main), pull_request (main), and workflow_dispatch. 2933b8e
 - [x] Task: Configure the `build` job to checkout code, setup JDK 21, and setup Gradle. 2933b8e
 - [x] Task: Implement the build step: `./gradlew assemble`. 2933b8e
-- [ ] Task: Conductor - User Manual Verification 'Phase 1: Setup & Build Verification' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 1: Setup & Build Verification' (Protocol in workflow.md)
 
 ## Phase 2: Testing & Caching
 This phase adds automated testing and dependency caching to improve pipeline reliability and speed.
