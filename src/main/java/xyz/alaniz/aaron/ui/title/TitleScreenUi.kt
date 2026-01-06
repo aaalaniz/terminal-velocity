@@ -34,7 +34,8 @@ fun TitleScreenUi(titleScreenState: TitleScreenState, modifier: androidx.compose
             }
             val textStyle = if (index != titleScreenState.selectedTitleScreenOptionIndex) TextStyle.Dim else TextStyle.Unspecified
 
-            Text(value = option.label, underlineStyle = underlineStyle, textStyle = textStyle)
+            val prefix = if (index == titleScreenState.selectedTitleScreenOptionIndex) "> " else "  "
+            Text(value = prefix + option.label, underlineStyle = underlineStyle, textStyle = textStyle)
         }
     }
 }
