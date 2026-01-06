@@ -14,6 +14,8 @@ import dev.zacsweers.metro.AppScope
 import kotlinx.coroutines.delay
 import xyz.alaniz.aaron.ui.foundation.KeyEvents.CtrlC
 import xyz.alaniz.aaron.ui.foundation.KeyEvents.Enter
+import xyz.alaniz.aaron.ui.foundation.KeyEvents.R
+import xyz.alaniz.aaron.ui.foundation.KeyEvents.r
 import kotlin.system.exitProcess
 
 @Composable
@@ -34,9 +36,9 @@ fun GameScreenUi(state: GameState, modifier: androidx.compose.ui.Modifier) {
                 }
                 Enter -> {
                     if (state.status == GameStatus.WAITING) {
-                        state.eventSink(GameEvent.GameStarted)
+                        state.eventSink(GameEvent.StartGame)
                     } else if (state.status == GameStatus.GAME_OVER) {
-                        state.eventSink(GameEvent.GameReset)
+                        state.eventSink(GameEvent.NewGame)
                     }
                     true
                 }
@@ -45,6 +47,13 @@ fun GameScreenUi(state: GameState, modifier: androidx.compose.ui.Modifier) {
                         val key = keyEvent.key
                         if (key != null && key.length == 1) {
                             state.eventSink(GameEvent.LetterTyped(key[0]))
+                            true
+                        } else {
+                            false
+                        }
+                    } else if (state.status == GameStatus.GAME_OVER) {
+                        if (keyEvent == r || keyEvent == R) {
+                            state.eventSink(GameEvent.RetryGame)
                             true
                         } else {
                             false
@@ -102,7 +111,7 @@ fun GameScreenUi(state: GameState, modifier: androidx.compose.ui.Modifier) {
                 Text("Accuracy: ${state.accuracy.toInt()}%")
                 Text("Time: ${minutes}m ${seconds}s")
                 Text("")
-                Text("Press 'Enter' to Restart")
+                Text("Press 'Enter' for New Passage, 'R' to Retry")
             }
         }
     }

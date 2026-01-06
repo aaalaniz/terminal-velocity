@@ -12,7 +12,8 @@ data object KeyEvents {
     val j = KeyEvent("j")
 
     val b = KeyEvent("b")
+    val r = KeyEvent("r")
+    @get:JvmName("getCapitalR")
+    val R = KeyEvent("R")
     val CtrlC = KeyEvent("c", ctrl = true)
 }
-
-

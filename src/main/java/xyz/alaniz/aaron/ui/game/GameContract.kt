@@ -27,7 +27,8 @@ enum class GameStatus {
 
 sealed interface GameEvent : CircuitUiEvent {
     data class LetterTyped(val char: Char) : GameEvent
-    data object GameStarted : GameEvent
-    data object GameReset : GameEvent
+    data object StartGame : GameEvent
+    data object RetryGame : GameEvent
+    data object NewGame : GameEvent
     data object ClearError : GameEvent
 }
