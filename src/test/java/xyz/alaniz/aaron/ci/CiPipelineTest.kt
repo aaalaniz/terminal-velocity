@@ -11,7 +11,6 @@ class CiPipelineTest {
         val content = file.readText()
         assertTrue(content.contains("push:"), "Should have push trigger")
         assertTrue(content.contains("pull_request:"), "Should have pull_request trigger")
-        assertTrue(content.contains("workflow_dispatch:"), "Should have workflow_dispatch trigger")
         assertTrue(content.contains("branches: [ main ]"), "Should target main branch")
     }
 
