@@ -15,10 +15,10 @@ This phase adds automated testing and dependency caching to improve pipeline rel
 - [x] Task: Configure caching for Gradle dependencies and wrappers using `gradle/gradle-build-action` or standard `actions/cache`. afe3033
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Testing & Caching' (Protocol in workflow.md)
 
-## Phase 3: Final Verification & Documentation
+## Phase 3: Final Verification & Documentation [checkpoint: ]
 This phase ensures the pipeline is robust and documented.
 
-- [ ] Task: Verify the pipeline fails correctly on build/test errors (Simulated failure).
-- [ ] Task: Verify the pipeline passes on clean state.
-- [ ] Task: Document the CI process in a new `CI.md` file or update `README.md` (Optional but recommended).
+- [x] Task: Verify the pipeline fails correctly on build/test errors (Simulated failure). cf5c131
+- [x] Task: Verify the pipeline passes on clean state. cf5c131
+- [x] Task: Document the CI process in a new `CI.md` file or update `README.md` (Optional but recommended). cf5c131
 - [ ] Task: Conductor - User Manual Verification 'Phase 3: Final Verification & Documentation' (Protocol in workflow.md)

@@ -15,28 +15,22 @@ This project is built in Kotlin using:
 *   **[Circuit](https://github.com/slackhq/circuit):** For navigation and unidirectional data flow architecture.
 *   **[Metro](https://github.com/ZacSweers/metro):** For dependency injection.
 
-## 🚀 Getting Started
+## Development Workflow
 
-### Prerequisites
+- **Build & Install Distribution:**
+  ```bash
+  ./gradlew installDist
+  ```
+- **Run Application:**
+  ```bash
+  ./build/install/terminal-velocity/bin/terminal-velocity
+  ```
+- **Run Tests:**
+  ```bash
+  ./gradlew test
+  ```
+- **Continuous Integration:** See [CI.md](./CI.md) for details on our automated pipeline.
 
-*   JDK 11 or higher
-*   Kotlin 2.3+
-
-### Building the Project
-
-To build the application and create the distribution files, run:
-
-```bash
-./gradlew installDist
-```
-
-### Running the Game
-
-Once built, you can launch the game executable directly:
-
-```bash
-./build/install/terminal-velocity/bin/terminal-velocity
-```
 
 ## License
 
