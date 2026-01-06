@@ -16,12 +16,13 @@ class CiPipelineTest {
     }
 
     @Test
-    fun `ci yaml file has correct build steps`() {
+    fun `ci yaml file has correct build and test steps`() {
         val file = File(".github/workflows/ci.yml")
         val content = file.readText()
         assertTrue(content.contains("actions/checkout@v4"), "Should use checkout action")
         assertTrue(content.contains("actions/setup-java@v4"), "Should use setup-java action")
         assertTrue(content.contains("java-version: '21'"), "Should use JDK 21")
         assertTrue(content.contains("./gradlew assemble"), "Should run assemble task")
+        assertTrue(content.contains("./gradlew test"), "Should run test task")
     }
 }
