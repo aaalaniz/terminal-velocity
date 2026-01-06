@@ -12,7 +12,7 @@ data object KeyEvents {
     val j = KeyEvent("j")
 
     val b = KeyEvent("b")
+    val r = KeyEvent("r")
+    val ShiftR = KeyEvent("R")
     val CtrlC = KeyEvent("c", ctrl = true)
 }
-
-

@@ -14,6 +14,8 @@ import dev.zacsweers.metro.AppScope
 import kotlinx.coroutines.delay
 import xyz.alaniz.aaron.ui.foundation.KeyEvents.CtrlC
 import xyz.alaniz.aaron.ui.foundation.KeyEvents.Enter
+import xyz.alaniz.aaron.ui.foundation.KeyEvents.ShiftR
+import xyz.alaniz.aaron.ui.foundation.KeyEvents.r
 import kotlin.system.exitProcess
 
 @Composable
@@ -50,8 +52,7 @@ fun GameScreenUi(state: GameState, modifier: androidx.compose.ui.Modifier) {
                             false
                         }
                     } else if (state.status == GameStatus.GAME_OVER) {
-                        val key = keyEvent.key
-                        if (key == "r" || key == "R") {
+                        if (keyEvent == r || keyEvent == ShiftR) {
                             state.eventSink(GameEvent.RetryGame)
                             true
                         } else {
