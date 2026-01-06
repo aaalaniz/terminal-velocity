@@ -10,18 +10,17 @@ import kotlin.test.assertEquals
 class PassageGamePresenterTest {
     private val passage = listOf("First line.", "Second line.")
     private val repository = object : WordRepository {
-        override fun nextWord() = ""
         override fun getPassage() = passage
     }
 
     @Test
-    fun `GameStarted picks the first line of the passage`() = runTest {
+    fun `StartGame picks the first line of the passage`() = runTest {
         val navigator = FakeNavigator(GameScreen)
         val presenter = GameScreenPresenter(navigator, repository)
         
         presenter.test {
             val waitingState = awaitItem() as GameState.State
-            waitingState.eventSink(GameEvent.GameStarted)
+            waitingState.eventSink(GameEvent.StartGame)
             
             var state = awaitItem() as GameState.State
             while (state.status != GameStatus.PLAYING || state.currentWord.isEmpty()) {
@@ -39,7 +38,7 @@ class PassageGamePresenterTest {
         
         presenter.test {
             val waitingState = awaitItem() as GameState.State
-            waitingState.eventSink(GameEvent.GameStarted)
+            waitingState.eventSink(GameEvent.StartGame)
             
             var state = awaitItem() as GameState.State
             while (state.status != GameStatus.PLAYING || state.currentWord != "First line.") {

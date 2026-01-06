@@ -58,6 +58,19 @@ class GameScreenPresenter (
             return (totalCorrectChars.toDouble() / totalKeystrokes.toDouble()) * 100.0
         }
 
+        fun resetGameStats() {
+            status = GameStatus.PLAYING
+            currentLineIndex = 0
+            currentWord = passage.getOrElse(0) { "" }
+            userInput = ""
+            isError = false
+            score = 0
+            totalCorrectChars = 0
+            totalKeystrokes = 0
+            startTime = 0L
+            elapsedTime = 0L
+        }
+
         return GameState.State(
             currentWord = currentWord,
             userInput = userInput,
@@ -72,30 +85,17 @@ class GameScreenPresenter (
             eventSink = { event ->
                 Snapshot.withMutableSnapshot {
                     when (event) {
-                        GameEvent.GameStarted -> {
-                            status = GameStatus.PLAYING
+                        GameEvent.StartGame -> {
                             passage = repository.getPassage()
-                            currentLineIndex = 0
-                            currentWord = passage.getOrElse(0) { "" }
-                            userInput = ""
-                            isError = false
-                            totalCorrectChars = 0
-                            totalKeystrokes = 0
-                            startTime = 0L
-                            elapsedTime = 0L
+                            resetGameStats()
                         }
-                        GameEvent.GameReset -> {
-                             status = GameStatus.WAITING
-                             score = 0
-                             currentWord = ""
-                             userInput = ""
-                             isError = false
-                             passage = emptyList()
-                             currentLineIndex = 0
-                             totalCorrectChars = 0
-                             totalKeystrokes = 0
-                             startTime = 0L
-                             elapsedTime = 0L
+                        GameEvent.RetryGame -> {
+                            // Keep the same passage
+                            resetGameStats()
+                        }
+                        GameEvent.NewGame -> {
+                            passage = repository.getPassage()
+                            resetGameStats()
                         }
                         is GameEvent.LetterTyped -> {
                             if (status == GameStatus.PLAYING) {

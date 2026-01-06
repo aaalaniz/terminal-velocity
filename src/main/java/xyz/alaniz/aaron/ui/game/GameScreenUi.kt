@@ -34,9 +34,9 @@ fun GameScreenUi(state: GameState, modifier: androidx.compose.ui.Modifier) {
                 }
                 Enter -> {
                     if (state.status == GameStatus.WAITING) {
-                        state.eventSink(GameEvent.GameStarted)
+                        state.eventSink(GameEvent.StartGame)
                     } else if (state.status == GameStatus.GAME_OVER) {
-                        state.eventSink(GameEvent.GameReset)
+                        state.eventSink(GameEvent.NewGame)
                     }
                     true
                 }
@@ -45,6 +45,14 @@ fun GameScreenUi(state: GameState, modifier: androidx.compose.ui.Modifier) {
                         val key = keyEvent.key
                         if (key != null && key.length == 1) {
                             state.eventSink(GameEvent.LetterTyped(key[0]))
+                            true
+                        } else {
+                            false
+                        }
+                    } else if (state.status == GameStatus.GAME_OVER) {
+                        val key = keyEvent.key
+                        if (key == "r" || key == "R") {
+                            state.eventSink(GameEvent.RetryGame)
                             true
                         } else {
                             false
@@ -102,7 +110,7 @@ fun GameScreenUi(state: GameState, modifier: androidx.compose.ui.Modifier) {
                 Text("Accuracy: ${state.accuracy.toInt()}%")
                 Text("Time: ${minutes}m ${seconds}s")
                 Text("")
-                Text("Press 'Enter' to Restart")
+                Text("Press 'Enter' for New Passage, 'R' to Retry")
             }
         }
     }
