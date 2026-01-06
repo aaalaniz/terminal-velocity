@@ -4,5 +4,5 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-## [~] Track: Improve Unit Test Coverage (80%)
-*Link: [./conductor/tracks/unit_test_coverage_20260104/](./conductor/tracks/unit_test_coverage_20260104/)*
+## [~] Track: GitHub Actions CI Pipeline
+*Link: [./conductor/tracks/github_actions_ci_20260104/](./conductor/tracks/github_actions_ci_20260104/)*
