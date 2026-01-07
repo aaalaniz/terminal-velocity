@@ -12,4 +12,10 @@ interface DataModule {
     fun provideWordRepository(): WordRepository {
         return InMemoryWordRepository()
     }
+
+    @Provides
+    @SingleIn(AppScope::class)
+    fun provideSettingsRepository(): SettingsRepository {
+        return InMemorySettingsRepository()
+    }
 }
