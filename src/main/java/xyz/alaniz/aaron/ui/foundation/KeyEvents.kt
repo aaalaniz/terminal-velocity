@@ -4,6 +4,7 @@ import com.jakewharton.mosaic.layout.KeyEvent
 
 data object KeyEvents {
     val Enter = KeyEvent("Enter")
+    val Space = KeyEvent(" ")
 
     val ArrowUp = KeyEvent("ArrowUp")
     val k = KeyEvent("k")
