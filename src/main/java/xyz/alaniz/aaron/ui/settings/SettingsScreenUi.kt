@@ -3,8 +3,11 @@ package xyz.alaniz.aaron.ui.settings
 import androidx.compose.runtime.Composable
 import com.jakewharton.mosaic.layout.onKeyEvent
 import com.jakewharton.mosaic.modifier.Modifier
-import com.jakewharton.mosaic.ui.Box
+import com.jakewharton.mosaic.layout.height
+import com.jakewharton.mosaic.ui.Column
+import com.jakewharton.mosaic.ui.Spacer
 import com.jakewharton.mosaic.ui.Text
+import com.jakewharton.mosaic.ui.TextStyle
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.zacsweers.metro.AppScope
 import xyz.alaniz.aaron.ui.foundation.KeyEvents.b
@@ -14,8 +17,10 @@ import xyz.alaniz.aaron.ui.foundation.KeyEvents.b
 fun SettingsScreenUi(settingsScreenState: SettingsScreenState, modifier: androidx.compose.ui.Modifier) {
     val modifier = Modifier
 
-    Box(modifier = modifier.onSettingsScreenKeyEvent(settingsScreenState)) {
+    Column(modifier = modifier.onSettingsScreenKeyEvent(settingsScreenState)) {
         Text("Settings screen")
+        Spacer(Modifier.height(1))
+        Text("[b] Back", textStyle = TextStyle.Dim)
     }
 }
 

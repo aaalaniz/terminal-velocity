@@ -24,7 +24,7 @@ fun TitleScreenUi(titleScreenState: TitleScreenState, modifier: androidx.compose
 
     Column(modifier = modifier.onTitleScreenKeyEvent(titleScreenState)) {
         Text(value = "Terminal Velocity")
-        Spacer(modifier.height(2))
+        Spacer(Modifier.height(2))
 
         titleScreenState.selectableOptions.forEachIndexed { index, option ->
             val underlineStyle = if (index == titleScreenState.selectedTitleScreenOptionIndex) {
@@ -37,6 +37,9 @@ fun TitleScreenUi(titleScreenState: TitleScreenState, modifier: androidx.compose
             val prefix = if (index == titleScreenState.selectedTitleScreenOptionIndex) "> " else "  "
             Text(value = prefix + option.label, underlineStyle = underlineStyle, textStyle = textStyle)
         }
+
+        Spacer(Modifier.height(2))
+        Text(value = "[↑/↓] Navigate  [Enter] Select", textStyle = TextStyle.Dim)
     }
 }
 
