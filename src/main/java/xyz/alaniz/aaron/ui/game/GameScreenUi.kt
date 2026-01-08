@@ -49,7 +49,7 @@ fun GameScreenUi(state: GameState, modifier: androidx.compose.ui.Modifier) {
                 else -> {
                     if (state.status == GameStatus.PLAYING) {
                         val key = keyEvent.key
-                        if (key != null && key.length == 1) {
+                        if (key.length == 1) {
                             state.eventSink(GameEvent.LetterTyped(key[0]))
                             true
                         } else {
@@ -69,7 +69,7 @@ fun GameScreenUi(state: GameState, modifier: androidx.compose.ui.Modifier) {
             }
         }) {
             if (state.status == GameStatus.WAITING) {
-                Text("Terminal Velocity - Passage Mode")
+                Text("Terminal Velocity")
                 Spacer(Modifier.height(1))
                 Footer(
                     options = listOf(
@@ -78,7 +78,7 @@ fun GameScreenUi(state: GameState, modifier: androidx.compose.ui.Modifier) {
                 )
             } else if (state.status == GameStatus.PLAYING) {
                 Text("WPM: ${state.wpm.toInt()} | Accuracy: ${state.accuracy.toInt()}%")
-                Text("")
+                Spacer(Modifier.height(1))
 
                 // Show a window of 5 lines
                 val windowSize = 5
@@ -108,6 +108,12 @@ fun GameScreenUi(state: GameState, modifier: androidx.compose.ui.Modifier) {
                         Text(state.passage[i], textStyle = TextStyle.Dim)
                     }
                 }
+                Spacer(Modifier.height(1))
+                Footer(
+                    options = listOf(
+                        FooterOption("Ctrl-C", "Quit"),
+                    )
+                )
             } else if (state.status == GameStatus.GAME_OVER) {
                 val totalSeconds = state.elapsedTime / 1000
                 val minutes = totalSeconds / 60
