@@ -14,6 +14,8 @@ import com.jakewharton.mosaic.ui.Spacer
 import com.jakewharton.mosaic.ui.TextStyle
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.zacsweers.metro.AppScope
+import xyz.alaniz.aaron.ui.foundation.Footer
+import xyz.alaniz.aaron.ui.foundation.FooterOption
 import xyz.alaniz.aaron.ui.foundation.KeyEvents.ArrowDown
 import xyz.alaniz.aaron.ui.foundation.KeyEvents.ArrowUp
 import xyz.alaniz.aaron.ui.foundation.KeyEvents.Enter
@@ -30,8 +32,6 @@ fun SettingsScreenUi(settingsScreenState: SettingsScreenState, modifier: android
     Box(modifier = modifier.onSettingsScreenKeyEvent(settingsScreenState)) {
         Column {
             Text("Settings")
-            Spacer(Modifier.height(1))
-            Text(value = "[↑/↓/j/k] Navigate  [Enter]  Select  [b] Back", textStyle = TextStyle.Dim)
             Spacer(Modifier.height(1))
 
             settingsScreenState.items.forEachIndexed { index, item ->
@@ -52,6 +52,14 @@ fun SettingsScreenUi(settingsScreenState: SettingsScreenState, modifier: android
                     )
                 }
             }
+            Spacer(Modifier.height(1))
+            Footer(
+                options = listOf(
+                    FooterOption("↑/↓/j/k", "Navigate"),
+                    FooterOption("Enter", "Select"),
+                    FooterOption("b", "Back"),
+                )
+            )
         }
     }
 }

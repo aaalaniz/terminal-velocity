@@ -11,6 +11,8 @@ import com.jakewharton.mosaic.ui.TextStyle
 import com.jakewharton.mosaic.ui.UnderlineStyle
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.zacsweers.metro.AppScope
+import xyz.alaniz.aaron.ui.foundation.Footer
+import xyz.alaniz.aaron.ui.foundation.FooterOption
 import xyz.alaniz.aaron.ui.foundation.KeyEvents.ArrowDown
 import xyz.alaniz.aaron.ui.foundation.KeyEvents.ArrowUp
 import xyz.alaniz.aaron.ui.foundation.KeyEvents.Enter
@@ -39,7 +41,12 @@ fun TitleScreenUi(titleScreenState: TitleScreenState, modifier: androidx.compose
         }
 
         Spacer(Modifier.height(2))
-        Text(value = "[↑/↓] Navigate  [Enter] Select", textStyle = TextStyle.Dim)
+        Footer(
+            options = listOf(
+                FooterOption("↑/↓", "Navigate"),
+                FooterOption("Enter", "Select"),
+            )
+        )
     }
 }
 
