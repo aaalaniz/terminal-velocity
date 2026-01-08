@@ -93,7 +93,12 @@ fun GameScreenUi(state: GameState, modifier: androidx.compose.ui.Modifier) {
                             val remaining = state.currentWord.drop(state.userInput.length)
                             if (remaining.isNotEmpty()) {
                                 if (state.isError) {
-                                    Text(remaining.take(1), color = Color.Red)
+                                    val errorChar = remaining.take(1)
+                                    if (errorChar == " ") {
+                                        Text("_", color = Color.Red)
+                                    } else {
+                                        Text(errorChar, color = Color.Red)
+                                    }
                                     Text(remaining.drop(1), textStyle = TextStyle.Dim)
                                 } else {
                                     Text(remaining, textStyle = TextStyle.Dim)
