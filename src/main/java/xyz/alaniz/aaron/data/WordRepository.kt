@@ -4,8 +4,10 @@ interface WordRepository {
     fun getPassage(): List<String>
 }
 
-class InMemoryWordRepository : WordRepository {
-    private val passages = listOf(
+class InMemoryWordRepository(
+    private val settingsRepository: SettingsRepository
+) : WordRepository {
+    private val defaultPassages = listOf(
         listOf(
             "Kotlin is a statically typed programming language that runs on the Java Virtual Machine.",
             "It also can be compiled to JavaScript source code or use the LLVM compiler infrastructure.",
@@ -189,6 +191,23 @@ class InMemoryWordRepository : WordRepository {
     )
 
     override fun getPassage(): List<String> {
-        return passages.random()
+        val settings = settingsRepository.settings.value
+        val possiblePassages = defaultPassages.toMutableList()
+
+        if (settings.codeSnippetSettings.enabled) {
+            val selectedLanguages = settings.codeSnippetSettings.selectedLanguages
+            val snippets = codeSnippets.filterKeys { it in selectedLanguages }
+                .values
+                .flatten()
+                .map { TextWrapper.wrapText(it) }
+            possiblePassages.addAll(snippets)
+        }
+
+        if (possiblePassages.isEmpty()) {
+            // Fallback if somehow empty, though defaultPassages is not empty
+            return defaultPassages.random()
+        }
+
+        return possiblePassages.random()
     }
 }
