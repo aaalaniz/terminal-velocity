@@ -16,6 +16,5 @@ data object KeyEvents {
     val r = KeyEvent("r")
     @get:JvmName("getCapitalR")
     val R = KeyEvent("R")
-    val Esc = KeyEvent("Escape")
     val CtrlC = KeyEvent("c", ctrl = true)
 }

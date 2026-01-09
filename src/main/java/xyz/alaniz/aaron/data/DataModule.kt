@@ -9,8 +9,8 @@ import dev.zacsweers.metro.SingleIn
 interface DataModule {
     @Provides
     @SingleIn(AppScope::class)
-    fun provideWordRepository(): WordRepository {
-        return InMemoryWordRepository()
+    fun provideWordRepository(settingsRepository: SettingsRepository): WordRepository {
+        return InMemoryWordRepository(settingsRepository)
     }
 
     @Provides

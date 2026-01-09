@@ -30,6 +30,5 @@ sealed interface GameEvent : CircuitUiEvent {
     data object StartGame : GameEvent
     data object RetryGame : GameEvent
     data object NewGame : GameEvent
-    data object ReturnToMenu : GameEvent
     data object ClearError : GameEvent
 }
