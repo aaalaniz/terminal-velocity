@@ -97,6 +97,9 @@ class GameScreenPresenter (
                             passage = repository.getPassage()
                             resetGameStats()
                         }
+                        GameEvent.ReturnToMenu -> {
+                            navigator.pop()
+                        }
                         is GameEvent.LetterTyped -> {
                             if (status == GameStatus.PLAYING) {
                                 val now = System.currentTimeMillis()
