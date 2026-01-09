@@ -18,7 +18,6 @@ import xyz.alaniz.aaron.ui.foundation.Footer
 import xyz.alaniz.aaron.ui.foundation.FooterOption
 import xyz.alaniz.aaron.ui.foundation.KeyEvents.CtrlC
 import xyz.alaniz.aaron.ui.foundation.KeyEvents.Enter
-import xyz.alaniz.aaron.ui.foundation.KeyEvents.Esc
 import xyz.alaniz.aaron.ui.foundation.KeyEvents.R
 import xyz.alaniz.aaron.ui.foundation.KeyEvents.r
 import kotlin.system.exitProcess
@@ -46,14 +45,6 @@ fun GameScreenUi(state: GameState, modifier: androidx.compose.ui.Modifier) {
                         state.eventSink(GameEvent.NewGame)
                     }
                     true
-                }
-                Esc -> {
-                    if (state.status == GameStatus.WAITING || state.status == GameStatus.GAME_OVER) {
-                        state.eventSink(GameEvent.ReturnToMenu)
-                        true
-                    } else {
-                        false
-                    }
                 }
                 else -> {
                     if (state.status == GameStatus.PLAYING) {
@@ -83,7 +74,6 @@ fun GameScreenUi(state: GameState, modifier: androidx.compose.ui.Modifier) {
                 Footer(
                     options = listOf(
                         FooterOption("Enter", "Start"),
-                        FooterOption("Esc", "Back"),
                     )
                 )
             } else if (state.status == GameStatus.PLAYING) {
@@ -144,7 +134,6 @@ fun GameScreenUi(state: GameState, modifier: androidx.compose.ui.Modifier) {
                     options = listOf(
                         FooterOption("Enter", "New Passage"),
                         FooterOption("R", "Retry"),
-                        FooterOption("Esc", "Menu"),
                     )
                 )
             }

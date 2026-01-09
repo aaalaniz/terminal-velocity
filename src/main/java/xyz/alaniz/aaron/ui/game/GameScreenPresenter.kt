@@ -97,9 +97,6 @@ class GameScreenPresenter (
                             passage = repository.getPassage()
                             resetGameStats()
                         }
-                        GameEvent.ReturnToMenu -> {
-                            navigator.pop()
-                        }
                         is GameEvent.LetterTyped -> {
                             if (status == GameStatus.PLAYING) {
                                 val now = System.currentTimeMillis()
@@ -121,7 +118,8 @@ class GameScreenPresenter (
                                             currentLineIndex++
                                             if (currentLineIndex < passage.size) {
                                                 currentWord = passage[currentLineIndex]
-                                                userInput = ""
+                                                val leadingWhitespace = currentWord.takeWhile { it.isWhitespace() }
+                                                userInput = leadingWhitespace
                                             } else {
                                                 status = GameStatus.GAME_OVER
                                             }

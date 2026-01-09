@@ -30,9 +30,6 @@ val codeSnippets = mapOf(
         }
         """.trimIndent(),
         """
-        import java.util.ArrayList;
-        import java.util.List;
-
         public class ListExample {
             public void demo() {
                 List<String> items = new ArrayList<>();
