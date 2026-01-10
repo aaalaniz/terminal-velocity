@@ -19,6 +19,7 @@ import xyz.alaniz.aaron.ui.foundation.FooterOption
 import xyz.alaniz.aaron.ui.foundation.KeyEvents.ArrowDown
 import xyz.alaniz.aaron.ui.foundation.KeyEvents.ArrowUp
 import xyz.alaniz.aaron.ui.foundation.KeyEvents.Enter
+import xyz.alaniz.aaron.ui.foundation.KeyEvents.Esc
 import xyz.alaniz.aaron.ui.foundation.KeyEvents.Space
 import xyz.alaniz.aaron.ui.foundation.KeyEvents.b
 import xyz.alaniz.aaron.ui.foundation.KeyEvents.j
@@ -55,9 +56,9 @@ fun SettingsScreenUi(settingsScreenState: SettingsScreenState, modifier: android
             Spacer(Modifier.height(1))
             Footer(
                 options = listOf(
-                    FooterOption("↑/↓/j/k", "Navigate"),
+                    FooterOption("↑/↓", "Navigate"),
                     FooterOption("Enter", "Select"),
-                    FooterOption("b", "Back"),
+                    FooterOption("Esc", "Back"),
                 )
             )
         }
@@ -67,7 +68,7 @@ fun SettingsScreenUi(settingsScreenState: SettingsScreenState, modifier: android
 private fun Modifier.onSettingsScreenKeyEvent(settingsScreenState: SettingsScreenState): Modifier {
     return this.onKeyEvent { keyEvent ->
         when (keyEvent) {
-            b -> {
+            Esc, b -> {
                 settingsScreenState.onEvent(SettingsScreenEvent.OnBack)
                 return@onKeyEvent true
             }
