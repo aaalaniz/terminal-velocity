@@ -17,7 +17,8 @@ fun Footer(options: List<FooterOption>, modifier: Modifier = Modifier) {
             if (index > 0) {
                  Spacer(Modifier.width(2))
             }
-            Text(value = "[${option.key}] ${option.description}", textStyle = TextStyle.Dim)
+            Text(value = "[${option.key}] ", textStyle = TextStyle.Bold)
+            Text(value = option.description, textStyle = TextStyle.Dim)
         }
     }
 }
