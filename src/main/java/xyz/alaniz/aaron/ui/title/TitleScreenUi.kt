@@ -16,6 +16,7 @@ import xyz.alaniz.aaron.ui.foundation.FooterOption
 import xyz.alaniz.aaron.ui.foundation.KeyEvents.ArrowDown
 import xyz.alaniz.aaron.ui.foundation.KeyEvents.ArrowUp
 import xyz.alaniz.aaron.ui.foundation.KeyEvents.Enter
+import xyz.alaniz.aaron.ui.foundation.KeyEvents.Esc
 import xyz.alaniz.aaron.ui.foundation.KeyEvents.j
 import xyz.alaniz.aaron.ui.foundation.KeyEvents.k
 
@@ -45,6 +46,7 @@ fun TitleScreenUi(titleScreenState: TitleScreenState, modifier: androidx.compose
             options = listOf(
                 FooterOption("↑/↓", "Navigate"),
                 FooterOption("Enter", "Select"),
+                FooterOption("Esc", "Quit"),
             )
         )
     }
@@ -66,6 +68,10 @@ private fun Modifier.onTitleScreenKeyEvent(titleScreenState: TitleScreenState): 
                     .selectableOptions[titleScreenState.selectedTitleScreenOptionIndex]
                 titleScreenState.onEvent(TitleScreenEvent.TitleOptionSelected(
                     titleScreenOption = selectedTitleOption))
+                return@onKeyEvent true
+            }
+            Esc -> {
+                titleScreenState.onEvent(TitleScreenEvent.Quit)
                 return@onKeyEvent true
             }
             else -> return@onKeyEvent false
