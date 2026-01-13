@@ -36,6 +36,8 @@ sealed interface TitleScreenEvent {
 
     data object NextTitleOption : TitleScreenEvent
 
+    data object Quit : TitleScreenEvent
+
     data class TitleOptionSelected(val titleScreenOption: TitleScreenOption) : TitleScreenEvent
 }
 
@@ -80,6 +82,7 @@ class TitleScreenPresenter (
                 TitleScreenEvent.PreviousTitleOption -> {
                     selectedTitleScreenOptionIndex = selectedTitleScreenOptionIndex.previousIndex()
                 }
+                TitleScreenEvent.Quit -> navigator.pop()
                 is TitleScreenEvent.TitleOptionSelected -> when (titleScreenEvent.titleScreenOption) {
                     is TitleScreenOption.StartGame -> navigator.goTo(GameScreen)
                     is TitleScreenOption.Settings -> navigator.goTo(SettingsScreen)
