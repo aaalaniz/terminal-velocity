@@ -48,12 +48,8 @@ fun GameScreenUi(state: GameState, modifier: androidx.compose.ui.Modifier) {
                     true
                 }
                 Esc -> {
-                    if (state.status == GameStatus.WAITING || state.status == GameStatus.GAME_OVER) {
-                        state.eventSink(GameEvent.ReturnToMenu)
-                        true
-                    } else {
-                        false
-                    }
+                    state.eventSink(GameEvent.ReturnToMenu)
+                    true
                 }
                 else -> {
                     if (state.status == GameStatus.PLAYING) {
@@ -126,6 +122,7 @@ fun GameScreenUi(state: GameState, modifier: androidx.compose.ui.Modifier) {
                 Spacer(Modifier.height(1))
                 Footer(
                     options = listOf(
+                        FooterOption("Esc", "Menu"),
                         FooterOption("Ctrl-C", "Quit"),
                     )
                 )
