@@ -122,6 +122,7 @@ fun GameScreenUi(state: GameState, modifier: androidx.compose.ui.Modifier) {
                 Spacer(Modifier.height(1))
                 Footer(
                     options = listOf(
+                        FooterOption("Esc", "Menu"),
                         FooterOption("Ctrl-C", "Quit"),
                         FooterOption("Esc", "Menu"),
                     )
