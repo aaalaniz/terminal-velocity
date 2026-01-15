@@ -42,7 +42,7 @@ fun SettingsScreenUi(settingsScreenState: SettingsScreenState, modifier: android
                 val indent = "  ".repeat(item.indentLevel)
 
                 Row {
-                    val color = if (isFocused) Color.Green else Color.Unspecified
+                    val color = Color.Unspecified
                     val style = if (isFocused) TextStyle.Bold else TextStyle.Dim
 
                     Text(prefix, color = color, textStyle = style)
