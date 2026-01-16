@@ -44,10 +44,11 @@ fun SettingsScreenUi(settingsScreenState: SettingsScreenState, modifier: android
                 Row {
                     val color = Color.Unspecified
                     val style = if (isFocused) TextStyle.Bold else TextStyle.Dim
+                    val checkboxColor = if (item.isChecked) Color.Green else Color.Unspecified
 
                     Text(prefix, color = color, textStyle = style)
                     Text(indent)
-                    Text(checkbox, color = color, textStyle = style)
+                    Text(checkbox, color = checkboxColor, textStyle = style)
                     Text(" ")
                     Text(
                         item.label,
