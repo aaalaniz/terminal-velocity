@@ -12,6 +12,7 @@ import com.jakewharton.mosaic.ui.Text
 import com.jakewharton.mosaic.ui.Color
 import com.jakewharton.mosaic.ui.Spacer
 import com.jakewharton.mosaic.ui.TextStyle
+import com.jakewharton.mosaic.ui.UnderlineStyle
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.zacsweers.metro.AppScope
 import xyz.alaniz.aaron.ui.foundation.Footer
@@ -44,16 +45,18 @@ fun SettingsScreenUi(settingsScreenState: SettingsScreenState, modifier: android
                 Row {
                     val color = Color.Unspecified
                     val style = if (isFocused) TextStyle.Bold else TextStyle.Dim
+                    val underline = if (isFocused) UnderlineStyle.Straight else UnderlineStyle.None
                     val checkboxColor = if (item.isChecked) Color.Green else Color.Unspecified
 
-                    Text(prefix, color = color, textStyle = style)
+                    Text(prefix, color = color, textStyle = style, underlineStyle = underline)
                     Text(indent)
-                    Text(checkbox, color = checkboxColor, textStyle = style)
-                    Text(" ")
+                    Text(checkbox, color = checkboxColor, textStyle = style, underlineStyle = underline)
+                    Text(" ", underlineStyle = underline)
                     Text(
                         item.label,
                         color = color,
-                        textStyle = style
+                        textStyle = style,
+                        underlineStyle = underline
                     )
                 }
             }
