@@ -1,4 +1,5 @@
 @file:JvmName("Main")
+
 package xyz.alaniz.aaron
 
 import androidx.compose.runtime.LaunchedEffect
@@ -14,16 +15,14 @@ import xyz.alaniz.aaron.di.ApplicationGraph
 import xyz.alaniz.aaron.ui.title.TitleScreen
 
 suspend fun main() {
-    runMosaic {
-        val scope = rememberCoroutineScope()
-        var exit by remember { mutableStateOf(false) }
-        val applicationGraph = createGraphFactory<ApplicationGraph.Factory>().create(appScope = scope)
-        CircuitApp(initialScreen = TitleScreen, circuit = applicationGraph.circuit) {
-            exit = true
-        }
-        // Mosaic exits if no effects are running, so we use this to keep it alive until the app exits
-        if (!exit) {
-            LaunchedEffect(Unit) { awaitCancellation() }
-        }
+  runMosaic {
+    val scope = rememberCoroutineScope()
+    var exit by remember { mutableStateOf(false) }
+    val applicationGraph = createGraphFactory<ApplicationGraph.Factory>().create(appScope = scope)
+    CircuitApp(initialScreen = TitleScreen, circuit = applicationGraph.circuit) { exit = true }
+    // Mosaic exits if no effects are running, so we use this to keep it alive until the app exits
+    if (!exit) {
+      LaunchedEffect(Unit) { awaitCancellation() }
     }
+  }
 }

@@ -23,58 +23,63 @@ import xyz.alaniz.aaron.ui.foundation.KeyEvents.k
 @Composable
 @CircuitInject(screen = TitleScreen::class, scope = AppScope::class)
 fun TitleScreenUi(titleScreenState: TitleScreenState, modifier: androidx.compose.ui.Modifier) {
-    val modifier = Modifier
+  val modifier = Modifier
 
-    Column(modifier = modifier.onTitleScreenKeyEvent(titleScreenState)) {
-        Text(value = "Terminal Velocity")
-        Spacer(Modifier.height(2))
+  Column(modifier = modifier.onTitleScreenKeyEvent(titleScreenState)) {
+    Text(value = "Terminal Velocity")
+    Spacer(Modifier.height(2))
 
-        titleScreenState.selectableOptions.forEachIndexed { index, option ->
-            val underlineStyle = if (index == titleScreenState.selectedTitleScreenOptionIndex) {
-                UnderlineStyle.Straight
-            } else {
-                UnderlineStyle.None
-            }
-            val textStyle = if (index != titleScreenState.selectedTitleScreenOptionIndex) TextStyle.Dim else TextStyle.Unspecified
+    titleScreenState.selectableOptions.forEachIndexed { index, option ->
+      val underlineStyle =
+          if (index == titleScreenState.selectedTitleScreenOptionIndex) {
+            UnderlineStyle.Straight
+          } else {
+            UnderlineStyle.None
+          }
+      val textStyle =
+          if (index != titleScreenState.selectedTitleScreenOptionIndex) TextStyle.Dim
+          else TextStyle.Unspecified
 
-            val prefix = if (index == titleScreenState.selectedTitleScreenOptionIndex) "> " else "  "
-            Text(value = prefix + option.label, underlineStyle = underlineStyle, textStyle = textStyle)
-        }
+      val prefix = if (index == titleScreenState.selectedTitleScreenOptionIndex) "> " else "  "
+      Text(value = prefix + option.label, underlineStyle = underlineStyle, textStyle = textStyle)
+    }
 
-        Spacer(Modifier.height(2))
-        Footer(
-            options = listOf(
+    Spacer(Modifier.height(2))
+    Footer(
+        options =
+            listOf(
                 FooterOption("↑/↓", "Navigate"),
                 FooterOption("Enter", "Select"),
                 FooterOption("Esc", "Quit"),
-            )
-        )
-    }
+            ))
+  }
 }
 
 private fun Modifier.onTitleScreenKeyEvent(titleScreenState: TitleScreenState): Modifier {
-    return this.onKeyEvent { keyEvent ->
-        when (keyEvent) {
-            ArrowDown, j -> {
-                titleScreenState.onEvent(TitleScreenEvent.NextTitleOption)
-                return@onKeyEvent true
-            }
-            ArrowUp, k -> {
-                titleScreenState.onEvent(TitleScreenEvent.PreviousTitleOption)
-                return@onKeyEvent true
-            }
-            Enter -> {
-                val selectedTitleOption = titleScreenState
-                    .selectableOptions[titleScreenState.selectedTitleScreenOptionIndex]
-                titleScreenState.onEvent(TitleScreenEvent.TitleOptionSelected(
-                    titleScreenOption = selectedTitleOption))
-                return@onKeyEvent true
-            }
-            Esc -> {
-                titleScreenState.onEvent(TitleScreenEvent.Quit)
-                return@onKeyEvent true
-            }
-            else -> return@onKeyEvent false
-        }
+  return this.onKeyEvent { keyEvent ->
+    when (keyEvent) {
+      ArrowDown,
+      j -> {
+        titleScreenState.onEvent(TitleScreenEvent.NextTitleOption)
+        return@onKeyEvent true
+      }
+      ArrowUp,
+      k -> {
+        titleScreenState.onEvent(TitleScreenEvent.PreviousTitleOption)
+        return@onKeyEvent true
+      }
+      Enter -> {
+        val selectedTitleOption =
+            titleScreenState.selectableOptions[titleScreenState.selectedTitleScreenOptionIndex]
+        titleScreenState.onEvent(
+            TitleScreenEvent.TitleOptionSelected(titleScreenOption = selectedTitleOption))
+        return@onKeyEvent true
+      }
+      Esc -> {
+        titleScreenState.onEvent(TitleScreenEvent.Quit)
+        return@onKeyEvent true
+      }
+      else -> return@onKeyEvent false
     }
+  }
 }

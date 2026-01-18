@@ -29,6 +29,18 @@ This project is built in Kotlin using:
   ```bash
   ./gradlew test
   ```
+- **Check Formatting:**
+  ```bash
+  ./gradlew ktfmtCheck
+  ```
+- **Apply Formatting:**
+  ```bash
+  ./gradlew ktfmtFormat
+  ```
+- **Install Pre-commit Hook:**
+  ```bash
+  ./scripts/install-git-hooks.sh
+  ```
 - **Continuous Integration:** See [CI.md](./CI.md) for details on our automated pipeline.
 
 
