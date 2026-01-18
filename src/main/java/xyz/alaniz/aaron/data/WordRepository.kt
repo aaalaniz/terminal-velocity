@@ -1,6 +1,8 @@
 package xyz.alaniz.aaron.data
 
 import xyz.alaniz.aaron.ui.foundation.TextWrapper
+import java.security.SecureRandom
+import kotlin.random.asKotlinRandom
 
 interface WordRepository {
     fun getPassage(): List<String>
@@ -9,6 +11,8 @@ interface WordRepository {
 class InMemoryWordRepository(
     private val settingsRepository: SettingsRepository
 ) : WordRepository {
+
+    private val secureRandom = SecureRandom().asKotlinRandom()
 
     private val prosePassages = listOf(
         """
@@ -172,7 +176,7 @@ class InMemoryWordRepository(
 
         if (availablePassages.isEmpty()) return emptyList()
 
-        val rawPassage = availablePassages.random()
+        val rawPassage = availablePassages.random(secureRandom)
         return TextWrapper.wrap(rawPassage)
     }
 }
