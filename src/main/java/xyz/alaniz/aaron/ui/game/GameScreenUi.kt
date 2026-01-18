@@ -77,10 +77,7 @@ fun GameScreenUi(state: GameState, modifier: androidx.compose.ui.Modifier) {
                 Text("Terminal Velocity")
                 Spacer(Modifier.height(1))
                 Footer(
-                    options = listOf(
-                        FooterOption("Enter", "Start"),
-                        FooterOption("Esc", "Back"),
-                    )
+                    options = waitingFooterOptions
                 )
             } else if (state.status == GameStatus.PLAYING) {
                 Text("WPM: ${state.wpm.toInt()} | Accuracy: ${state.accuracy.toInt()}%")
@@ -121,10 +118,7 @@ fun GameScreenUi(state: GameState, modifier: androidx.compose.ui.Modifier) {
                 }
                 Spacer(Modifier.height(1))
                 Footer(
-                    options = listOf(
-                        FooterOption("Esc", "Menu"),
-                        FooterOption("Ctrl-C", "Quit"),
-                    )
+                    options = playingFooterOptions
                 )
             } else if (state.status == GameStatus.GAME_OVER) {
                 val totalSeconds = state.elapsedTime / 1000
@@ -138,13 +132,26 @@ fun GameScreenUi(state: GameState, modifier: androidx.compose.ui.Modifier) {
                 Text("Time: ${minutes}m ${seconds}s")
                 Spacer(Modifier.height(1))
                 Footer(
-                    options = listOf(
-                        FooterOption("Enter", "New Passage"),
-                        FooterOption("R", "Retry"),
-                        FooterOption("Esc", "Menu"),
-                    )
+                    options = gameOverFooterOptions
                 )
             }
         }
     }
 }
+
+// Extracted to avoid reallocation on every recomposition/keystroke
+private val waitingFooterOptions = listOf(
+    FooterOption("Enter", "Start"),
+    FooterOption("Esc", "Back"),
+)
+
+private val playingFooterOptions = listOf(
+    FooterOption("Esc", "Menu"),
+    FooterOption("Ctrl-C", "Quit"),
+)
+
+private val gameOverFooterOptions = listOf(
+    FooterOption("Enter", "New Passage"),
+    FooterOption("R", "Retry"),
+    FooterOption("Esc", "Menu"),
+)
