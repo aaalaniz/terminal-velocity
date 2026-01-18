@@ -47,3 +47,9 @@
 - `src/main/java/xyz/alaniz/aaron/main.kt`: Application entry point.
 - `src/main/java/xyz/alaniz/aaron/ui/`: Contains feature-based UI packages (e.g., `game`, `settings`, `title`).
 - `build.gradle.kts`: Project build configuration. Dependencies are managed via version catalog (`gradle/libs.versions.toml`).
+
+## Code Style & Formatting
+- This project uses `ktfmt` for code formatting.
+- **Before submitting changes:**
+  - Run `./gradlew ktfmtFormat` to ensure all code is properly formatted.
+  - Verify with `./gradlew ktfmtCheck`.

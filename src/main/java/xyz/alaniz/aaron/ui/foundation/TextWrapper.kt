@@ -1,32 +1,32 @@
 package xyz.alaniz.aaron.ui.foundation
 
 object TextWrapper {
-    fun wrap(text: String, width: Int = 80): List<String> {
-        val lines = mutableListOf<String>()
-        text.lines().forEach { line ->
-            if (line.length <= width) {
-                lines.add(line)
+  fun wrap(text: String, width: Int = 80): List<String> {
+    val lines = mutableListOf<String>()
+    text.lines().forEach { line ->
+      if (line.length <= width) {
+        lines.add(line)
+      } else {
+        var remaining = line
+        while (remaining.isNotEmpty()) {
+          if (remaining.length <= width) {
+            lines.add(remaining)
+            remaining = ""
+          } else {
+            var breakPoint = remaining.lastIndexOf(' ', width)
+            if (breakPoint == -1) {
+              // Force break
+              breakPoint = width
+              lines.add(remaining.take(breakPoint))
+              remaining = remaining.drop(breakPoint)
             } else {
-                var remaining = line
-                while (remaining.isNotEmpty()) {
-                    if (remaining.length <= width) {
-                        lines.add(remaining)
-                        remaining = ""
-                    } else {
-                        var breakPoint = remaining.lastIndexOf(' ', width)
-                        if (breakPoint == -1) {
-                            // Force break
-                            breakPoint = width
-                            lines.add(remaining.take(breakPoint))
-                            remaining = remaining.drop(breakPoint)
-                        } else {
-                            lines.add(remaining.take(breakPoint))
-                            remaining = remaining.drop(breakPoint).trimStart()
-                        }
-                    }
-                }
+              lines.add(remaining.take(breakPoint))
+              remaining = remaining.drop(breakPoint).trimStart()
             }
+          }
         }
-        return lines
+      }
     }
+    return lines
+  }
 }

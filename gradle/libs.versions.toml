@@ -8,6 +8,7 @@ compose-jb = "1.9.3"
 mosaic = "0.18.0"
 junit = "5.10.1"
 coroutines = "1.9.0"
+ktfmt = "0.25.0"
 
 [libraries]
 circuit-codegen = { module = "com.slack.circuit:circuit-codegen", version.ref = "circuit" }
@@ -27,3 +28,4 @@ kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 metro = { id = "dev.zacsweers.metro", version.ref = "metro" }
+ktfmt = { id = "com.ncorti.ktfmt.gradle", version.ref = "ktfmt" }

@@ -7,15 +7,15 @@ import dev.zacsweers.metro.SingleIn
 
 @ContributesTo(AppScope::class)
 interface DataModule {
-    @Provides
-    @SingleIn(AppScope::class)
-    fun provideWordRepository(settingsRepository: SettingsRepository): WordRepository {
-        return InMemoryWordRepository(settingsRepository)
-    }
+  @Provides
+  @SingleIn(AppScope::class)
+  fun provideWordRepository(settingsRepository: SettingsRepository): WordRepository {
+    return InMemoryWordRepository(settingsRepository)
+  }
 
-    @Provides
-    @SingleIn(AppScope::class)
-    fun provideSettingsRepository(): SettingsRepository {
-        return InMemorySettingsRepository()
-    }
+  @Provides
+  @SingleIn(AppScope::class)
+  fun provideSettingsRepository(): SettingsRepository {
+    return InMemorySettingsRepository()
+  }
 }

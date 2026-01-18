@@ -11,19 +11,19 @@ import dev.zacsweers.metro.SingleIn
 
 @ContributesTo(AppScope::class)
 interface CircuitProvider {
-    val circuit: Circuit
+  val circuit: Circuit
 
-    @Provides
-    @SingleIn(AppScope::class)
-    fun provideCircuit(
-        presenterFactories: Set<Presenter.Factory>,
-        uiFactories: Set<Ui.Factory>,
-        navDecoration: NavDecoration
-    ): Circuit {
-        return Circuit.Builder()
-            .addPresenterFactories(presenterFactories)
-            .addUiFactories(uiFactories)
-            .setDefaultNavDecoration(navDecoration)
-            .build()
-    }
+  @Provides
+  @SingleIn(AppScope::class)
+  fun provideCircuit(
+      presenterFactories: Set<Presenter.Factory>,
+      uiFactories: Set<Ui.Factory>,
+      navDecoration: NavDecoration
+  ): Circuit {
+    return Circuit.Builder()
+        .addPresenterFactories(presenterFactories)
+        .addUiFactories(uiFactories)
+        .setDefaultNavDecoration(navDecoration)
+        .build()
+  }
 }

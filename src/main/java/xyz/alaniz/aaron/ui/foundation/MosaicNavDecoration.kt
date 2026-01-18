@@ -14,12 +14,12 @@ import dev.zacsweers.metro.SingleIn
 @ContributesBinding(AppScope::class)
 @SingleIn(AppScope::class)
 class MosaicNavDecoration : NavDecoration {
-    @Composable
-    override fun <T : NavArgument> DecoratedContent(
-        args: List<T>,
-        modifier: androidx.compose.ui.Modifier,
-        content: @Composable (T) -> Unit,
-    ) {
-        Box(modifier = Modifier) { content(args.first()) }
-    }
+  @Composable
+  override fun <T : NavArgument> DecoratedContent(
+      args: List<T>,
+      modifier: androidx.compose.ui.Modifier,
+      content: @Composable (T) -> Unit,
+  ) {
+    Box(modifier = Modifier) { content(args.first()) }
+  }
 }
