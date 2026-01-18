@@ -124,9 +124,6 @@ class InMemoryWordRepository(private val settingsRepository: SettingsRepository)
                   """
                       .trimIndent(),
                   """
-                  import java.util.List;
-                  import java.util.ArrayList;
-
                   public class Example {
                       public void demo() {
                           List<String> list = new ArrayList<>();
