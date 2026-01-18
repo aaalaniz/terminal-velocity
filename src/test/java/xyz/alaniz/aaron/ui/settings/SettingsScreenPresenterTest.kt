@@ -78,20 +78,52 @@ class SettingsScreenPresenterTest {
 
     presenter.test {
       val state = awaitItem()
-      // Assume Kotlin is at index 1 (after "Enable Code Snippets")
-      state.onEvent(SettingsScreenEvent.MoveFocusDown)
+      // Index 0: Enable Code Snippets
+      // Index 1: Only Code Snippets
+      // Index 2: Kotlin
+      state.onEvent(SettingsScreenEvent.MoveFocusDown) // Focus 1
+      awaitItem() // Consume state update
+      state.onEvent(SettingsScreenEvent.MoveFocusDown) // Focus 2
+
+      val stateFocused = awaitItem()
+      assertEquals(2, stateFocused.focusedIndex)
+      assertEquals("Kotlin", stateFocused.items[2].label)
+      assertFalse(stateFocused.items[2].isChecked)
+
+      stateFocused.onEvent(SettingsScreenEvent.ToggleCurrentItem)
+
+      val stateToggled = awaitItem()
+      assertTrue(stateToggled.items[2].isChecked)
+      assertTrue(
+          repository.settings.value.codeSnippetSettings.selectedLanguages.contains(Language.KOTLIN))
+    }
+  }
+
+  @Test
+  fun `toggling only code snippets works`() = runTest {
+    val repository = InMemorySettingsRepository()
+    repository.updateSettings {
+      it.copy(codeSnippetSettings = it.codeSnippetSettings.copy(enabled = true))
+    }
+
+    val presenter = SettingsScreenPresenter(FakeNavigator(SettingsScreen), repository)
+
+    presenter.test {
+      val state = awaitItem()
+      // Index 0: Enable Code Snippets
+      // Index 1: Only Code Snippets
+      state.onEvent(SettingsScreenEvent.MoveFocusDown) // Focus 1
 
       val stateFocused = awaitItem()
       assertEquals(1, stateFocused.focusedIndex)
-      assertEquals("Kotlin", stateFocused.items[1].label)
+      assertEquals("Only Code Snippets", stateFocused.items[1].label)
       assertFalse(stateFocused.items[1].isChecked)
 
       stateFocused.onEvent(SettingsScreenEvent.ToggleCurrentItem)
 
       val stateToggled = awaitItem()
       assertTrue(stateToggled.items[1].isChecked)
-      assertTrue(
-          repository.settings.value.codeSnippetSettings.selectedLanguages.contains(Language.KOTLIN))
+      assertTrue(repository.settings.value.codeSnippetSettings.onlyCodeSnippets)
     }
   }
 }

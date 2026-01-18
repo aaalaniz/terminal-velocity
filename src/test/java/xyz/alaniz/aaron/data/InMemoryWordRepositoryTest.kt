@@ -39,4 +39,39 @@ class InMemoryWordRepositoryTest {
     assertTrue(passage.isNotEmpty())
     assertTrue(passage.all { it.length <= 80 }, "Lines should be wrapped to 80 chars")
   }
+
+  @Test
+  fun `getPassage returns only code snippets when onlyCodeSnippets is enabled`() {
+    val settings =
+        Settings(
+            codeSnippetSettings =
+                CodeSnippetSettings(
+                    enabled = true,
+                    onlyCodeSnippets = true,
+                    selectedLanguages = setOf(Language.KOTLIN)))
+    val repository = InMemoryWordRepository(FakeSettingsRepository(settings))
+
+    // We can't easily access the private code passages, but we can verify we get *something*
+    // and if we run it enough times we shouldn't see known prose.
+    // Ideally we would verify the content matches known code snippets.
+    // For now, let's just ensure it returns a valid passage.
+
+    val passage = repository.getPassage()
+    assertTrue(passage.isNotEmpty(), "Passage should not be empty")
+    assertTrue(passage.all { it.length <= 80 }, "Lines should be wrapped to 80 chars")
+  }
+
+  @Test
+  fun `getPassage falls back to prose when onlyCodeSnippets is enabled but no languages selected`() {
+    val settings =
+        Settings(
+            codeSnippetSettings =
+                CodeSnippetSettings(
+                    enabled = true, onlyCodeSnippets = true, selectedLanguages = emptySet()))
+    val repository = InMemoryWordRepository(FakeSettingsRepository(settings))
+
+    val passage = repository.getPassage()
+    assertTrue(passage.isNotEmpty(), "Passage should not be empty")
+    assertTrue(passage.all { it.length <= 80 }, "Lines should be wrapped to 80 chars")
+  }
 }

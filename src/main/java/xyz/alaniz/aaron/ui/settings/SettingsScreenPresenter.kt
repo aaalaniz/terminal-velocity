@@ -70,6 +70,14 @@ class SettingsScreenPresenter(
               indentLevel = 0))
 
       if (settings.codeSnippetSettings.enabled) {
+        add(
+            SettingsUiItem(
+                id = "code_snippets_only",
+                label = "Only Code Snippets",
+                isChecked = settings.codeSnippetSettings.onlyCodeSnippets,
+                isEnabled = true,
+                indentLevel = 1))
+
         Language.entries.forEach { language ->
           add(
               SettingsUiItem(
@@ -104,6 +112,13 @@ class SettingsScreenPresenter(
               old.copy(
                   codeSnippetSettings =
                       old.codeSnippetSettings.copy(enabled = !old.codeSnippetSettings.enabled))
+            }
+          } else if (currentItem.id == "code_snippets_only") {
+            settingsRepository.updateSettings { old ->
+              old.copy(
+                  codeSnippetSettings =
+                      old.codeSnippetSettings.copy(
+                          onlyCodeSnippets = !old.codeSnippetSettings.onlyCodeSnippets))
             }
           } else if (currentItem.id.startsWith("language_")) {
             val languageName = currentItem.id.removePrefix("language_")

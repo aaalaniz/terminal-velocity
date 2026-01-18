@@ -194,7 +194,9 @@ class InMemoryWordRepository(private val settingsRepository: SettingsRepository)
     val settings = settingsRepository.settings.value
     val availablePassages = mutableListOf<String>()
 
-    availablePassages.addAll(prosePassages)
+    if (!settings.codeSnippetSettings.enabled || !settings.codeSnippetSettings.onlyCodeSnippets) {
+      availablePassages.addAll(prosePassages)
+    }
 
     if (settings.codeSnippetSettings.enabled) {
       settings.codeSnippetSettings.selectedLanguages.forEach { language ->
@@ -202,7 +204,11 @@ class InMemoryWordRepository(private val settingsRepository: SettingsRepository)
       }
     }
 
-    if (availablePassages.isEmpty()) return emptyList()
+    if (availablePassages.isEmpty()) {
+      // Fallback to prose if no passages available (e.g. only code enabled but no languages
+      // selected)
+      availablePassages.addAll(prosePassages)
+    }
 
     val rawPassage = availablePassages.random(secureRandom)
     return TextWrapper.wrap(rawPassage)

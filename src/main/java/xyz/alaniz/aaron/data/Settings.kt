@@ -10,6 +10,7 @@ enum class Language(val displayName: String) {
 
 data class CodeSnippetSettings(
     val enabled: Boolean = false,
+    val onlyCodeSnippets: Boolean = false,
     val selectedLanguages: Set<Language> = emptySet()
 )
 
