@@ -1,10 +1,15 @@
 package xyz.alaniz.aaron.data
 
+import java.security.SecureRandom
+import kotlin.random.asKotlinRandom
+
 interface WordRepository {
     fun getPassage(): List<String>
 }
 
 class InMemoryWordRepository : WordRepository {
+    private val secureRandom = SecureRandom().asKotlinRandom()
+
     private val passages = listOf(
         listOf(
             "Kotlin is a statically typed programming language that runs on the Java Virtual Machine.",
@@ -189,6 +194,6 @@ class InMemoryWordRepository : WordRepository {
     )
 
     override fun getPassage(): List<String> {
-        return passages.random()
+        return passages.random(secureRandom)
     }
 }
