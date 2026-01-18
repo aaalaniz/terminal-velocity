@@ -111,7 +111,7 @@ fun GameScreenUi(state: GameState, modifier: androidx.compose.ui.Modifier) {
                 }
               } else if (i < state.currentLineIndex) {
                 // Completed lines
-                Text(state.passage[i], textStyle = TextStyle.Dim)
+                Text(state.passage[i])
               } else {
                 // Future lines
                 Text(state.passage[i], textStyle = TextStyle.Dim)
