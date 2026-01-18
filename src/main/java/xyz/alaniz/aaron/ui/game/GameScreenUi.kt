@@ -80,7 +80,7 @@ fun GameScreenUi(state: GameState, modifier: androidx.compose.ui.Modifier) {
                     options = waitingFooterOptions
                 )
             } else if (state.status == GameStatus.PLAYING) {
-                Text("WPM: ${state.wpm.toInt()} | Accuracy: ${state.accuracy.toInt()}%")
+                Text("WPM: ${state.wpm.toInt()} | Accuracy: ${state.accuracy.toInt()}% | Progress: ${state.currentLineIndex + 1}/${state.passage.size}")
                 Spacer(Modifier.height(1))
 
                 // Show a window of 5 lines
@@ -110,7 +110,7 @@ fun GameScreenUi(state: GameState, modifier: androidx.compose.ui.Modifier) {
                         }
                     } else if (i < state.currentLineIndex) {
                         // Completed lines
-                        Text(state.passage[i])
+                        Text(state.passage[i], textStyle = TextStyle.Dim)
                     } else {
                         // Future lines
                         Text(state.passage[i], textStyle = TextStyle.Dim)
