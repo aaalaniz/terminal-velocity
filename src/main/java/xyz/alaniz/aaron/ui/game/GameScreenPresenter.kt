@@ -62,7 +62,7 @@ class GameScreenPresenter (
             status = GameStatus.PLAYING
             currentLineIndex = 0
             currentWord = passage.getOrElse(0) { "" }
-            userInput = ""
+            userInput = currentWord.takeWhile { it.isWhitespace() }
             isError = false
             score = 0
             totalCorrectChars = 0
@@ -121,7 +121,7 @@ class GameScreenPresenter (
                                             currentLineIndex++
                                             if (currentLineIndex < passage.size) {
                                                 currentWord = passage[currentLineIndex]
-                                                userInput = ""
+                                                userInput = currentWord.takeWhile { it.isWhitespace() }
                                             } else {
                                                 status = GameStatus.GAME_OVER
                                             }
