@@ -11,3 +11,7 @@
 ## 2024-05-24 - Color for State Indication
 **Learning:** In monochromatic or limited-color terminal UIs, relying solely on ascii characters like `[x]` vs `[ ]` for state can be visually flat.
 **Action:** Use distinct colors (like Green for active/checked) to reinforce state, allowing users to scan for "Active" items without parsing individual characters.
+
+## 2024-10-26 - Progress Feedback in Terminal Games
+**Learning:** Terminal interfaces often lack scrollbars or visual cues for content length. Users can feel lost without knowing how much is left.
+**Action:** Add explicit progress indicators (e.g., "Step 3/10" or "Progress: 50%") to multi-step processes to set expectations and reduce anxiety.
