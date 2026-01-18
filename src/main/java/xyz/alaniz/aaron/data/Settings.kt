@@ -8,9 +8,13 @@ enum class Language(val displayName: String) {
   JAVASCRIPT("JavaScript")
 }
 
-data class CodeSnippetSettings(
-    val enabled: Boolean = false,
-    val selectedLanguages: Set<Language> = emptySet()
-)
+sealed interface CodeSnippetSettings {
+  data object Disabled : CodeSnippetSettings
 
-data class Settings(val codeSnippetSettings: CodeSnippetSettings = CodeSnippetSettings())
+  data class Enabled(
+      val onlyCodeSnippets: Boolean = false,
+      val selectedLanguages: Set<Language> = emptySet()
+  ) : CodeSnippetSettings
+}
+
+data class Settings(val codeSnippetSettings: CodeSnippetSettings = CodeSnippetSettings.Disabled)

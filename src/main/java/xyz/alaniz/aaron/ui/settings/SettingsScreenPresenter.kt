@@ -14,6 +14,7 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
+import xyz.alaniz.aaron.data.CodeSnippetSettings
 import xyz.alaniz.aaron.data.Language
 import xyz.alaniz.aaron.data.SettingsRepository
 
@@ -58,6 +59,9 @@ class SettingsScreenPresenter(
     val settings by settingsRepository.settings.collectAsState()
     var focusedIndex by remember { mutableIntStateOf(0) }
 
+    val snippetSettings = settings.codeSnippetSettings
+    val isSnippetsEnabled = snippetSettings is CodeSnippetSettings.Enabled
+
     // Construct the list of UI items based on current settings
     val items = buildList {
       // Group: Code Snippets
@@ -65,17 +69,25 @@ class SettingsScreenPresenter(
           SettingsUiItem(
               id = "code_snippets_enabled",
               label = "Enable Code Snippets",
-              isChecked = settings.codeSnippetSettings.enabled,
+              isChecked = isSnippetsEnabled,
               isEnabled = true,
               indentLevel = 0))
 
-      if (settings.codeSnippetSettings.enabled) {
+      if (snippetSettings is CodeSnippetSettings.Enabled) {
+        add(
+            SettingsUiItem(
+                id = "code_snippets_only",
+                label = "Only Code Snippets",
+                isChecked = snippetSettings.onlyCodeSnippets,
+                isEnabled = true,
+                indentLevel = 1))
+
         Language.entries.forEach { language ->
           add(
               SettingsUiItem(
                   id = "language_${language.name}",
                   label = language.displayName,
-                  isChecked = settings.codeSnippetSettings.selectedLanguages.contains(language),
+                  isChecked = snippetSettings.selectedLanguages.contains(language),
                   isEnabled = true,
                   indentLevel = 1))
         }
@@ -101,24 +113,44 @@ class SettingsScreenPresenter(
 
           if (currentItem.id == "code_snippets_enabled") {
             settingsRepository.updateSettings { old ->
-              old.copy(
-                  codeSnippetSettings =
-                      old.codeSnippetSettings.copy(enabled = !old.codeSnippetSettings.enabled))
+              val newSettings =
+                  if (old.codeSnippetSettings is CodeSnippetSettings.Enabled) {
+                    CodeSnippetSettings.Disabled
+                  } else {
+                    CodeSnippetSettings.Enabled()
+                  }
+              old.copy(codeSnippetSettings = newSettings)
+            }
+          } else if (currentItem.id == "code_snippets_only") {
+            settingsRepository.updateSettings { old ->
+              val currentSettings = old.codeSnippetSettings
+              if (currentSettings is CodeSnippetSettings.Enabled) {
+                old.copy(
+                    codeSnippetSettings =
+                        currentSettings.copy(onlyCodeSnippets = !currentSettings.onlyCodeSnippets))
+              } else {
+                old
+              }
             }
           } else if (currentItem.id.startsWith("language_")) {
             val languageName = currentItem.id.removePrefix("language_")
             val language = Language.entries.find { it.name == languageName }
             if (language != null) {
               settingsRepository.updateSettings { old ->
-                val currentLanguages = old.codeSnippetSettings.selectedLanguages.toMutableSet()
-                if (currentLanguages.contains(language)) {
-                  currentLanguages.remove(language)
+                val currentSettings = old.codeSnippetSettings
+                if (currentSettings is CodeSnippetSettings.Enabled) {
+                  val currentLanguages = currentSettings.selectedLanguages.toMutableSet()
+                  if (currentLanguages.contains(language)) {
+                    currentLanguages.remove(language)
+                  } else {
+                    currentLanguages.add(language)
+                  }
+                  old.copy(
+                      codeSnippetSettings =
+                          currentSettings.copy(selectedLanguages = currentLanguages))
                 } else {
-                  currentLanguages.add(language)
+                  old
                 }
-                old.copy(
-                    codeSnippetSettings =
-                        old.codeSnippetSettings.copy(selectedLanguages = currentLanguages))
               }
             }
           }

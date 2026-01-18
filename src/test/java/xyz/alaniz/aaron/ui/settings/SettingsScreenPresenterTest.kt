@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import xyz.alaniz.aaron.data.CodeSnippetSettings
 import xyz.alaniz.aaron.data.InMemorySettingsRepository
 import xyz.alaniz.aaron.data.Language
 
@@ -47,9 +48,7 @@ class SettingsScreenPresenterTest {
   fun `navigation works`() = runTest {
     val repository = InMemorySettingsRepository()
     // Enable snippets by default for this test to have more items
-    repository.updateSettings {
-      it.copy(codeSnippetSettings = it.codeSnippetSettings.copy(enabled = true))
-    }
+    repository.updateSettings { it.copy(codeSnippetSettings = CodeSnippetSettings.Enabled()) }
 
     val presenter = SettingsScreenPresenter(FakeNavigator(SettingsScreen), repository)
 
@@ -70,28 +69,60 @@ class SettingsScreenPresenterTest {
   @Test
   fun `toggling language works`() = runTest {
     val repository = InMemorySettingsRepository()
-    repository.updateSettings {
-      it.copy(codeSnippetSettings = it.codeSnippetSettings.copy(enabled = true))
-    }
+    repository.updateSettings { it.copy(codeSnippetSettings = CodeSnippetSettings.Enabled()) }
 
     val presenter = SettingsScreenPresenter(FakeNavigator(SettingsScreen), repository)
 
     presenter.test {
       val state = awaitItem()
-      // Assume Kotlin is at index 1 (after "Enable Code Snippets")
-      state.onEvent(SettingsScreenEvent.MoveFocusDown)
+      // Index 0: Enable Code Snippets
+      // Index 1: Only Code Snippets
+      // Index 2: Kotlin
+      state.onEvent(SettingsScreenEvent.MoveFocusDown) // Focus 1
+      awaitItem() // Consume state update
+      state.onEvent(SettingsScreenEvent.MoveFocusDown) // Focus 2
+
+      val stateFocused = awaitItem()
+      assertEquals(2, stateFocused.focusedIndex)
+      assertEquals("Kotlin", stateFocused.items[2].label)
+      assertFalse(stateFocused.items[2].isChecked)
+
+      stateFocused.onEvent(SettingsScreenEvent.ToggleCurrentItem)
+
+      val stateToggled = awaitItem()
+      assertTrue(stateToggled.items[2].isChecked)
+      val settings = repository.settings.value.codeSnippetSettings
+      assertTrue(settings is CodeSnippetSettings.Enabled)
+      assertTrue(
+          (settings as CodeSnippetSettings.Enabled).selectedLanguages.contains(Language.KOTLIN))
+    }
+  }
+
+  @Test
+  fun `toggling only code snippets works`() = runTest {
+    val repository = InMemorySettingsRepository()
+    repository.updateSettings { it.copy(codeSnippetSettings = CodeSnippetSettings.Enabled()) }
+
+    val presenter = SettingsScreenPresenter(FakeNavigator(SettingsScreen), repository)
+
+    presenter.test {
+      val state = awaitItem()
+      // Index 0: Enable Code Snippets
+      // Index 1: Only Code Snippets
+      state.onEvent(SettingsScreenEvent.MoveFocusDown) // Focus 1
 
       val stateFocused = awaitItem()
       assertEquals(1, stateFocused.focusedIndex)
-      assertEquals("Kotlin", stateFocused.items[1].label)
+      assertEquals("Only Code Snippets", stateFocused.items[1].label)
       assertFalse(stateFocused.items[1].isChecked)
 
       stateFocused.onEvent(SettingsScreenEvent.ToggleCurrentItem)
 
       val stateToggled = awaitItem()
       assertTrue(stateToggled.items[1].isChecked)
-      assertTrue(
-          repository.settings.value.codeSnippetSettings.selectedLanguages.contains(Language.KOTLIN))
+      val settings = repository.settings.value.codeSnippetSettings
+      assertTrue(settings is CodeSnippetSettings.Enabled)
+      assertTrue((settings as CodeSnippetSettings.Enabled).onlyCodeSnippets)
     }
   }
 }
