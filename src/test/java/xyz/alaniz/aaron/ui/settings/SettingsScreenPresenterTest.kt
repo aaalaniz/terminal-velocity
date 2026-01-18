@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import xyz.alaniz.aaron.data.CodeSnippetSettings
 import xyz.alaniz.aaron.data.InMemorySettingsRepository
 import xyz.alaniz.aaron.data.Language
 
@@ -47,9 +48,7 @@ class SettingsScreenPresenterTest {
   fun `navigation works`() = runTest {
     val repository = InMemorySettingsRepository()
     // Enable snippets by default for this test to have more items
-    repository.updateSettings {
-      it.copy(codeSnippetSettings = it.codeSnippetSettings.copy(enabled = true))
-    }
+    repository.updateSettings { it.copy(codeSnippetSettings = CodeSnippetSettings.Enabled()) }
 
     val presenter = SettingsScreenPresenter(FakeNavigator(SettingsScreen), repository)
 
@@ -70,9 +69,7 @@ class SettingsScreenPresenterTest {
   @Test
   fun `toggling language works`() = runTest {
     val repository = InMemorySettingsRepository()
-    repository.updateSettings {
-      it.copy(codeSnippetSettings = it.codeSnippetSettings.copy(enabled = true))
-    }
+    repository.updateSettings { it.copy(codeSnippetSettings = CodeSnippetSettings.Enabled()) }
 
     val presenter = SettingsScreenPresenter(FakeNavigator(SettingsScreen), repository)
 
@@ -94,17 +91,17 @@ class SettingsScreenPresenterTest {
 
       val stateToggled = awaitItem()
       assertTrue(stateToggled.items[2].isChecked)
+      val settings = repository.settings.value.codeSnippetSettings
+      assertTrue(settings is CodeSnippetSettings.Enabled)
       assertTrue(
-          repository.settings.value.codeSnippetSettings.selectedLanguages.contains(Language.KOTLIN))
+          (settings as CodeSnippetSettings.Enabled).selectedLanguages.contains(Language.KOTLIN))
     }
   }
 
   @Test
   fun `toggling only code snippets works`() = runTest {
     val repository = InMemorySettingsRepository()
-    repository.updateSettings {
-      it.copy(codeSnippetSettings = it.codeSnippetSettings.copy(enabled = true))
-    }
+    repository.updateSettings { it.copy(codeSnippetSettings = CodeSnippetSettings.Enabled()) }
 
     val presenter = SettingsScreenPresenter(FakeNavigator(SettingsScreen), repository)
 
@@ -123,7 +120,9 @@ class SettingsScreenPresenterTest {
 
       val stateToggled = awaitItem()
       assertTrue(stateToggled.items[1].isChecked)
-      assertTrue(repository.settings.value.codeSnippetSettings.onlyCodeSnippets)
+      val settings = repository.settings.value.codeSnippetSettings
+      assertTrue(settings is CodeSnippetSettings.Enabled)
+      assertTrue((settings as CodeSnippetSettings.Enabled).onlyCodeSnippets)
     }
   }
 }

@@ -33,7 +33,7 @@ class InMemoryWordRepositoryTest {
     val settings =
         Settings(
             codeSnippetSettings =
-                CodeSnippetSettings(enabled = true, selectedLanguages = setOf(Language.KOTLIN)))
+                CodeSnippetSettings.Enabled(selectedLanguages = setOf(Language.KOTLIN)))
     val repository = InMemoryWordRepository(FakeSettingsRepository(settings))
     val passage = repository.getPassage()
     assertTrue(passage.isNotEmpty())
@@ -45,10 +45,8 @@ class InMemoryWordRepositoryTest {
     val settings =
         Settings(
             codeSnippetSettings =
-                CodeSnippetSettings(
-                    enabled = true,
-                    onlyCodeSnippets = true,
-                    selectedLanguages = setOf(Language.KOTLIN)))
+                CodeSnippetSettings.Enabled(
+                    onlyCodeSnippets = true, selectedLanguages = setOf(Language.KOTLIN)))
     val repository = InMemoryWordRepository(FakeSettingsRepository(settings))
 
     // We can't easily access the private code passages, but we can verify we get *something*
@@ -66,8 +64,8 @@ class InMemoryWordRepositoryTest {
     val settings =
         Settings(
             codeSnippetSettings =
-                CodeSnippetSettings(
-                    enabled = true, onlyCodeSnippets = true, selectedLanguages = emptySet()))
+                CodeSnippetSettings.Enabled(
+                    onlyCodeSnippets = true, selectedLanguages = emptySet()))
     val repository = InMemoryWordRepository(FakeSettingsRepository(settings))
 
     val passage = repository.getPassage()

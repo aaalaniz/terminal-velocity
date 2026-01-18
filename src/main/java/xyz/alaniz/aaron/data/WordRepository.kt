@@ -194,13 +194,18 @@ class InMemoryWordRepository(private val settingsRepository: SettingsRepository)
     val settings = settingsRepository.settings.value
     val availablePassages = mutableListOf<String>()
 
-    if (!settings.codeSnippetSettings.enabled || !settings.codeSnippetSettings.onlyCodeSnippets) {
-      availablePassages.addAll(prosePassages)
-    }
-
-    if (settings.codeSnippetSettings.enabled) {
-      settings.codeSnippetSettings.selectedLanguages.forEach { language ->
-        codePassages[language]?.let { availablePassages.addAll(it) }
+    val snippetSettings = settings.codeSnippetSettings
+    when (snippetSettings) {
+      is CodeSnippetSettings.Disabled -> {
+        availablePassages.addAll(prosePassages)
+      }
+      is CodeSnippetSettings.Enabled -> {
+        if (!snippetSettings.onlyCodeSnippets) {
+          availablePassages.addAll(prosePassages)
+        }
+        snippetSettings.selectedLanguages.forEach { language ->
+          codePassages[language]?.let { availablePassages.addAll(it) }
+        }
       }
     }
 
