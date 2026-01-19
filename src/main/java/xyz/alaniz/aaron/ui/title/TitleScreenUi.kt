@@ -46,15 +46,16 @@ fun TitleScreenUi(titleScreenState: TitleScreenState, modifier: androidx.compose
     }
 
     Spacer(Modifier.height(2))
-    Footer(
-        options =
-            listOf(
-                FooterOption("↑/↓", "Navigate"),
-                FooterOption("Enter", "Select"),
-                FooterOption("Esc", "Quit"),
-            ))
+    Footer(options = titleFooterOptions)
   }
 }
+
+private val titleFooterOptions =
+    listOf(
+        FooterOption("↑/↓", "Navigate"),
+        FooterOption("Enter", "Select"),
+        FooterOption("Esc", "Quit"),
+    )
 
 private fun Modifier.onTitleScreenKeyEvent(titleScreenState: TitleScreenState): Modifier {
   return this.onKeyEvent { keyEvent ->
