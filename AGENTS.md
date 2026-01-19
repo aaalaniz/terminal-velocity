@@ -53,3 +53,8 @@
 - **Before submitting changes:**
   - Run `./gradlew ktfmtFormat` to ensure all code is properly formatted.
   - Verify with `./gradlew ktfmtCheck`.
+
+## Workflow & Concurrency
+- **Sync with Upstream:**
+  - Run `scripts/sync-upstream.sh` frequently (e.g., before starting new work or before submitting) to ensure your working branch is up-to-date with `origin/main`.
+  - **Important:** If the script fails, it indicates a merge conflict. You must **stop working immediately** and notify the user that intervention is required. Do not attempt to resolve complex git conflicts autonomously unless explicitly instructed.
