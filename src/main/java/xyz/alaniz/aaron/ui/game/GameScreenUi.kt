@@ -75,7 +75,7 @@ fun GameScreenUi(state: GameState, modifier: androidx.compose.ui.Modifier) {
               }
             }) {
           if (state.status == GameStatus.COUNTDOWN) {
-            Text("Get Ready!")
+            Text(GET_READY_ART, color = Color.Green)
             Row {
               for (i in 1..5) {
                 if (i <= state.countdownStage) {
@@ -168,3 +168,13 @@ private val gameOverFooterOptions =
         FooterOption("R", "Retry"),
         FooterOption("Esc", "Menu"),
     )
+
+private const val GET_READY_ART =
+    """
+   ______     __     ____                 __      __
+  / ____/__  / /_   / __ \___  ____ _____/ /_  __/ /
+ / / __/ _ \/ __/  / /_/ / _ \/ __ `/ __  / / / / /
+/ /_/ /  __/ /_   / _, _/  __/ /_/ / /_/ / /_/ /_/
+\____/\___/\__/  /_/ |_|\___/\__,_/\__,_/\__, (_)
+                                        /____/
+"""
