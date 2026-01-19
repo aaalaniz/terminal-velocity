@@ -43,7 +43,9 @@ fun GameScreenUi(state: GameState, modifier: androidx.compose.ui.Modifier) {
                   exitProcess(0)
                 }
                 Enter -> {
-                  if (state.status == GameStatus.GAME_OVER) {
+                  if (state.status == GameStatus.WAITING) {
+                    state.eventSink(GameEvent.StartGame)
+                  } else if (state.status == GameStatus.GAME_OVER) {
                     state.eventSink(GameEvent.NewGame)
                   }
                   true
@@ -74,7 +76,11 @@ fun GameScreenUi(state: GameState, modifier: androidx.compose.ui.Modifier) {
                 }
               }
             }) {
-          if (state.status == GameStatus.COUNTDOWN) {
+          if (state.status == GameStatus.WAITING) {
+            Text("Terminal Velocity")
+            Spacer(Modifier.height(1))
+            Footer(options = waitingFooterOptions)
+          } else if (state.status == GameStatus.COUNTDOWN) {
             Text("Get Ready")
             Spacer(Modifier.height(1))
             Row {
@@ -155,6 +161,12 @@ fun GameScreenUi(state: GameState, modifier: androidx.compose.ui.Modifier) {
 }
 
 // Extracted to avoid reallocation on every recomposition/keystroke
+private val waitingFooterOptions =
+    listOf(
+        FooterOption("Enter", "Start"),
+        FooterOption("Esc", "Back"),
+    )
+
 private val countdownFooterOptions =
     listOf(
         FooterOption("Esc", "Back"),
