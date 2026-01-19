@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import com.jakewharton.mosaic.layout.height
 import com.jakewharton.mosaic.layout.onKeyEvent
 import com.jakewharton.mosaic.modifier.Modifier
+import com.jakewharton.mosaic.ui.Color
 import com.jakewharton.mosaic.ui.Column
 import com.jakewharton.mosaic.ui.Spacer
 import com.jakewharton.mosaic.ui.Text
@@ -26,7 +27,7 @@ fun TitleScreenUi(titleScreenState: TitleScreenState, modifier: androidx.compose
   val modifier = Modifier
 
   Column(modifier = modifier.onTitleScreenKeyEvent(titleScreenState)) {
-    Text(value = "Terminal Velocity")
+    Text(value = TITLE_ART, color = Color.Green)
     Spacer(Modifier.height(2))
 
     titleScreenState.selectableOptions.forEachIndexed { index, option ->
@@ -83,3 +84,19 @@ private fun Modifier.onTitleScreenKeyEvent(titleScreenState: TitleScreenState): 
     }
   }
 }
+
+private const val TITLE_ART =
+    """
+  ______                    _             __
+ /_  __/__  _________ ___  (_)___  ____ _/ /
+  / / / _ \/ ___/ __ `__ \/ / __ \/ __ `/ /
+ / / /  __/ /  / / / / / / / / / / /_/ / /
+/_/  \___/_/  /_/ /_/ /_/_/_/ /_/\__,_/_/
+
+ _    __     __           _ __
+| |  / /__  / /___  _____(_) /___  __
+| | / / _ \/ / __ \/ ___/ / __/ / / /
+| |/ /  __/ / /_/ / /__/ / /_/ /_/ /
+|___/\___/_/\____/\___/_/\__/\__, /
+                            /____/
+"""
