@@ -2,7 +2,6 @@ package xyz.alaniz.aaron.ui.foundation
 
 object TextWrapper {
   fun wrap(text: String, width: Int = 80): List<String> {
-    require(width > 0) { "Width must be > 0" }
     val lines = mutableListOf<String>()
     text.lines().forEach { line ->
       if (line.length <= width) {

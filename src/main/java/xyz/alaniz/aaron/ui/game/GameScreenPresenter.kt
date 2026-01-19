@@ -16,6 +16,7 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
+import kotlin.random.Random
 import kotlinx.coroutines.delay
 import xyz.alaniz.aaron.data.WordRepository
 
@@ -83,6 +84,7 @@ class GameScreenPresenter(
           countdownStage = i
           delay(1000)
         }
+        delay(Random.nextLong(100, 1000))
         status = GameStatus.PLAYING
       }
     }

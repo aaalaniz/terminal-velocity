@@ -58,17 +58,16 @@ fun SettingsScreenUi(
         }
       }
       Spacer(Modifier.height(1))
-      Footer(options = settingsFooterOptions)
+      Footer(
+          options =
+              listOf(
+                  FooterOption("↑/↓", "Navigate"),
+                  FooterOption("Enter", "Select"),
+                  FooterOption("Esc", "Back"),
+              ))
     }
   }
 }
-
-private val settingsFooterOptions =
-    listOf(
-        FooterOption("↑/↓", "Navigate"),
-        FooterOption("Enter", "Select"),
-        FooterOption("Esc", "Back"),
-    )
 
 private fun Modifier.onSettingsScreenKeyEvent(settingsScreenState: SettingsScreenState): Modifier {
   return this.onKeyEvent { keyEvent ->
