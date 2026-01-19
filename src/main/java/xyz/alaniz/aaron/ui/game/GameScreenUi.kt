@@ -11,6 +11,7 @@ import com.jakewharton.mosaic.ui.Row
 import com.jakewharton.mosaic.ui.Spacer
 import com.jakewharton.mosaic.ui.Text
 import com.jakewharton.mosaic.ui.TextStyle
+import com.jakewharton.mosaic.ui.UnderlineStyle
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.zacsweers.metro.AppScope
 import kotlin.system.exitProcess
@@ -105,7 +106,13 @@ fun GameScreenUi(state: GameState, modifier: androidx.compose.ui.Modifier) {
                       }
                       Text(remaining.drop(1), textStyle = TextStyle.Dim)
                     } else {
-                      Text(remaining, textStyle = TextStyle.Dim)
+                      val cursorChar = remaining.take(1)
+                      val afterCursor = remaining.drop(1)
+                      Text(
+                          cursorChar,
+                          textStyle = TextStyle.Bold,
+                          underlineStyle = UnderlineStyle.Straight)
+                      Text(afterCursor, textStyle = TextStyle.Dim)
                     }
                   }
                 }

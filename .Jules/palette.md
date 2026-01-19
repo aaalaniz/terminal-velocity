@@ -15,3 +15,7 @@
 ## 2024-10-26 - Progress Feedback in Terminal Games
 **Learning:** Terminal interfaces often lack scrollbars or visual cues for content length. Users can feel lost without knowing how much is left.
 **Action:** Add explicit progress indicators (e.g., "Step 3/10" or "Progress: 50%") to multi-step processes to set expectations and reduce anxiety.
+
+## 2024-10-27 - Live Cursor Visibility
+**Learning:** In typing interfaces, especially for code snippets with significant whitespace or similar characters, users lose track of their position if the text is uniformly dimmed.
+**Action:** Implement a "Live Cursor" by underlining and/or bolding the *current* character. This provides immediate focus feedback. For spaces, ensure the underline is visible to prevent ambiguity.
