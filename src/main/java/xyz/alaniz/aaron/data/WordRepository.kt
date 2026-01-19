@@ -5,7 +5,7 @@ import kotlin.random.asKotlinRandom
 import xyz.alaniz.aaron.ui.foundation.TextWrapper
 
 interface WordRepository {
-  fun getPassage(): List<String>
+  suspend fun getPassage(): List<String>
 }
 
 class InMemoryWordRepository(private val settingsRepository: SettingsRepository) : WordRepository {
@@ -187,7 +187,7 @@ class InMemoryWordRepository(private val settingsRepository: SettingsRepository)
                   """
                       .trimIndent()))
 
-  override fun getPassage(): List<String> {
+  override suspend fun getPassage(): List<String> {
     val settings = settingsRepository.settings.value
     val availablePassages = mutableListOf<String>()
 

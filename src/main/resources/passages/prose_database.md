@@ -1,0 +1,4 @@
+---
+tags: [prose, education]
+---
+A database is an organized collection of data, generally stored and accessed electronically from a computer system. The database management system (DBMS) is the software that interacts with end users, applications, and the database itself. It allows for the definition, creation, querying, update, and administration of databases. Structured Query Language (SQL) is a domain-specific language used in programming and designed for managing data held in a relational database management system. NoSQL databases provide a mechanism for storage and retrieval of data that is modeled in means other than the tabular relations used in relational databases. Databases are essential for storing and retrieving large amounts of information. They ensure data integrity, security, and availability.

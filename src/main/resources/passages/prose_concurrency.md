@@ -1,0 +1,4 @@
+---
+tags: [prose, education]
+---
+Concurrent programming is a form of computing in which several computations are executed during overlapping time periods. This is in contrast to sequential computing, where one is executed after another. Concurrency allows a program to make progress on multiple tasks simultaneously. It is often used to improve the performance of applications on multi-core processors. Threads are the smallest unit of processing that can be scheduled by an operating system. Synchronization mechanisms like locks and semaphores are used to coordinate access to shared resources. Deadlocks and race conditions are common problems in concurrent programming.

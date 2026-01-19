@@ -1,0 +1,4 @@
+---
+tags: [prose, education]
+---
+Mobile app development is the act or process by which a mobile app is developed for mobile devices. These applications can be pre-installed on phones during manufacturing platforms. They can also be delivered as web applications using server-side or client-side processing. Android and iOS are the two dominant mobile operating systems. Native development involves writing apps specifically for one platform using languages like Kotlin or Swift. Cross-platform development allows developers to write code once and deploy it to multiple platforms. Frameworks like React Native, Flutter, and Xamarin are popular for cross-platform development.

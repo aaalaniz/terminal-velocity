@@ -12,7 +12,7 @@ import xyz.alaniz.aaron.data.WordRepository
 class GamePresenterTest {
   private val repository =
       object : WordRepository {
-        override fun getPassage() = listOf("kotlin")
+        override suspend fun getPassage() = listOf("kotlin")
       }
 
   @Test

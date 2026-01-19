@@ -1,0 +1,4 @@
+---
+tags: [prose, education]
+---
+Artificial intelligence (AI) is intelligence demonstrated by machines, as opposed to the natural intelligence displayed by animals including humans. AI research has been defined as the field of study of intelligent agents. An intelligent agent is any system that perceives its environment and takes actions that maximize its chance of achieving its goals. Machine learning is a subset of AI that involves the study of computer algorithms that improve automatically through experience. Deep learning is a class of machine learning algorithms that uses multiple layers to progressively extract higher-level features from the raw input. AI applications include web search engines, recommendation systems, and autonomous vehicles. Ethical considerations regarding AI are a growing topic of discussion.
