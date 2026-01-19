@@ -15,7 +15,10 @@ repositories {
 
 ksp { arg("circuit.codegen.mode", "metro") }
 
-application { mainClass.set("xyz.alaniz.aaron.Main") }
+application {
+  mainClass.set("xyz.alaniz.aaron.Main")
+  applicationDefaultJvmArgs = listOf("--enable-native-access=ALL-UNNAMED")
+}
 
 version = "1.0.0-SNAPSHOT"
 
