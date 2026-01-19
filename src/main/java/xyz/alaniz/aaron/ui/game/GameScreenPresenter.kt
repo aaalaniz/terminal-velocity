@@ -1,6 +1,7 @@
 package xyz.alaniz.aaron.ui.game
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableLongStateOf
@@ -15,6 +16,7 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
+import kotlinx.coroutines.delay
 import xyz.alaniz.aaron.data.WordRepository
 
 @AssistedInject
@@ -31,7 +33,7 @@ class GameScreenPresenter(
 
   @Composable
   override fun present(): GameState {
-    var status by remember { mutableStateOf(GameStatus.WAITING) }
+    var status by remember { mutableStateOf(GameStatus.COUNTDOWN) }
     var currentWord by remember { mutableStateOf("") }
     var userInput by remember { mutableStateOf("") }
     var score by remember { mutableIntStateOf(0) }
@@ -43,6 +45,7 @@ class GameScreenPresenter(
     var totalKeystrokes by remember { mutableIntStateOf(0) }
     var startTime by remember { mutableLongStateOf(0L) }
     var elapsedTime by remember { mutableLongStateOf(0L) }
+    var countdownStage by remember { mutableIntStateOf(0) }
 
     fun calculateWpm(): Double {
       if (startTime == 0L) return 0.0
@@ -57,7 +60,6 @@ class GameScreenPresenter(
     }
 
     fun resetGameStats() {
-      status = GameStatus.PLAYING
       currentLineIndex = 0
       currentWord = passage.getOrElse(0) { "" }
       userInput = currentWord.takeWhile { it.isWhitespace() }
@@ -67,6 +69,22 @@ class GameScreenPresenter(
       totalKeystrokes = 0
       startTime = 0L
       elapsedTime = 0L
+    }
+
+    LaunchedEffect(status) {
+      if (status == GameStatus.COUNTDOWN) {
+        if (passage.isEmpty()) {
+          passage = repository.getPassage()
+        }
+        resetGameStats()
+        countdownStage = 0
+        delay(1000)
+        for (i in 1..5) {
+          countdownStage = i
+          delay(1000)
+        }
+        status = GameStatus.PLAYING
+      }
     }
 
     return GameState.State(
@@ -80,20 +98,21 @@ class GameScreenPresenter(
         elapsedTime = elapsedTime,
         passage = passage,
         currentLineIndex = currentLineIndex,
+        countdownStage = countdownStage,
         eventSink = { event ->
           Snapshot.withMutableSnapshot {
             when (event) {
               GameEvent.StartGame -> {
                 passage = repository.getPassage()
-                resetGameStats()
+                status = GameStatus.COUNTDOWN
               }
               GameEvent.RetryGame -> {
                 // Keep the same passage
-                resetGameStats()
+                status = GameStatus.COUNTDOWN
               }
               GameEvent.NewGame -> {
                 passage = repository.getPassage()
-                resetGameStats()
+                status = GameStatus.COUNTDOWN
               }
               GameEvent.ReturnToMenu -> {
                 navigator.pop()

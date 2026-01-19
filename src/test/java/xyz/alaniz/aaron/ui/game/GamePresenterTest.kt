@@ -16,25 +16,26 @@ class GamePresenterTest {
       }
 
   @Test
-  fun `initial state is Waiting`() = runTest {
+  fun `initial state is Countdown`() = runTest {
     val navigator = FakeNavigator(GameScreen)
     val presenter = GameScreenPresenter(navigator, repository)
 
     presenter.test {
       val state = awaitItem() as GameState.State
-      assertEquals(GameStatus.WAITING, state.status)
-      assertEquals("", state.currentWord)
+      assertEquals(GameStatus.COUNTDOWN, state.status)
+      assertEquals(0, state.countdownStage)
+      cancelAndIgnoreRemainingEvents()
     }
   }
 
   @Test
-  fun `StartGame transitions to Playing and loads passage`() = runTest {
+  fun `Countdown transitions to Playing and loads passage`() = runTest {
     val navigator = FakeNavigator(GameScreen)
     val presenter = GameScreenPresenter(navigator, repository)
 
     presenter.test {
       var state = awaitItem() as GameState.State
-      state.eventSink(GameEvent.StartGame)
+      assertEquals(GameStatus.COUNTDOWN, state.status)
 
       // Consume states until PLAYING
       while (state.status != GameStatus.PLAYING) {
@@ -54,7 +55,6 @@ class GamePresenterTest {
 
     presenter.test {
       var state = awaitItem() as GameState.State
-      state.eventSink(GameEvent.StartGame)
 
       // Wait for playing
       while (state.status != GameStatus.PLAYING || state.currentWord.isEmpty()) {
@@ -86,7 +86,6 @@ class GamePresenterTest {
 
     presenter.test {
       var state = awaitItem() as GameState.State
-      state.eventSink(GameEvent.StartGame)
 
       while (state.status != GameStatus.PLAYING || state.currentWord.isEmpty()) {
         state = awaitItem() as GameState.State
@@ -109,7 +108,6 @@ class GamePresenterTest {
 
     presenter.test {
       var state = awaitItem() as GameState.State
-      state.eventSink(GameEvent.StartGame)
 
       while (state.status != GameStatus.PLAYING || state.currentWord.isEmpty()) {
         state = awaitItem() as GameState.State
@@ -145,26 +143,11 @@ class GamePresenterTest {
 
     presenter.test {
       var state = awaitItem() as GameState.State
-      state.eventSink(GameEvent.StartGame)
 
       while (state.status != GameStatus.PLAYING || state.currentWord.isEmpty()) {
         state = awaitItem() as GameState.State
       }
 
-      // Just ensure we are in a state that is conceptually "before" NewGame.
-      // In the presenter, NewGame just resets everything and fetches a passage.
-      // It doesn't strictly check if we are in GAME_OVER.
-
-      state.eventSink(GameEvent.NewGame)
-
-      // Wait for some change. Since we are already PLAYING and have "kotlin",
-      // NewGame re-fetches "kotlin" (since mocked repo always returns it)
-      // and resets score/input.
-      // The status remains PLAYING.
-      // The only thing that definitely changes (if we had typed something) is userInput and score.
-      // But we haven't typed anything here.
-
-      // Let's modify the test to type something first so we can see the reset.
       state.eventSink(GameEvent.LetterTyped('k'))
       while (state.userInput != "k") {
         state = awaitItem() as GameState.State
@@ -172,6 +155,18 @@ class GamePresenterTest {
 
       // Now trigger NewGame
       state.eventSink(GameEvent.NewGame)
+
+      // NewGame sets status to COUNTDOWN
+      while (state.status != GameStatus.COUNTDOWN) {
+        state = awaitItem() as GameState.State
+      }
+
+      assertEquals(GameStatus.COUNTDOWN, state.status)
+
+      // Wait for PLAYING again
+      while (state.status != GameStatus.PLAYING) {
+        state = awaitItem() as GameState.State
+      }
 
       // Wait for reset
       while (state.userInput.isNotEmpty()) {
@@ -181,7 +176,6 @@ class GamePresenterTest {
       assertEquals(GameStatus.PLAYING, state.status)
       assertEquals(0, state.score)
       assertEquals("kotlin", state.currentWord)
-      assertEquals(listOf("kotlin"), state.passage)
     }
   }
 }

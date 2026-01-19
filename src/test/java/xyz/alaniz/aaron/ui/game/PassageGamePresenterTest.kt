@@ -15,15 +15,13 @@ class PassageGamePresenterTest {
       }
 
   @Test
-  fun `StartGame picks the first line of the passage`() = runTest {
+  fun `Countdown picks the first line of the passage`() = runTest {
     val navigator = FakeNavigator(GameScreen)
     val presenter = GameScreenPresenter(navigator, repository)
 
     presenter.test {
-      val waitingState = awaitItem() as GameState.State
-      waitingState.eventSink(GameEvent.StartGame)
-
       var state = awaitItem() as GameState.State
+      // Wait for countdown to finish
       while (state.status != GameStatus.PLAYING || state.currentWord.isEmpty()) {
         state = awaitItem() as GameState.State
       }
@@ -38,10 +36,8 @@ class PassageGamePresenterTest {
     val presenter = GameScreenPresenter(navigator, repository)
 
     presenter.test {
-      val waitingState = awaitItem() as GameState.State
-      waitingState.eventSink(GameEvent.StartGame)
-
       var state = awaitItem() as GameState.State
+
       while (state.status != GameStatus.PLAYING || state.currentWord != "First line.") {
         state = awaitItem() as GameState.State
       }
