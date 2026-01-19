@@ -21,7 +21,6 @@ sealed interface GameState : CircuitUiState {
 }
 
 enum class GameStatus {
-  WAITING,
   COUNTDOWN,
   PLAYING,
   GAME_OVER

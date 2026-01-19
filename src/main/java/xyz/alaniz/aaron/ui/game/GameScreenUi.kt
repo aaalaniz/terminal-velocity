@@ -74,9 +74,7 @@ fun GameScreenUi(state: GameState, modifier: androidx.compose.ui.Modifier) {
                 }
               }
             }) {
-          if (state.status == GameStatus.WAITING) {
-            Text("Get Ready!")
-          } else if (state.status == GameStatus.COUNTDOWN) {
+          if (state.status == GameStatus.COUNTDOWN) {
             Text("Get Ready!")
             Row {
               for (i in 1..5) {
