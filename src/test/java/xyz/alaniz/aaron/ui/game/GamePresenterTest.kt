@@ -24,6 +24,7 @@ class GamePresenterTest {
       val state = awaitItem() as GameState.State
       assertEquals(GameStatus.WAITING, state.status)
       assertEquals("", state.currentWord)
+      cancelAndIgnoreRemainingEvents()
     }
   }
 

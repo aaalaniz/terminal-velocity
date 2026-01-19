@@ -1,6 +1,7 @@
 package xyz.alaniz.aaron.ui.game
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableLongStateOf
@@ -44,6 +45,12 @@ class GameScreenPresenter(
     var startTime by remember { mutableLongStateOf(0L) }
     var elapsedTime by remember { mutableLongStateOf(0L) }
 
+    LaunchedEffect(Unit) {
+      if (passage.isEmpty()) {
+        passage = repository.getPassage()
+      }
+    }
+
     fun calculateWpm(): Double {
       if (startTime == 0L) return 0.0
       val minutes = (elapsedTime / 1000.0) / 60.0
@@ -84,7 +91,9 @@ class GameScreenPresenter(
           Snapshot.withMutableSnapshot {
             when (event) {
               GameEvent.StartGame -> {
-                passage = repository.getPassage()
+                if (passage.isEmpty()) {
+                  passage = repository.getPassage()
+                }
                 resetGameStats()
               }
               GameEvent.RetryGame -> {

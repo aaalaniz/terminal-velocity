@@ -1,21 +1,7 @@
-# Palette's Journal
+## 2024-05-23 - Previewing Content
+**Learning:** Providing a preview of the upcoming task (the text passage) in the "Waiting" state helps set user expectations and reduces cognitive load before the timer starts.
+**Action:** Always consider what information the user needs *before* committing to an action (like starting a game).
 
-## 2024-05-22 - Terminal Navigation Patterns
-**Learning:** Terminal apps often trap users in deep states without a "back" button, unlike web/mobile apps where the back button is omnipresent. Explicit "Esc" or "Back" navigation is critical.
-**Action:** Always verify that every screen has a way to return to the previous screen without killing the app.
-
-## 2024-05-22 - Scannable Key Bindings
-**Learning:** In terminal UIs, key bindings are the primary interaction method. Uniformly dimmed text makes it hard to scan for "What can I do?".
-**Action:** Highlight the key binding (e.g., Bold) and dim the description. This creates a clear visual hierarchy: `[Key]` (Action) vs `Description` (Intent).
-
-## 2024-05-24 - Color for State Indication
-**Learning:** In monochromatic or limited-color terminal UIs, relying solely on ascii characters like `[x]` vs `[ ]` for state can be visually flat.
-**Action:** Use distinct colors (like Green for active/checked) to reinforce state, allowing users to scan for "Active" items without parsing individual characters.
-
-## 2024-10-26 - Progress Feedback in Terminal Games
-**Learning:** Terminal interfaces often lack scrollbars or visual cues for content length. Users can feel lost without knowing how much is left.
-**Action:** Add explicit progress indicators (e.g., "Step 3/10" or "Progress: 50%") to multi-step processes to set expectations and reduce anxiety.
-
-## 2024-10-27 - Live Cursor Visibility
-**Learning:** In typing interfaces, especially for code snippets with significant whitespace or similar characters, users lose track of their position if the text is uniformly dimmed.
-**Action:** Implement a "Live Cursor" by underlining and/or bolding the *current* character. This provides immediate focus feedback. For spaces, ensure the underline is visible to prevent ambiguity.
+## 2024-05-23 - Testing LaunchedEffects
+**Learning:** When using `LaunchedEffect` in Circuit presenters to trigger initial data loading, unit tests using `turbine` must handle the initial state emission properly. The `presenter.test` block might need `cancelAndIgnoreRemainingEvents()` if the test only asserts on the initial state but the effect triggers a subsequent emission.
+**Action:** Be mindful of side effects in presenters and how they impact the stream of state emissions in tests.

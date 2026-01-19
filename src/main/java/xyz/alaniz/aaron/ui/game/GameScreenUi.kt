@@ -77,7 +77,17 @@ fun GameScreenUi(state: GameState, modifier: androidx.compose.ui.Modifier) {
               }
             }) {
           if (state.status == GameStatus.WAITING) {
-            Text("Terminal Velocity")
+            Text("Terminal Velocity", textStyle = TextStyle.Bold, color = Color.Green)
+            Text("Ready to type?", textStyle = TextStyle.Dim)
+            Spacer(Modifier.height(1))
+
+            // Preview the first few lines of the passage
+            val previewLines = state.passage.take(3)
+            previewLines.forEach { line -> Text(line, textStyle = TextStyle.Dim) }
+            if (state.passage.size > 3) {
+              Text("...", textStyle = TextStyle.Dim)
+            }
+
             Spacer(Modifier.height(1))
             Footer(options = waitingFooterOptions)
           } else if (state.status == GameStatus.PLAYING) {
