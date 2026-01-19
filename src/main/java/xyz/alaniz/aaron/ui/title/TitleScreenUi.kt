@@ -28,7 +28,6 @@ fun TitleScreenUi(titleScreenState: TitleScreenState, modifier: androidx.compose
 
   Column(modifier = modifier.onTitleScreenKeyEvent(titleScreenState)) {
     Text(value = TITLE_ART, color = Color.Green)
-    Spacer(Modifier.height(2))
 
     titleScreenState.selectableOptions.forEachIndexed { index, option ->
       val underlineStyle =
