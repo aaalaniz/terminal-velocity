@@ -34,7 +34,7 @@ class GameScreenPresenter(
 
   @Composable
   override fun present(): GameState {
-    var status by remember { mutableStateOf(GameStatus.WAITING) }
+    var status by remember { mutableStateOf(GameStatus.COUNTDOWN) }
     var currentWord by remember { mutableStateOf("") }
     var userInput by remember { mutableStateOf("") }
     var score by remember { mutableIntStateOf(0) }
@@ -79,7 +79,7 @@ class GameScreenPresenter(
       resetGameStats()
     }
 
-    if (status == GameStatus.COUNTDOWN) {
+    if (status == GameStatus.COUNTDOWN && passage.isNotEmpty()) {
       LaunchedEffect(Unit) {
         for (i in 1..5) {
           countdownStage = i
