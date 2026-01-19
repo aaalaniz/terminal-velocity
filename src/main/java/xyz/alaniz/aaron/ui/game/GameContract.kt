@@ -15,12 +15,14 @@ sealed interface GameState : CircuitUiState {
       val elapsedTime: Long = 0,
       val passage: List<String> = emptyList(),
       val currentLineIndex: Int = 0,
+      val countdownStage: Int = 0,
       val eventSink: (GameEvent) -> Unit
   ) : GameState
 }
 
 enum class GameStatus {
   WAITING,
+  COUNTDOWN,
   PLAYING,
   GAME_OVER
 }

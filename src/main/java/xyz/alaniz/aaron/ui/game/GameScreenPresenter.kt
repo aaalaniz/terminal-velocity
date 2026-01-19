@@ -1,6 +1,7 @@
 package xyz.alaniz.aaron.ui.game
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableLongStateOf
@@ -15,6 +16,8 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
+import kotlin.random.Random
+import kotlinx.coroutines.delay
 import xyz.alaniz.aaron.data.WordRepository
 
 @AssistedInject
@@ -43,6 +46,7 @@ class GameScreenPresenter(
     var totalKeystrokes by remember { mutableIntStateOf(0) }
     var startTime by remember { mutableLongStateOf(0L) }
     var elapsedTime by remember { mutableLongStateOf(0L) }
+    var countdownStage by remember { mutableIntStateOf(0) }
 
     fun calculateWpm(): Double {
       if (startTime == 0L) return 0.0
@@ -57,7 +61,7 @@ class GameScreenPresenter(
     }
 
     fun resetGameStats() {
-      status = GameStatus.PLAYING
+      status = GameStatus.COUNTDOWN
       currentLineIndex = 0
       currentWord = passage.getOrElse(0) { "" }
       userInput = currentWord.takeWhile { it.isWhitespace() }
@@ -67,6 +71,23 @@ class GameScreenPresenter(
       totalKeystrokes = 0
       startTime = 0L
       elapsedTime = 0L
+      countdownStage = 0
+    }
+
+    LaunchedEffect(Unit) {
+      passage = repository.getPassage()
+      resetGameStats()
+    }
+
+    if (status == GameStatus.COUNTDOWN) {
+      LaunchedEffect(Unit) {
+        for (i in 1..5) {
+          countdownStage = i
+          delay(1000)
+        }
+        delay(Random.nextLong(100, 1000))
+        status = GameStatus.PLAYING
+      }
     }
 
     return GameState.State(
@@ -80,6 +101,7 @@ class GameScreenPresenter(
         elapsedTime = elapsedTime,
         passage = passage,
         currentLineIndex = currentLineIndex,
+        countdownStage = countdownStage,
         eventSink = { event ->
           Snapshot.withMutableSnapshot {
             when (event) {
