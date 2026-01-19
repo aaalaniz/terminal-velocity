@@ -1,7 +1,3 @@
----
-tags: [code, javascript]
----
-function greet(name) {
     console.log(`Hello, ${name}!`);
 }
 

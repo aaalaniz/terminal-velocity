@@ -4,9 +4,14 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesTo
 import dev.zacsweers.metro.Provides
 import dev.zacsweers.metro.SingleIn
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import xyz.alaniz.aaron.di.IoDispatcher
 
 @ContributesTo(AppScope::class)
 interface DataModule {
+  @Provides @IoDispatcher fun provideIoDispatcher(): CoroutineDispatcher = Dispatchers.IO
+
   @Provides
   @SingleIn(AppScope::class)
   fun provideResourceReader(): ResourceReader {
@@ -17,9 +22,10 @@ interface DataModule {
   @SingleIn(AppScope::class)
   fun provideWordRepository(
       settingsRepository: SettingsRepository,
-      resourceReader: ResourceReader
+      resourceReader: ResourceReader,
+      @IoDispatcher ioDispatcher: CoroutineDispatcher
   ): WordRepository {
-    return MarkdownWordRepository(settingsRepository, resourceReader)
+    return MarkdownWordRepository(settingsRepository, resourceReader, ioDispatcher)
   }
 
   @Provides

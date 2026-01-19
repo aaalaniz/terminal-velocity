@@ -1,4 +1,0 @@
----
-tags: [prose, education]
----
-Dependency injection is a technique in which an object receives other objects that it depends on. These other objects are called dependencies, and the injection refers to the passing of a dependency. The intent behind dependency injection is to achieve separation of concerns of construction and use of objects. This can increase readability and code reuse, and make testing easier. Metro is a dependency injection framework for Kotlin that generates code at compile time. It avoids reflection, which can be slow and error-prone at runtime. By using Metro, you can ensure that your dependency graph is valid before running your application.

@@ -1,4 +1,0 @@
----
-tags: [prose, education]
----
-Cloud computing is the on-demand availability of computer system resources, especially data storage and computing power. It does not require direct active management by the user. The term is generally used to describe data centers available to many users over the Internet. Large clouds, predominant today, often have functions distributed over multiple locations from central servers. Cloud computing relies on sharing of resources to achieve coherence and economies of scale. Services are often categorized as Infrastructure as a Service (IaaS), Platform as a Service (PaaS), and Software as a Service (SaaS). Amazon Web Services, Microsoft Azure, and Google Cloud Platform are major providers.

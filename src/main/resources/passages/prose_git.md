@@ -1,4 +1,0 @@
----
-tags: [prose, tools, education]
----
-Git is a distributed version control system for tracking changes in source code during software development. It is designed for coordinating work among programmers, but it can be used to track changes in any set of files. Git was created by Linus Torvalds in 2005 for development of the Linux kernel. Every Git directory on every computer is a full-fledged repository with complete history and full version-tracking capabilities. It does not depend on network access or a central server. Common commands include git add, git commit, git push, and git pull. Branching and merging are core features that allow for parallel development.

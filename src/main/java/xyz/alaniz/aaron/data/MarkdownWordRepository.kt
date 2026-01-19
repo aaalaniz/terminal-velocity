@@ -2,13 +2,16 @@ package xyz.alaniz.aaron.data
 
 import java.security.SecureRandom
 import kotlin.random.asKotlinRandom
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withContext
 import xyz.alaniz.aaron.ui.foundation.TextWrapper
 
 class MarkdownWordRepository(
     private val settingsRepository: SettingsRepository,
-    private val resourceReader: ResourceReader
+    private val resourceReader: ResourceReader,
+    private val ioDispatcher: CoroutineDispatcher
 ) : WordRepository {
 
   private val secureRandom = SecureRandom().asKotlinRandom()
@@ -45,21 +48,23 @@ class MarkdownWordRepository(
     mutex.withLock {
       if (index.isNotEmpty()) return@withLock
 
-      val indexStream = resourceReader.open(indexFile) ?: return@withLock
-      val filenames = indexStream.bufferedReader().useLines { it.toList() }
+      withContext(ioDispatcher) {
+        val indexStream = resourceReader.open(indexFile) ?: return@withContext
+        val lines = indexStream.bufferedReader().useLines { it.toList() }
 
-      val loadedIndex = mutableListOf<PassageMetadata>()
-      for (filename in filenames) {
-        if (filename.isBlank()) continue
-        val fullPath = passagesDir + filename.trim()
-        val fileStream = resourceReader.open(fullPath)
-        if (fileStream != null) {
-          val content = fileStream.bufferedReader().use { it.readText() }
-          val result = MarkdownParser.parse(content)
-          loadedIndex.add(PassageMetadata(filename = fullPath, tags = result.tags))
+        val loadedIndex = mutableListOf<PassageMetadata>()
+        for (line in lines) {
+          if (line.isBlank()) continue
+          val parts = line.split(",").map { it.trim() }
+          if (parts.isNotEmpty()) {
+            val filename = parts[0]
+            val tags = parts.drop(1).toSet()
+            val fullPath = passagesDir + filename
+            loadedIndex.add(PassageMetadata(filename = fullPath, tags = tags))
+          }
         }
+        index = loadedIndex
       }
-      index = loadedIndex
     }
   }
 
@@ -84,8 +89,6 @@ class MarkdownWordRepository(
           val isCode = metadata.tags.contains("code")
 
           // Check if code matches selected language
-          // We assume language tag is present if code is present.
-          // E.g. tags: [code, kotlin]
           val matchesLanguage =
               if (isCode) {
                 metadata.tags.any { it in selectedLanguages }
@@ -103,10 +106,14 @@ class MarkdownWordRepository(
     }
   }
 
-  private fun loadPassageContent(filename: String): List<String> {
-    val stream = resourceReader.open(filename) ?: return listOf("Error: Could not load $filename")
-    val content = stream.bufferedReader().use { it.readText() }
-    val result = MarkdownParser.parse(content)
-    return TextWrapper.wrap(result.content)
+  private suspend fun loadPassageContent(filename: String): List<String> {
+    return withContext(ioDispatcher) {
+      val stream =
+          resourceReader.open(filename)
+              ?: return@withContext listOf("Error: Could not load $filename")
+      val content = stream.bufferedReader().use { it.readText() }
+      // No parsing needed, content is raw text
+      TextWrapper.wrap(content)
+    }
   }
 }

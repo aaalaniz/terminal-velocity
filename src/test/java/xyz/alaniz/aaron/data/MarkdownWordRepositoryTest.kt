@@ -6,6 +6,7 @@ import kotlin.test.assertEquals
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test
 
@@ -32,17 +33,14 @@ class MarkdownWordRepositoryTest {
   @Test
   fun `getPassage returns a valid passage from prose`() = runTest {
     val reader = FakeResourceReader()
-    reader.files["passages.index"] = "prose_test.md"
-    reader.files["passages/prose_test.md"] =
-        """
-        ---
-        tags: [prose]
-        ---
-        This is a test passage.
-        """
-            .trimIndent()
+    val testDispatcher = UnconfinedTestDispatcher(testScheduler)
 
-    val repository = MarkdownWordRepository(FakeSettingsRepository(), reader)
+    // CSV format index
+    reader.files["passages.index"] = "prose_test.md,prose"
+    // Raw content
+    reader.files["passages/prose_test.md"] = "This is a test passage."
+
+    val repository = MarkdownWordRepository(FakeSettingsRepository(), reader, testDispatcher)
     val passage = repository.getPassage()
 
     assertEquals(listOf("This is a test passage."), passage)
@@ -51,30 +49,18 @@ class MarkdownWordRepositoryTest {
   @Test
   fun `getPassage filters for code`() = runTest {
     val reader = FakeResourceReader()
+    val testDispatcher = UnconfinedTestDispatcher(testScheduler)
+
+    // CSV format index
     reader.files["passages.index"] =
         """
-        prose_test.md
-        code_kotlin.md
+        prose_test.md,prose
+        code_kotlin.md,code,kotlin
         """
             .trimIndent()
 
-    reader.files["passages/prose_test.md"] =
-        """
-        ---
-        tags: [prose]
-        ---
-        Prose content.
-        """
-            .trimIndent()
-
-    reader.files["passages/code_kotlin.md"] =
-        """
-        ---
-        tags: [code, kotlin]
-        ---
-        fun main() {}
-        """
-            .trimIndent()
+    reader.files["passages/prose_test.md"] = "Prose content."
+    reader.files["passages/code_kotlin.md"] = "fun main() {}"
 
     val settings =
         Settings(
@@ -82,7 +68,8 @@ class MarkdownWordRepositoryTest {
                 CodeSnippetSettings.Enabled(
                     onlyCodeSnippets = true, selectedLanguages = setOf(Language.KOTLIN)))
 
-    val repository = MarkdownWordRepository(FakeSettingsRepository(settings), reader)
+    val repository =
+        MarkdownWordRepository(FakeSettingsRepository(settings), reader, testDispatcher)
 
     // Should always return kotlin code
     repeat(5) {
