@@ -42,6 +42,7 @@
 - The dependency graph is managed by Metro.
 - Use `@AppScope` for singleton dependencies.
 - The graph is created in `main.kt` via `createGraphFactory`.
+- **Policy:** For objects controlled by the app, contribute the instance directly from the class declaration using `@ContributesBinding`. Only use modules for objects not controlled by the app (e.g. `IO dispatcher`).
 
 ## File Structure Key Points
 - `src/main/java/xyz/alaniz/aaron/main.kt`: Application entry point.
