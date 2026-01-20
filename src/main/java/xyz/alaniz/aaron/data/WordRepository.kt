@@ -1,7 +1,6 @@
 package xyz.alaniz.aaron.data
 
-import java.security.SecureRandom
-import kotlin.random.asKotlinRandom
+import kotlin.random.Random
 import xyz.alaniz.aaron.ui.foundation.TextWrapper
 
 interface WordRepository {
@@ -10,7 +9,8 @@ interface WordRepository {
 
 class InMemoryWordRepository(private val settingsRepository: SettingsRepository) : WordRepository {
 
-  private val secureRandom = SecureRandom().asKotlinRandom()
+  private var cachedSettings: Settings? = null
+  private var cachedPassages: List<String> = emptyList()
 
   private val prosePassages =
       listOf(
@@ -189,30 +189,37 @@ class InMemoryWordRepository(private val settingsRepository: SettingsRepository)
 
   override fun getPassage(): List<String> {
     val settings = settingsRepository.settings.value
-    val availablePassages = mutableListOf<String>()
+    val availablePassages =
+        if (settings == cachedSettings && cachedPassages.isNotEmpty()) {
+          cachedPassages
+        } else {
+          val newPassages = mutableListOf<String>()
+          val snippetSettings = settings.codeSnippetSettings
+          when (snippetSettings) {
+            is CodeSnippetSettings.Disabled -> {
+              newPassages.addAll(prosePassages)
+            }
+            is CodeSnippetSettings.Enabled -> {
+              if (!snippetSettings.onlyCodeSnippets) {
+                newPassages.addAll(prosePassages)
+              }
+              snippetSettings.selectedLanguages.forEach { language ->
+                codePassages[language]?.let { newPassages.addAll(it) }
+              }
+            }
+          }
 
-    val snippetSettings = settings.codeSnippetSettings
-    when (snippetSettings) {
-      is CodeSnippetSettings.Disabled -> {
-        availablePassages.addAll(prosePassages)
-      }
-      is CodeSnippetSettings.Enabled -> {
-        if (!snippetSettings.onlyCodeSnippets) {
-          availablePassages.addAll(prosePassages)
+          if (newPassages.isEmpty()) {
+            // Fallback to prose if no passages available (e.g. only code enabled but no languages
+            // selected)
+            newPassages.addAll(prosePassages)
+          }
+          cachedSettings = settings
+          cachedPassages = newPassages
+          newPassages
         }
-        snippetSettings.selectedLanguages.forEach { language ->
-          codePassages[language]?.let { availablePassages.addAll(it) }
-        }
-      }
-    }
 
-    if (availablePassages.isEmpty()) {
-      // Fallback to prose if no passages available (e.g. only code enabled but no languages
-      // selected)
-      availablePassages.addAll(prosePassages)
-    }
-
-    val rawPassage = availablePassages.random(secureRandom)
+    val rawPassage = availablePassages.random(Random)
     return TextWrapper.wrap(rawPassage)
   }
 }
