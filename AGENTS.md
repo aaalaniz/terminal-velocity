@@ -44,6 +44,14 @@
 - The graph is created in `main.kt` via `createGraphFactory`.
 - **Policy:** For objects controlled by the app, contribute the instance directly from the class declaration using `@ContributesBinding`. Only use modules for objects not controlled by the app (e.g. `IO dispatcher`).
 
+### Testing (Mosaic & Circuit)
+- **Unit Tests:** Use standard JUnit/KotlinTest for business logic.
+- **Presenter Tests:** Use `circuit-test` to test Presenter logic in isolation.
+- **Integration Tests:** Use `mosaic-testing` for end-to-end UI verification.
+    - `runMosaicTest`: Sets up the test environment.
+    - `awaitSnapshot()`: Verifies rendered output.
+    - `sendKeyEvent()`: Simulates user interaction.
+
 ## File Structure Key Points
 - `src/main/java/xyz/alaniz/aaron/main.kt`: Application entry point.
 - `src/main/java/xyz/alaniz/aaron/ui/`: Contains feature-based UI packages (e.g., `game`, `settings`, `title`).

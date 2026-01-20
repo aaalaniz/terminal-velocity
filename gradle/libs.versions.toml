@@ -16,6 +16,7 @@ circuit-codegen-annotations = { module = "com.slack.circuit:circuit-codegen-anno
 circuit-foundation = { module = "com.slack.circuit:circuit-foundation", version.ref = "circuit" }
 circuit-test = { module = "com.slack.circuit:circuit-test", version.ref = "circuit" }
 mosaic = { module = "com.jakewharton.mosaic:mosaic-runtime", version.ref = "mosaic" }
+mosaic-testing = { module = "com.jakewharton.mosaic:mosaic-testing", version.ref = "mosaic" }
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
