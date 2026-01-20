@@ -4,14 +4,13 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesTo
 import dev.zacsweers.metro.Provides
 import dev.zacsweers.metro.SingleIn
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import xyz.alaniz.aaron.di.IoDispatcher
 
 @ContributesTo(AppScope::class)
 interface DataModule {
-  @Provides
-  @SingleIn(AppScope::class)
-  fun provideWordRepository(settingsRepository: SettingsRepository): WordRepository {
-    return InMemoryWordRepository(settingsRepository)
-  }
+  @Provides @IoDispatcher fun provideIoDispatcher(): CoroutineDispatcher = Dispatchers.IO
 
   @Provides
   @SingleIn(AppScope::class)

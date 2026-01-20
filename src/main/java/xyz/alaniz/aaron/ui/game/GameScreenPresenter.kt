@@ -7,6 +7,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.Snapshot
 import com.slack.circuit.codegen.annotations.CircuitInject
@@ -18,6 +19,7 @@ import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
 import kotlin.random.Random
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import xyz.alaniz.aaron.data.WordRepository
 
 @AssistedInject
@@ -47,6 +49,7 @@ class GameScreenPresenter(
     var startTime by remember { mutableLongStateOf(0L) }
     var elapsedTime by remember { mutableLongStateOf(0L) }
     var countdownStage by remember { mutableIntStateOf(0) }
+    val scope = rememberCoroutineScope()
 
     fun calculateWpm(): Double {
       if (startTime == 0L) return 0.0
@@ -103,57 +106,60 @@ class GameScreenPresenter(
         currentLineIndex = currentLineIndex,
         countdownStage = countdownStage,
         eventSink = { event ->
-          Snapshot.withMutableSnapshot {
-            when (event) {
-              GameEvent.StartGame -> {
+          when (event) {
+            GameEvent.StartGame,
+            GameEvent.NewGame -> {
+              scope.launch {
                 passage = repository.getPassage()
                 resetGameStats()
               }
-              GameEvent.RetryGame -> {
-                // Keep the same passage
-                resetGameStats()
-              }
-              GameEvent.NewGame -> {
-                passage = repository.getPassage()
-                resetGameStats()
-              }
-              GameEvent.ReturnToMenu -> {
-                navigator.pop()
-              }
-              is GameEvent.LetterTyped -> {
-                if (status == GameStatus.PLAYING) {
-                  val now = System.currentTimeMillis()
-                  if (startTime == 0L) {
-                    startTime = now
+            }
+            else -> {
+              Snapshot.withMutableSnapshot {
+                when (event) {
+                  GameEvent.RetryGame -> {
+                    // Keep the same passage
+                    resetGameStats()
                   }
-                  elapsedTime = now - startTime
-                  totalKeystrokes++
+                  GameEvent.ReturnToMenu -> {
+                    navigator.pop()
+                  }
+                  is GameEvent.LetterTyped -> {
+                    if (status == GameStatus.PLAYING) {
+                      val now = System.currentTimeMillis()
+                      if (startTime == 0L) {
+                        startTime = now
+                      }
+                      elapsedTime = now - startTime
+                      totalKeystrokes++
 
-                  val nextCharIndex = userInput.length
-                  if (nextCharIndex < currentWord.length) {
-                    if (currentWord[nextCharIndex] == event.char) {
-                      userInput += event.char
-                      isError = false
-                      totalCorrectChars++
+                      val nextCharIndex = userInput.length
+                      if (nextCharIndex < currentWord.length) {
+                        if (currentWord[nextCharIndex] == event.char) {
+                          userInput += event.char
+                          isError = false
+                          totalCorrectChars++
 
-                      if (userInput == currentWord) {
-                        score++
-                        currentLineIndex++
-                        if (currentLineIndex < passage.size) {
-                          currentWord = passage[currentLineIndex]
-                          userInput = currentWord.takeWhile { it.isWhitespace() }
+                          if (userInput == currentWord) {
+                            score++
+                            currentLineIndex++
+                            if (currentLineIndex < passage.size) {
+                              currentWord = passage[currentLineIndex]
+                              userInput = currentWord.takeWhile { it.isWhitespace() }
+                            } else {
+                              status = GameStatus.GAME_OVER
+                            }
+                          }
                         } else {
-                          status = GameStatus.GAME_OVER
+                          isError = true
                         }
                       }
-                    } else {
-                      isError = true
                     }
                   }
+                  GameEvent.ClearError -> {
+                    isError = false
+                  }
                 }
-              }
-              GameEvent.ClearError -> {
-                isError = false
               }
             }
           }

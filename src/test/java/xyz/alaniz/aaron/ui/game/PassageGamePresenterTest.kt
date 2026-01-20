@@ -11,7 +11,7 @@ class PassageGamePresenterTest {
   private val passage = listOf("First line.", "Second line.")
   private val repository =
       object : WordRepository {
-        override fun getPassage() = passage
+        override suspend fun getPassage() = passage
       }
 
   @Test

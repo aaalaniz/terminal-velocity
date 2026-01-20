@@ -48,6 +48,30 @@
 - `src/main/java/xyz/alaniz/aaron/ui/`: Contains feature-based UI packages (e.g., `game`, `settings`, `title`).
 - `build.gradle.kts`: Project build configuration. Dependencies are managed via version catalog (`gradle/libs.versions.toml`).
 
+## Content Management (Passages)
+
+The game's typing passages are stored as external resources to support lazy loading and easy expansion.
+
+- **Location:** `src/main/resources/passages/`
+- **Format:** Pure Markdown (`.md`) files containing only the raw text content. No front matter is used.
+- **Index:** `src/main/resources/passages.index`
+    - This is a CSV file that maps filenames to metadata tags.
+    - **Format:** `filename.md, tag1, tag2, ...`
+    - **Example:** `code_kotlin_1.md, code, kotlin`
+    - **Tags:**
+        - `prose`: For standard text passages.
+        - `code`: For code snippets.
+        - `[language]`: (e.g., `kotlin`, `java`) Required if the `code` tag is present.
+
+### How to Add a New Passage
+1.  **Create the File:** Add a new `.md` file in `src/main/resources/passages/` containing the text or code snippet.
+2.  **Update the Index:** Add a new line to `src/main/resources/passages.index` with the relative filename and appropriate tags.
+    - *Example:* `my_new_passage.md, prose, education`
+
+### Maintenance
+- **Lazy Loading:** The `MarkdownWordRepository` reads the index file on the first request. Actual content files are only loaded from disk when selected for gameplay.
+- **Filtering:** The repository uses the tags in the index to filter candidates based on user settings (e.g., "Only Code Snippets").
+
 ## Code Style & Formatting
 - This project uses `ktfmt` for code formatting.
 - **Before submitting changes:**
