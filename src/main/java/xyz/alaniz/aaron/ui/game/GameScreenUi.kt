@@ -88,8 +88,35 @@ fun GameScreenUi(state: GameState, modifier: androidx.compose.ui.Modifier) {
             Spacer(Modifier.height(1))
             Footer(options = countdownFooterOptions)
           } else if (state.status == GameStatus.PLAYING) {
-            Text(
-                "WPM: ${state.wpm.toInt()} | Accuracy: ${state.accuracy.toInt()}% | Progress: ${state.currentLineIndex + 1}/${state.passage.size}")
+            Row {
+              Text("WPM: ", textStyle = TextStyle.Dim)
+              Text("${state.wpm.toInt()}  ", textStyle = TextStyle.Bold)
+
+              Text("Accuracy: ", textStyle = TextStyle.Dim)
+              Text("${state.accuracy.toInt()}%  ", textStyle = TextStyle.Bold)
+
+              Text("Progress: ", textStyle = TextStyle.Dim)
+              Text(
+                  "${state.currentLineIndex + 1}/${state.passage.size}  ",
+                  textStyle = TextStyle.Bold)
+
+              val lineProgress =
+                  if (state.currentWord.isNotEmpty()) {
+                    state.userInput.length.toFloat() / state.currentWord.length
+                  } else {
+                    0f
+                  }
+              val totalProgress =
+                  (state.currentLineIndex + lineProgress) / state.passage.size.coerceAtLeast(1)
+              val barWidth = 20
+              val filledCount = (totalProgress * barWidth).toInt().coerceIn(0, barWidth)
+              val emptyCount = barWidth - filledCount
+
+              Text("[", textStyle = TextStyle.Dim)
+              Text("|".repeat(filledCount), color = Color.Green)
+              Text(".".repeat(emptyCount), textStyle = TextStyle.Dim)
+              Text("]", textStyle = TextStyle.Dim)
+            }
             Spacer(Modifier.height(1))
 
             // Show a window of 5 lines
