@@ -19,3 +19,7 @@
 ## 2024-10-27 - Live Cursor Visibility
 **Learning:** In typing interfaces, especially for code snippets with significant whitespace or similar characters, users lose track of their position if the text is uniformly dimmed.
 **Action:** Implement a "Live Cursor" by underlining and/or bolding the *current* character. This provides immediate focus feedback. For spaces, ensure the underline is visible to prevent ambiguity.
+
+## 2024-10-27 - Visual Progress in TUI
+**Learning:** Text-only progress (e.g., "12/45") is hard to parse at a glance in a terminal.
+**Action:** Enhance stats with visual bars (ASCII/Unicode) to provide instant feedback on completion status, even in a text-based environment. Use distinct styles (Bold/Dim) to separate labels from values.
