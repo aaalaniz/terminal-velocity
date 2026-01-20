@@ -15,9 +15,8 @@ import xyz.alaniz.aaron.ui.foundation.TextWrapper
 
 @ContributesBinding(AppScope::class)
 @SingleIn(AppScope::class)
-class MarkdownWordRepository
 @Inject
-constructor(
+class MarkdownWordRepository(
     private val settingsRepository: SettingsRepository,
     private val resourceReader: ResourceReader,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher

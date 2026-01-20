@@ -8,7 +8,8 @@ import java.io.InputStream
 
 @ContributesBinding(AppScope::class)
 @SingleIn(AppScope::class)
-class ClasspathResourceReader @Inject constructor() : ResourceReader {
+@Inject
+class ClasspathResourceReader : ResourceReader {
   override fun open(path: String): InputStream {
     return Thread.currentThread().contextClassLoader.getResourceAsStream(path)
         ?: throw IllegalArgumentException("Resource not found: $path")
