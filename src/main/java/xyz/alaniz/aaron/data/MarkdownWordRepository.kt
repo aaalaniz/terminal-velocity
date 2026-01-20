@@ -1,17 +1,26 @@
 package xyz.alaniz.aaron.data
 
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 import java.security.SecureRandom
 import kotlin.random.asKotlinRandom
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
+import xyz.alaniz.aaron.di.IoDispatcher
 import xyz.alaniz.aaron.ui.foundation.TextWrapper
 
-class MarkdownWordRepository(
+@ContributesBinding(AppScope::class)
+@SingleIn(AppScope::class)
+class MarkdownWordRepository
+@Inject
+constructor(
     private val settingsRepository: SettingsRepository,
     private val resourceReader: ResourceReader,
-    private val ioDispatcher: CoroutineDispatcher
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) : WordRepository {
 
   private val secureRandom = SecureRandom().asKotlinRandom()
@@ -48,22 +57,28 @@ class MarkdownWordRepository(
     mutex.withLock {
       if (index.isNotEmpty()) return@withLock
 
-      withContext(ioDispatcher) {
-        val indexStream = resourceReader.open(indexFile) ?: return@withContext
-        val lines = indexStream.bufferedReader().useLines { it.toList() }
+      try {
+        withContext(ioDispatcher) {
+          val indexStream = resourceReader.open(indexFile)
+          val lines = indexStream.bufferedReader().useLines { it.toList() }
 
-        val loadedIndex = mutableListOf<PassageMetadata>()
-        for (line in lines) {
-          if (line.isBlank()) continue
-          val parts = line.split(",").map { it.trim() }
-          if (parts.isNotEmpty()) {
-            val filename = parts[0]
-            val tags = parts.drop(1).toSet()
-            val fullPath = passagesDir + filename
-            loadedIndex.add(PassageMetadata(filename = fullPath, tags = tags))
+          val loadedIndex = mutableListOf<PassageMetadata>()
+          for (line in lines) {
+            if (line.isBlank()) continue
+            val parts = line.split(",").map { it.trim() }
+            if (parts.isNotEmpty()) {
+              val filename = parts[0]
+              val tags = parts.drop(1).toSet()
+              val fullPath = passagesDir + filename
+              loadedIndex.add(PassageMetadata(filename = fullPath, tags = tags))
+            }
           }
+          index = loadedIndex
         }
-        index = loadedIndex
+      } catch (e: Exception) {
+        // If index fails to load, we can't do much.
+        // In a real app we might want to log this.
+        e.printStackTrace()
       }
     }
   }
@@ -107,13 +122,15 @@ class MarkdownWordRepository(
   }
 
   private suspend fun loadPassageContent(filename: String): List<String> {
-    return withContext(ioDispatcher) {
-      val stream =
-          resourceReader.open(filename)
-              ?: return@withContext listOf("Error: Could not load $filename")
-      val content = stream.bufferedReader().use { it.readText() }
-      // No parsing needed, content is raw text
-      TextWrapper.wrap(content)
+    return try {
+      withContext(ioDispatcher) {
+        val stream = resourceReader.open(filename)
+        val content = stream.bufferedReader().use { it.readText() }
+        // No parsing needed, content is raw text
+        TextWrapper.wrap(content)
+      }
+    } catch (e: Exception) {
+      listOf("Error: Could not load $filename")
     }
   }
 }

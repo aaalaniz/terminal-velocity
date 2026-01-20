@@ -25,8 +25,9 @@ class MarkdownWordRepositoryTest {
   private class FakeResourceReader : ResourceReader {
     val files = mutableMapOf<String, String>()
 
-    override fun open(path: String): InputStream? {
+    override fun open(path: String): InputStream {
       return files[path]?.let { ByteArrayInputStream(it.toByteArray()) }
+          ?: throw IllegalArgumentException("Resource not found: $path")
     }
   }
 

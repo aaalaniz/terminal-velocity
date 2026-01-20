@@ -14,22 +14,6 @@ interface DataModule {
 
   @Provides
   @SingleIn(AppScope::class)
-  fun provideResourceReader(): ResourceReader {
-    return ClasspathResourceReader()
-  }
-
-  @Provides
-  @SingleIn(AppScope::class)
-  fun provideWordRepository(
-      settingsRepository: SettingsRepository,
-      resourceReader: ResourceReader,
-      @IoDispatcher ioDispatcher: CoroutineDispatcher
-  ): WordRepository {
-    return MarkdownWordRepository(settingsRepository, resourceReader, ioDispatcher)
-  }
-
-  @Provides
-  @SingleIn(AppScope::class)
   fun provideSettingsRepository(): SettingsRepository {
     return InMemorySettingsRepository()
   }
