@@ -1,10 +1,13 @@
 package xyz.alaniz.aaron.ui.foundation
 
 object TextWrapper {
+  private val ANSI_REGEX = Regex("\\u001B(?:[@-Z\\\\-_]|\\[[0-?]*[ -/]*[@-~])")
+
   fun wrap(text: String, width: Int = 80): List<String> {
     require(width > 0) { "Width must be > 0" }
     val lines = mutableListOf<String>()
-    text.lines().forEach { line ->
+    val sanitizedText = text.replace(ANSI_REGEX, "")
+    sanitizedText.lines().forEach { line ->
       if (line.length <= width) {
         lines.add(line)
       } else {
