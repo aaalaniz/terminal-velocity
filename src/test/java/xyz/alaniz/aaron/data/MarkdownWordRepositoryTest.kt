@@ -78,4 +78,31 @@ class MarkdownWordRepositoryTest {
       assertEquals(listOf("fun main() {}"), passage)
     }
   }
+
+  @Test
+  fun `ensureIndexLoaded ignores filenames with path traversal`() = runTest {
+    val reader = FakeResourceReader()
+    val testDispatcher = UnconfinedTestDispatcher(testScheduler)
+
+    // CSV format index with path traversal attempt
+    reader.files["passages.index"] =
+        """
+        ../../secrets.txt,prose
+        valid_passage.md,prose
+        """
+            .trimIndent()
+
+    reader.files["passages/valid_passage.md"] = "Safe content."
+    // We expect the repo to NOT ask for "passages/../../secrets.txt"
+    reader.files["passages/../../secrets.txt"] = "SECRET"
+
+    val repository = MarkdownWordRepository(FakeSettingsRepository(), reader, testDispatcher)
+
+    // Verify that the repository didn't try to load the traversal path
+    // If the fix works, we should NEVER see "SECRET".
+    repeat(20) {
+      val result = repository.getPassage()
+      assertEquals(listOf("Safe content."), result, "Should not retrieve secret file")
+    }
+  }
 }
