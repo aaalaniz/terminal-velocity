@@ -9,16 +9,17 @@ import com.slack.circuit.foundation.CircuitCompositionLocals
 import com.slack.circuit.foundation.NavigableCircuitContent
 import com.slack.circuit.foundation.rememberCircuitNavigator
 import com.slack.circuit.runtime.screen.Screen
+import xyz.alaniz.aaron.ui.foundation.MosaicNavDecoration
 
 @Composable
 fun CircuitApp(
     initialScreen: Screen,
     circuit: Circuit,
     onRootPop: () -> Unit,
-    decoration: NavDecoration,
 ) {
   val backStack = rememberSaveableBackStack(root = initialScreen)
   val navigator = rememberCircuitNavigator(backStack) { onRootPop() }
+  val decoration = remember { MosaicNavDecoration() }
 
   CircuitCompositionLocals(circuit) {
     NavigableCircuitContent(navigator = navigator, backStack = backStack, decoration = decoration)

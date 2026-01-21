@@ -1,6 +1,5 @@
 package xyz.alaniz.aaron.di
 
-import com.slack.circuit.backstack.NavDecoration
 import com.slack.circuit.foundation.Circuit
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.DependencyGraph
@@ -10,7 +9,6 @@ import kotlinx.coroutines.CoroutineScope
 @DependencyGraph(AppScope::class)
 interface ApplicationGraph {
   val circuit: Circuit
-  val navDecoration: NavDecoration
 
   @DependencyGraph.Factory
   fun interface Factory {

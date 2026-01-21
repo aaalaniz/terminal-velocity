@@ -23,7 +23,6 @@ suspend fun main() {
         initialScreen = TitleScreen,
         circuit = applicationGraph.circuit,
         onRootPop = { exit = true },
-        decoration = applicationGraph.navDecoration,
     )
     // Mosaic exits if no effects are running, so we use this to keep it alive until the app exits
     if (!exit) {

@@ -16,9 +16,9 @@ import xyz.alaniz.aaron.ui.foundation.TextWrapper
 @SingleIn(AppScope::class)
 @Inject
 class MarkdownWordRepository(
-    private val settingsRepository: SettingsRepository,
-    private val resourceReader: ResourceReader,
-    @IoDispatcher private val ioDispatcher: CoroutineDispatcher
+  private val settingsRepository: SettingsRepository,
+  private val resourceReader: ResourceReader,
+  @IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) : WordRepository {
 
   private val mutex = Mutex()
@@ -70,8 +70,8 @@ class MarkdownWordRepository(
               val filename = parts[0]
               // Security: Prevent path traversal by ignoring malformed filenames
               if (filename.contains("..") ||
-                  filename.startsWith("/") ||
-                  filename.startsWith("\\")) {
+                filename.startsWith("/") ||
+                filename.startsWith("\\")) {
                 continue
               }
 
@@ -106,34 +106,34 @@ class MarkdownWordRepository(
     // Enabled(onlyCode=true) -> code(selected languages)
 
     val result =
-        when (snippetSettings) {
-          is CodeSnippetSettings.Disabled -> {
-            index.filter { it.tags.contains("prose") }
-          }
-          is CodeSnippetSettings.Enabled -> {
-            val selectedLanguages =
-                snippetSettings.selectedLanguages.map { it.name.lowercase() }.toSet()
+      when (snippetSettings) {
+        is CodeSnippetSettings.Disabled -> {
+          index.filter { it.tags.contains("prose") }
+        }
+        is CodeSnippetSettings.Enabled -> {
+          val selectedLanguages =
+            snippetSettings.selectedLanguages.map { it.name.lowercase() }.toSet()
 
-            index.filter { metadata ->
-              val isProse = metadata.tags.contains("prose")
-              val isCode = metadata.tags.contains("code")
+          index.filter { metadata ->
+            val isProse = metadata.tags.contains("prose")
+            val isCode = metadata.tags.contains("code")
 
-              // Check if code matches selected language
-              val matchesLanguage =
-                  if (isCode) {
-                    metadata.tags.any { it in selectedLanguages }
-                  } else {
-                    false
-                  }
-
-              if (snippetSettings.onlyCodeSnippets) {
-                isCode && matchesLanguage
+            // Check if code matches selected language
+            val matchesLanguage =
+              if (isCode) {
+                metadata.tags.any { it in selectedLanguages }
               } else {
-                isProse || (isCode && matchesLanguage)
+                false
               }
+
+            if (snippetSettings.onlyCodeSnippets) {
+              isCode && matchesLanguage
+            } else {
+              isProse || (isCode && matchesLanguage)
             }
           }
         }
+      }
     cachedCandidates = result
     cachedSettings = settings
     return result
@@ -144,21 +144,21 @@ class MarkdownWordRepository(
       withContext(ioDispatcher) {
         val stream = resourceReader.open(filename)
         val content =
-            stream.bufferedReader().use { reader ->
-              val builder = StringBuilder()
-              val buffer = CharArray(8192)
-              var totalRead = 0
-              var n: Int
-              while (reader.read(buffer).also { n = it } != -1) {
-                totalRead += n
-                // Security: Prevent Denial of Service by limiting passage size
-                if (totalRead > MAX_PASSAGE_SIZE) {
-                  return@withContext listOf("Error: Passage too large: $filename")
-                }
-                builder.append(buffer, 0, n)
+          stream.bufferedReader().use { reader ->
+            val builder = StringBuilder()
+            val buffer = CharArray(8192)
+            var totalRead = 0
+            var n: Int
+            while (reader.read(buffer).also { n = it } != -1) {
+              totalRead += n
+              // Security: Prevent Denial of Service by limiting passage size
+              if (totalRead > MAX_PASSAGE_SIZE) {
+                return@withContext listOf("Error: Passage too large: $filename")
               }
-              builder.toString()
+              builder.append(buffer, 0, n)
             }
+            builder.toString()
+          }
         // No parsing needed, content is raw text
         TextWrapper.wrap(content)
       }

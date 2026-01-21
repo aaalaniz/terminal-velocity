@@ -12,114 +12,114 @@ import org.junit.jupiter.api.Test
 
 class MarkdownWordRepositoryTest {
 
-  private class FakeSettingsRepository(initialSettings: Settings = Settings()) :
-      SettingsRepository {
-    private val _settings = MutableStateFlow(initialSettings)
-    override val settings: StateFlow<Settings> = _settings.asStateFlow()
+    private class FakeSettingsRepository(initialSettings: Settings = Settings()) :
+        SettingsRepository {
+        private val _settings = MutableStateFlow(initialSettings)
+        override val settings: StateFlow<Settings> = _settings.asStateFlow()
 
-    override fun updateSettings(transform: (Settings) -> Settings) {
-      _settings.value = transform(_settings.value)
+        override fun updateSettings(transform: (Settings) -> Settings) {
+            _settings.value = transform(_settings.value)
+        }
     }
-  }
 
-  private class FakeResourceReader : ResourceReader {
-    val files = mutableMapOf<String, String>()
+    private class FakeResourceReader : ResourceReader {
+        val files = mutableMapOf<String, String>()
 
-    override fun open(path: String): InputStream {
-      return files[path]?.let { ByteArrayInputStream(it.toByteArray()) }
-          ?: throw IllegalArgumentException("Resource not found: $path")
+        override fun open(path: String): InputStream {
+            return files[path]?.let { ByteArrayInputStream(it.toByteArray()) }
+                ?: throw IllegalArgumentException("Resource not found: $path")
+        }
     }
-  }
 
-  @Test
-  fun `getPassage returns a valid passage from prose`() = runTest {
-    val reader = FakeResourceReader()
-    val testDispatcher = UnconfinedTestDispatcher(testScheduler)
+    @Test
+    fun `getPassage returns a valid passage from prose`() = runTest {
+        val reader = FakeResourceReader()
+        val testDispatcher = UnconfinedTestDispatcher(testScheduler)
 
-    // CSV format index
-    reader.files["passages.index"] = "prose_test.md,prose"
-    // Raw content
-    reader.files["passages/prose_test.md"] = "This is a test passage."
+        // CSV format index
+        reader.files["passages.index"] = "prose_test.md,prose"
+        // Raw content
+        reader.files["passages/prose_test.md"] = "This is a test passage."
 
-    val repository = MarkdownWordRepository(FakeSettingsRepository(), reader, testDispatcher)
-    val passage = repository.getPassage()
+        val repository = MarkdownWordRepository(FakeSettingsRepository(), reader, testDispatcher)
+        val passage = repository.getPassage()
 
-    assertEquals(listOf("This is a test passage."), passage)
-  }
+        assertEquals(listOf("This is a test passage."), passage)
+    }
 
-  @Test
-  fun `getPassage filters for code`() = runTest {
-    val reader = FakeResourceReader()
-    val testDispatcher = UnconfinedTestDispatcher(testScheduler)
+    @Test
+    fun `getPassage filters for code`() = runTest {
+        val reader = FakeResourceReader()
+        val testDispatcher = UnconfinedTestDispatcher(testScheduler)
 
-    // CSV format index
-    reader.files["passages.index"] =
-        """
+        // CSV format index
+        reader.files["passages.index"] =
+            """
         prose_test.md,prose
         code_kotlin.md,code,kotlin
         """
-            .trimIndent()
+                .trimIndent()
 
-    reader.files["passages/prose_test.md"] = "Prose content."
-    reader.files["passages/code_kotlin.md"] = "fun main() {}"
+        reader.files["passages/prose_test.md"] = "Prose content."
+        reader.files["passages/code_kotlin.md"] = "fun main() {}"
 
-    val settings =
-        Settings(
-            codeSnippetSettings =
-                CodeSnippetSettings.Enabled(
-                    onlyCodeSnippets = true, selectedLanguages = setOf(Language.KOTLIN)))
+        val settings =
+            Settings(
+                codeSnippetSettings =
+                    CodeSnippetSettings.Enabled(
+                        onlyCodeSnippets = true, selectedLanguages = setOf(Language.KOTLIN)))
 
-    val repository =
-        MarkdownWordRepository(FakeSettingsRepository(settings), reader, testDispatcher)
+        val repository =
+            MarkdownWordRepository(FakeSettingsRepository(settings), reader, testDispatcher)
 
-    // Should always return kotlin code
-    repeat(5) {
-      val passage = repository.getPassage()
-      assertEquals(listOf("fun main() {}"), passage)
+        // Should always return kotlin code
+        repeat(5) {
+            val passage = repository.getPassage()
+            assertEquals(listOf("fun main() {}"), passage)
+        }
     }
-  }
 
-  @Test
-  fun `ensureIndexLoaded ignores filenames with path traversal`() = runTest {
-    val reader = FakeResourceReader()
-    val testDispatcher = UnconfinedTestDispatcher(testScheduler)
+    @Test
+    fun `ensureIndexLoaded ignores filenames with path traversal`() = runTest {
+        val reader = FakeResourceReader()
+        val testDispatcher = UnconfinedTestDispatcher(testScheduler)
 
-    // CSV format index with path traversal attempt
-    reader.files["passages.index"] =
-        """
+        // CSV format index with path traversal attempt
+        reader.files["passages.index"] =
+            """
         ../../secrets.txt,prose
         valid_passage.md,prose
         """
-            .trimIndent()
+                .trimIndent()
 
-    reader.files["passages/valid_passage.md"] = "Safe content."
-    // We expect the repo to NOT ask for "passages/../../secrets.txt"
-    reader.files["passages/../../secrets.txt"] = "SECRET"
+        reader.files["passages/valid_passage.md"] = "Safe content."
+        // We expect the repo to NOT ask for "passages/../../secrets.txt"
+        reader.files["passages/../../secrets.txt"] = "SECRET"
 
-    val repository = MarkdownWordRepository(FakeSettingsRepository(), reader, testDispatcher)
+        val repository = MarkdownWordRepository(FakeSettingsRepository(), reader, testDispatcher)
 
-    // Verify that the repository didn't try to load the traversal path
-    // If the fix works, we should NEVER see "SECRET".
-    repeat(20) {
-      val result = repository.getPassage()
-      assertEquals(listOf("Safe content."), result, "Should not retrieve secret file")
+        // Verify that the repository didn't try to load the traversal path
+        // If the fix works, we should NEVER see "SECRET".
+        repeat(20) {
+            val result = repository.getPassage()
+            assertEquals(listOf("Safe content."), result, "Should not retrieve secret file")
+        }
     }
-  }
 
-  @Test
-  fun `getPassage handles excessively large files securely`() = runTest {
-    val reader = FakeResourceReader()
-    val testDispatcher = UnconfinedTestDispatcher(testScheduler)
+    @Test
+    fun `getPassage handles excessively large files securely`() = runTest {
+        val reader = FakeResourceReader()
+        val testDispatcher = UnconfinedTestDispatcher(testScheduler)
 
-    reader.files["passages.index"] = "large_passage.md,prose"
+        reader.files["passages.index"] = "large_passage.md,prose"
 
-    // Create a string larger than limit (100,000 chars)
-    val largeContent = "a".repeat(100_001)
-    reader.files["passages/large_passage.md"] = largeContent
+        // Create a string larger than limit (100,000 chars)
+        val largeContent = "a".repeat(100_001)
+        reader.files["passages/large_passage.md"] = largeContent
 
-    val repository = MarkdownWordRepository(FakeSettingsRepository(), reader, testDispatcher)
+        val repository = MarkdownWordRepository(FakeSettingsRepository(), reader, testDispatcher)
 
-    val result = repository.getPassage()
-    assertEquals(listOf("Error: Passage too large: passages/large_passage.md"), result)
-  }
+        val result = repository.getPassage()
+        assertEquals(listOf("Error: Passage too large: passages/large_passage.md"), result)
+    }
 }

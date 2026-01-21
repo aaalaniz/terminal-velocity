@@ -11,7 +11,6 @@ import kotlin.test.Test
 import kotlin.test.assertTrue
 import kotlinx.coroutines.test.runTest
 import xyz.alaniz.aaron.CircuitApp
-import xyz.alaniz.aaron.ui.foundation.MosaicNavDecoration
 import xyz.alaniz.aaron.ui.game.GameScreen
 
 class TitleScreenIntegrationTest {
@@ -41,7 +40,7 @@ class TitleScreenIntegrationTest {
             .build()
 
     runMosaicTest {
-      setContent { CircuitApp(TitleScreen, circuit, {}, MosaicNavDecoration()) }
+      setContent { CircuitApp(TitleScreen, circuit, {}) }
 
       // Initial State: Title Screen
       var snapshot = awaitSnapshot()
