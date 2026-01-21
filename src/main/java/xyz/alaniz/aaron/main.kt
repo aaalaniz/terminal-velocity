@@ -19,7 +19,12 @@ suspend fun main() {
     val scope = rememberCoroutineScope()
     var exit by remember { mutableStateOf(false) }
     val applicationGraph = createGraphFactory<ApplicationGraph.Factory>().create(appScope = scope)
-    CircuitApp(initialScreen = TitleScreen, circuit = applicationGraph.circuit, onRootPop = { exit = true })
+    CircuitApp(
+        initialScreen = TitleScreen,
+        circuit = applicationGraph.circuit,
+        onRootPop = { exit = true },
+        decoration = applicationGraph.navDecoration,
+    )
     // Mosaic exits if no effects are running, so we use this to keep it alive until the app exits
     if (!exit) {
       LaunchedEffect(Unit) { awaitCancellation() }
