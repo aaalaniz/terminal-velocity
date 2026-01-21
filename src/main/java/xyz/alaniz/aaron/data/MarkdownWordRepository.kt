@@ -67,6 +67,13 @@ class MarkdownWordRepository(
             val parts = line.split(",").map { it.trim() }
             if (parts.isNotEmpty()) {
               val filename = parts[0]
+              // Security: Prevent path traversal by ignoring malformed filenames
+              if (filename.contains("..") ||
+                  filename.startsWith("/") ||
+                  filename.startsWith("\\")) {
+                continue
+              }
+
               val tags = parts.drop(1).toSet()
               val fullPath = passagesDir + filename
               loadedIndex.add(PassageMetadata(filename = fullPath, tags = tags))
@@ -76,8 +83,8 @@ class MarkdownWordRepository(
         }
       } catch (e: Exception) {
         // If index fails to load, we can't do much.
-        // In a real app we might want to log this.
-        e.printStackTrace()
+        // In a TUI app, we avoid printing stack traces to stderr to prevent UI corruption
+        // and information leakage.
       }
     }
   }
