@@ -112,10 +112,10 @@ fun GameScreenUi(state: GameState, modifier: androidx.compose.ui.Modifier) {
               val filledCount = (totalProgress * barWidth).toInt().coerceIn(0, barWidth)
               val emptyCount = barWidth - filledCount
 
-              Text("[", textStyle = TextStyle.Dim)
-              Text("|".repeat(filledCount), color = Color.Green)
-              Text(".".repeat(emptyCount), textStyle = TextStyle.Dim)
-              Text("]", textStyle = TextStyle.Dim)
+              Text("▕", textStyle = TextStyle.Dim)
+              Text("█".repeat(filledCount), color = Color.Green)
+              Text("░".repeat(emptyCount), color = Color.Green, textStyle = TextStyle.Dim)
+              Text("▏", textStyle = TextStyle.Dim)
             }
             Spacer(Modifier.height(1))
 
