@@ -4,8 +4,7 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
 import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.SingleIn
-import java.security.SecureRandom
-import kotlin.random.asKotlinRandom
+import kotlin.random.Random
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -22,7 +21,6 @@ class MarkdownWordRepository(
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) : WordRepository {
 
-  private val secureRandom = SecureRandom().asKotlinRandom()
   private val mutex = Mutex()
   private var index: List<PassageMetadata> = emptyList()
 
@@ -39,14 +37,14 @@ class MarkdownWordRepository(
       // Fallback: try to find any prose if specific request failed
       val proseFallback = index.filter { it.tags.contains("prose") }
       if (proseFallback.isNotEmpty()) {
-        val fallback = proseFallback.random(secureRandom)
+        val fallback = proseFallback.random(Random)
         return loadPassageContent(fallback.filename)
       }
       // Ultimate fallback
       return listOf("Error: No passages found.")
     }
 
-    val selected = candidates.random(secureRandom)
+    val selected = candidates.random(Random)
     return loadPassageContent(selected.filename)
   }
 
