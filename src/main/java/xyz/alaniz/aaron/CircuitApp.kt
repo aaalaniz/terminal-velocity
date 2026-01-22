@@ -9,11 +9,7 @@ import com.slack.circuit.foundation.rememberCircuitNavigator
 import com.slack.circuit.runtime.screen.Screen
 
 @Composable
-fun CircuitApp(
-    initialScreen: Screen,
-    circuit: Circuit,
-    onRootPop: () -> Unit,
-) {
+fun CircuitApp(initialScreen: Screen, circuit: Circuit, onRootPop: () -> Unit) {
   val backStack = rememberSaveableBackStack(root = initialScreen)
   val navigator = rememberCircuitNavigator(backStack) { onRootPop() }
 
