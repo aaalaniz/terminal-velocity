@@ -29,6 +29,7 @@ This project is built in Kotlin using:
   ```bash
   ./gradlew test
   ```
+  This runs all unit and integration tests (including Mosaic integration tests).
 - **Check Formatting:**
   ```bash
   ./gradlew ktfmtCheck
