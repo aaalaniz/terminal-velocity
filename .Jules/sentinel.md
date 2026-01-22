@@ -7,3 +7,8 @@
 **Vulnerability:** Potential for Terminal Injection (ANSI Escape Injection) if passage content contains malicious control characters.
 **Learning:** TUI apps relying on string content must sanitize input to prevent UI spoofing or terminal state corruption.
 **Prevention:** Strip ANSI escape sequences in display/wrapping layers using regex validation.
+
+## 2026-01-22 - Unbounded Resource Loading (DoS)
+**Vulnerability:** `MarkdownWordRepository` used `readText()` to load passage files, which reads the entire file into memory at once. A malicious or accidentally large file in `passages/` could cause an `OutOfMemoryError` (DoS).
+**Learning:** Even "trusted" local resources should be treated with suspicion regarding size, as they can be modified or point to unexpected targets.
+**Prevention:** Implement streaming reads with an explicit character/byte limit (`MAX_PASSAGE_SIZE`) for all file loading operations.

@@ -26,6 +26,7 @@ class MarkdownWordRepository(
 
   private val indexFile = "passages.index"
   private val passagesDir = "passages/"
+  private val MAX_PASSAGE_SIZE = 100_000
 
   override suspend fun getPassage(): List<String> {
     ensureIndexLoaded()
@@ -129,7 +130,22 @@ class MarkdownWordRepository(
     return try {
       withContext(ioDispatcher) {
         val stream = resourceReader.open(filename)
-        val content = stream.bufferedReader().use { it.readText() }
+        val content =
+            stream.bufferedReader().use { reader ->
+              val builder = StringBuilder()
+              val buffer = CharArray(8192)
+              var totalRead = 0
+              var n: Int
+              while (reader.read(buffer).also { n = it } != -1) {
+                totalRead += n
+                // Security: Prevent Denial of Service by limiting passage size
+                if (totalRead > MAX_PASSAGE_SIZE) {
+                  return@withContext listOf("Error: Passage too large: $filename")
+                }
+                builder.append(buffer, 0, n)
+              }
+              builder.toString()
+            }
         // No parsing needed, content is raw text
         TextWrapper.wrap(content)
       }
