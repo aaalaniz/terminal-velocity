@@ -37,182 +37,182 @@ fun GameScreenUi(state: GameState, modifier: androidx.compose.ui.Modifier) {
     }
 
     Column(
-      modifier =
-        Modifier.onKeyEvent { keyEvent ->
-          when (keyEvent) {
-            CtrlC -> {
-              exitProcess(0)
-            }
-            Enter -> {
-              if (state.status == GameStatus.GAME_OVER) {
-                state.eventSink(GameEvent.NewGame)
-              }
-              true
-            }
-            Esc -> {
-              state.eventSink(GameEvent.ReturnToMenu)
-              true
-            }
-            else -> {
-              if (state.status == GameStatus.PLAYING) {
-                val key = keyEvent.key
-                if (key.length == 1) {
-                  state.eventSink(GameEvent.LetterTyped(key[0]))
-                  true
-                } else {
-                  false
+        modifier =
+            Modifier.onKeyEvent { keyEvent ->
+              when (keyEvent) {
+                CtrlC -> {
+                  exitProcess(0)
                 }
-              } else if (state.status == GameStatus.GAME_OVER) {
-                if (keyEvent == r || keyEvent == R) {
-                  state.eventSink(GameEvent.RetryGame)
-                  true
-                } else {
-                  false
-                }
-              } else {
-                false
-              }
-            }
-          }
-        }) {
-      if (state.status == GameStatus.COUNTDOWN) {
-        Text(GET_READY_ART, color = Color.Green)
-        Row {
-          for (i in 1..5) {
-            if (i <= state.countdownStage) {
-              Text(" ● ", color = Color.Red)
-            } else {
-              Text(" ○ ", textStyle = TextStyle.Dim)
-            }
-          }
-        }
-        Spacer(Modifier.height(1))
-        Footer(options = countdownFooterOptions)
-      } else if (state.status == GameStatus.PLAYING) {
-        Row {
-          Text("WPM: ", textStyle = TextStyle.Dim)
-          Text("${state.wpm.toInt()}  ", textStyle = TextStyle.Bold)
-
-          Text("Accuracy: ", textStyle = TextStyle.Dim)
-          Text("${state.accuracy.toInt()}%  ", textStyle = TextStyle.Bold)
-
-          Text("Progress: ", textStyle = TextStyle.Dim)
-          Text(
-            "${state.currentLineIndex + 1}/${state.passage.size}  ",
-            textStyle = TextStyle.Bold)
-
-          val lineProgress =
-            if (state.currentWord.isNotEmpty()) {
-              state.userInput.length.toFloat() / state.currentWord.length
-            } else {
-              0f
-            }
-          val totalProgress =
-            (state.currentLineIndex + lineProgress) / state.passage.size.coerceAtLeast(1)
-          val barWidth = 20
-          val filledCount = (totalProgress * barWidth).toInt().coerceIn(0, barWidth)
-          val emptyCount = barWidth - filledCount
-
-          Text("▕", textStyle = TextStyle.Dim)
-          Text("█".repeat(filledCount), color = Color.Green)
-          Text("░".repeat(emptyCount), color = Color.Green, textStyle = TextStyle.Dim)
-          Text("▏", textStyle = TextStyle.Dim)
-        }
-        Spacer(Modifier.height(1))
-
-        // Show a window of 5 lines
-        val windowSize = 5
-        val halfWindow = windowSize / 2
-        val startIndex = (state.currentLineIndex - halfWindow).coerceAtLeast(0)
-        val endIndex = (startIndex + windowSize).coerceAtMost(state.passage.size)
-
-        for (i in startIndex until endIndex) {
-          if (i == state.currentLineIndex) {
-            Row {
-              Text(state.userInput)
-              val remaining = state.currentWord.drop(state.userInput.length)
-              if (remaining.isNotEmpty()) {
-                if (state.isError) {
-                  val errorChar = remaining.take(1)
-                  if (errorChar == " ") {
-                    Text("_", color = Color.Red)
-                  } else {
-                    Text(errorChar, color = Color.Red)
+                Enter -> {
+                  if (state.status == GameStatus.GAME_OVER) {
+                    state.eventSink(GameEvent.NewGame)
                   }
-                  Text(remaining.drop(1), textStyle = TextStyle.Dim)
+                  true
+                }
+                Esc -> {
+                  state.eventSink(GameEvent.ReturnToMenu)
+                  true
+                }
+                else -> {
+                  if (state.status == GameStatus.PLAYING) {
+                    val key = keyEvent.key
+                    if (key.length == 1) {
+                      state.eventSink(GameEvent.LetterTyped(key[0]))
+                      true
+                    } else {
+                      false
+                    }
+                  } else if (state.status == GameStatus.GAME_OVER) {
+                    if (keyEvent == r || keyEvent == R) {
+                      state.eventSink(GameEvent.RetryGame)
+                      true
+                    } else {
+                      false
+                    }
+                  } else {
+                    false
+                  }
+                }
+              }
+            }) {
+          if (state.status == GameStatus.COUNTDOWN) {
+            Text(GET_READY_ART, color = Color.Green)
+            Row {
+              for (i in 1..5) {
+                if (i <= state.countdownStage) {
+                  Text(" ● ", color = Color.Red)
                 } else {
-                  val cursorChar = remaining.take(1)
-                  val afterCursor = remaining.drop(1)
-                  Text(
-                    cursorChar,
-                    textStyle = TextStyle.Bold,
-                    underlineStyle = UnderlineStyle.Straight)
-                  Text(afterCursor, textStyle = TextStyle.Dim)
+                  Text(" ○ ", textStyle = TextStyle.Dim)
                 }
               }
             }
-          } else if (i < state.currentLineIndex) {
-            // Completed lines
-            Text(state.passage[i])
-          } else {
-            // Future lines
-            Text(state.passage[i], textStyle = TextStyle.Dim)
+            Spacer(Modifier.height(1))
+            Footer(options = countdownFooterOptions)
+          } else if (state.status == GameStatus.PLAYING) {
+            Row {
+              Text("WPM: ", textStyle = TextStyle.Dim)
+              Text("${state.wpm.toInt()}  ", textStyle = TextStyle.Bold)
+
+              Text("Accuracy: ", textStyle = TextStyle.Dim)
+              Text("${state.accuracy.toInt()}%  ", textStyle = TextStyle.Bold)
+
+              Text("Progress: ", textStyle = TextStyle.Dim)
+              Text(
+                  "${state.currentLineIndex + 1}/${state.passage.size}  ",
+                  textStyle = TextStyle.Bold)
+
+              val lineProgress =
+                  if (state.currentWord.isNotEmpty()) {
+                    state.userInput.length.toFloat() / state.currentWord.length
+                  } else {
+                    0f
+                  }
+              val totalProgress =
+                  (state.currentLineIndex + lineProgress) / state.passage.size.coerceAtLeast(1)
+              val barWidth = 20
+              val filledCount = (totalProgress * barWidth).toInt().coerceIn(0, barWidth)
+              val emptyCount = barWidth - filledCount
+
+              Text("▕", textStyle = TextStyle.Dim)
+              Text("█".repeat(filledCount), color = Color.Green)
+              Text("░".repeat(emptyCount), color = Color.Green, textStyle = TextStyle.Dim)
+              Text("▏", textStyle = TextStyle.Dim)
+            }
+            Spacer(Modifier.height(1))
+
+            // Show a window of 5 lines
+            val windowSize = 5
+            val halfWindow = windowSize / 2
+            val startIndex = (state.currentLineIndex - halfWindow).coerceAtLeast(0)
+            val endIndex = (startIndex + windowSize).coerceAtMost(state.passage.size)
+
+            for (i in startIndex until endIndex) {
+              if (i == state.currentLineIndex) {
+                Row {
+                  Text(state.userInput)
+                  val remaining = state.currentWord.drop(state.userInput.length)
+                  if (remaining.isNotEmpty()) {
+                    if (state.isError) {
+                      val errorChar = remaining.take(1)
+                      if (errorChar == " ") {
+                        Text("_", color = Color.Red)
+                      } else {
+                        Text(errorChar, color = Color.Red)
+                      }
+                      Text(remaining.drop(1), textStyle = TextStyle.Dim)
+                    } else {
+                      val cursorChar = remaining.take(1)
+                      val afterCursor = remaining.drop(1)
+                      Text(
+                          cursorChar,
+                          textStyle = TextStyle.Bold,
+                          underlineStyle = UnderlineStyle.Straight)
+                      Text(afterCursor, textStyle = TextStyle.Dim)
+                    }
+                  }
+                }
+              } else if (i < state.currentLineIndex) {
+                // Completed lines
+                Text(state.passage[i])
+              } else {
+                // Future lines
+                Text(state.passage[i], textStyle = TextStyle.Dim)
+              }
+            }
+            Spacer(Modifier.height(1))
+            Footer(options = playingFooterOptions)
+          } else if (state.status == GameStatus.GAME_OVER) {
+            val totalSeconds = state.elapsedTime / 1000
+            val minutes = totalSeconds / 60
+            val seconds = totalSeconds % 60
+
+            Text(COMPLETE_ART, color = Color.Green)
+            Spacer(Modifier.height(1))
+
+            Row {
+              Column {
+                Text("Final WPM", textStyle = TextStyle.Dim)
+                Text("${state.wpm.toInt()}", textStyle = TextStyle.Bold, color = Color.Green)
+              }
+              Spacer(Modifier.width(4))
+              Column {
+                Text("Accuracy", textStyle = TextStyle.Dim)
+                Text("${state.accuracy.toInt()}%", textStyle = TextStyle.Bold, color = Color.Green)
+              }
+              Spacer(Modifier.width(4))
+              Column {
+                Text("Time", textStyle = TextStyle.Dim)
+                Text("${minutes}m ${seconds}s", textStyle = TextStyle.Bold, color = Color.Green)
+              }
+            }
+            Spacer(Modifier.height(1))
+            Footer(options = gameOverFooterOptions)
           }
         }
-        Spacer(Modifier.height(1))
-        Footer(options = playingFooterOptions)
-      } else if (state.status == GameStatus.GAME_OVER) {
-        val totalSeconds = state.elapsedTime / 1000
-        val minutes = totalSeconds / 60
-        val seconds = totalSeconds % 60
-
-        Text(COMPLETE_ART, color = Color.Green)
-        Spacer(Modifier.height(1))
-
-        Row {
-          Column {
-            Text("Final WPM", textStyle = TextStyle.Dim)
-            Text("${state.wpm.toInt()}", textStyle = TextStyle.Bold, color = Color.Green)
-          }
-          Spacer(Modifier.width(4))
-          Column {
-            Text("Accuracy", textStyle = TextStyle.Dim)
-            Text("${state.accuracy.toInt()}%", textStyle = TextStyle.Bold, color = Color.Green)
-          }
-          Spacer(Modifier.width(4))
-          Column {
-            Text("Time", textStyle = TextStyle.Dim)
-            Text("${minutes}m ${seconds}s", textStyle = TextStyle.Bold, color = Color.Green)
-          }
-        }
-        Spacer(Modifier.height(1))
-        Footer(options = gameOverFooterOptions)
-      }
-    }
   }
 }
 
 // Extracted to avoid reallocation on every recomposition/keystroke
 private val countdownFooterOptions =
-  listOf(
-    FooterOption("Esc", "Back"),
-  )
+    listOf(
+        FooterOption("Esc", "Back"),
+    )
 
 private val playingFooterOptions =
-  listOf(
-    FooterOption("Esc", "Menu"),
-    FooterOption("Ctrl-C", "Quit"),
-  )
+    listOf(
+        FooterOption("Esc", "Menu"),
+        FooterOption("Ctrl-C", "Quit"),
+    )
 
 private val gameOverFooterOptions =
-  listOf(
-    FooterOption("Enter", "New Passage"),
-    FooterOption("R", "Retry"),
-    FooterOption("Esc", "Menu"),
-  )
+    listOf(
+        FooterOption("Enter", "New Passage"),
+        FooterOption("R", "Retry"),
+        FooterOption("Esc", "Menu"),
+    )
 
 private const val GET_READY_ART =
-  """
+    """
    ______     __     ____                 __      __
   / ____/__  / /_   / __ \___  ____ _____/ /_  __/ /
  / / __/ _ \/ __/  / /_/ / _ \/ __ `/ __  / / / / /
@@ -222,7 +222,7 @@ private const val GET_READY_ART =
 """
 
 private const val COMPLETE_ART =
-  """
+    """
    ______                      __     __
   / ____/___  ____ ___  ____  / /__  / /____
  / /   / __ \/ __ `__ \/ __ \/ / _ \/ __/ _ \
