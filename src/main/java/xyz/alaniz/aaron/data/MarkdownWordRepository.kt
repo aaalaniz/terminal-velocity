@@ -23,6 +23,8 @@ class MarkdownWordRepository(
 
   private val mutex = Mutex()
   private var index: List<PassageMetadata> = emptyList()
+  @Volatile private var cachedSettings: Settings? = null
+  @Volatile private var cachedCandidates: List<PassageMetadata>? = null
 
   private val indexFile = "passages.index"
   private val passagesDir = "passages/"
@@ -88,6 +90,13 @@ class MarkdownWordRepository(
   }
 
   private fun filterPassages(settings: Settings): List<PassageMetadata> {
+    val currentCachedSettings = cachedSettings
+    if (currentCachedSettings == settings) {
+      cachedCandidates?.let {
+        return it
+      }
+    }
+
     val snippetSettings = settings.codeSnippetSettings
 
     // Logic:
@@ -95,34 +104,38 @@ class MarkdownWordRepository(
     // Enabled(onlyCode=false) -> prose + code(selected languages)
     // Enabled(onlyCode=true) -> code(selected languages)
 
-    return when (snippetSettings) {
-      is CodeSnippetSettings.Disabled -> {
-        index.filter { it.tags.contains("prose") }
-      }
-      is CodeSnippetSettings.Enabled -> {
-        val selectedLanguages =
-            snippetSettings.selectedLanguages.map { it.name.lowercase() }.toSet()
+    val result =
+        when (snippetSettings) {
+          is CodeSnippetSettings.Disabled -> {
+            index.filter { it.tags.contains("prose") }
+          }
+          is CodeSnippetSettings.Enabled -> {
+            val selectedLanguages =
+                snippetSettings.selectedLanguages.map { it.name.lowercase() }.toSet()
 
-        index.filter { metadata ->
-          val isProse = metadata.tags.contains("prose")
-          val isCode = metadata.tags.contains("code")
+            index.filter { metadata ->
+              val isProse = metadata.tags.contains("prose")
+              val isCode = metadata.tags.contains("code")
 
-          // Check if code matches selected language
-          val matchesLanguage =
-              if (isCode) {
-                metadata.tags.any { it in selectedLanguages }
+              // Check if code matches selected language
+              val matchesLanguage =
+                  if (isCode) {
+                    metadata.tags.any { it in selectedLanguages }
+                  } else {
+                    false
+                  }
+
+              if (snippetSettings.onlyCodeSnippets) {
+                isCode && matchesLanguage
               } else {
-                false
+                isProse || (isCode && matchesLanguage)
               }
-
-          if (snippetSettings.onlyCodeSnippets) {
-            isCode && matchesLanguage
-          } else {
-            isProse || (isCode && matchesLanguage)
+            }
           }
         }
-      }
-    }
+    cachedCandidates = result
+    cachedSettings = settings
+    return result
   }
 
   private suspend fun loadPassageContent(filename: String): List<String> {
