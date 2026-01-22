@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import com.jakewharton.mosaic.layout.height
 import com.jakewharton.mosaic.layout.onKeyEvent
+import com.jakewharton.mosaic.layout.width
 import com.jakewharton.mosaic.modifier.Modifier
 import com.jakewharton.mosaic.ui.Color
 import com.jakewharton.mosaic.ui.Column
@@ -165,11 +166,25 @@ fun GameScreenUi(state: GameState, modifier: androidx.compose.ui.Modifier) {
             val minutes = totalSeconds / 60
             val seconds = totalSeconds % 60
 
-            Text("Passage Complete!", color = Color.Green)
-            Text("")
-            Text("Final WPM: ${state.wpm.toInt()}")
-            Text("Accuracy: ${state.accuracy.toInt()}%")
-            Text("Time: ${minutes}m ${seconds}s")
+            Text(COMPLETE_ART, color = Color.Green)
+            Spacer(Modifier.height(1))
+
+            Row {
+              Column {
+                Text("Final WPM", textStyle = TextStyle.Dim)
+                Text("${state.wpm.toInt()}", textStyle = TextStyle.Bold, color = Color.Green)
+              }
+              Spacer(Modifier.width(4))
+              Column {
+                Text("Accuracy", textStyle = TextStyle.Dim)
+                Text("${state.accuracy.toInt()}%", textStyle = TextStyle.Bold, color = Color.Green)
+              }
+              Spacer(Modifier.width(4))
+              Column {
+                Text("Time", textStyle = TextStyle.Dim)
+                Text("${minutes}m ${seconds}s", textStyle = TextStyle.Bold, color = Color.Green)
+              }
+            }
             Spacer(Modifier.height(1))
             Footer(options = gameOverFooterOptions)
           }
@@ -204,4 +219,14 @@ private const val GET_READY_ART =
 / /_/ /  __/ /_   / _, _/  __/ /_/ / /_/ / /_/ /_/
 \____/\___/\__/  /_/ |_|\___/\__,_/\__,_/\__, (_)
                                         /____/
+"""
+
+private const val COMPLETE_ART =
+    """
+   ______                      __     __
+  / ____/___  ____ ___  ____  / /__  / /____
+ / /   / __ \/ __ `__ \/ __ \/ / _ \/ __/ _ \
+/ /___/ /_/ / / / / / / /_/ / /  __/ /_/  __/
+\____/\____/_/ /_/ /_/ .___/_/\___/\__/\___/
+                    /_/
 """
