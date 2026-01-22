@@ -105,4 +105,21 @@ class MarkdownWordRepositoryTest {
       assertEquals(listOf("Safe content."), result, "Should not retrieve secret file")
     }
   }
+
+  @Test
+  fun `getPassage handles excessively large files securely`() = runTest {
+    val reader = FakeResourceReader()
+    val testDispatcher = UnconfinedTestDispatcher(testScheduler)
+
+    reader.files["passages.index"] = "large_passage.md,prose"
+
+    // Create a string larger than limit (100,000 chars)
+    val largeContent = "a".repeat(100_001)
+    reader.files["passages/large_passage.md"] = largeContent
+
+    val repository = MarkdownWordRepository(FakeSettingsRepository(), reader, testDispatcher)
+
+    val result = repository.getPassage()
+    assertEquals(listOf("Error: Passage too large: passages/large_passage.md"), result)
+  }
 }
