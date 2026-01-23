@@ -28,12 +28,10 @@ dependencies {
   ksp(libs.circuit.codegen)
   implementation(libs.circuit.codegen.annotations)
   runtimeOnly(compose.desktop.currentOs)
-  testImplementation(libs.junit.jupiter)
   testImplementation(libs.kotlin.test)
   testImplementation(libs.circuit.test)
   testImplementation(libs.coroutines.test)
   testImplementation(libs.mosaic.testing)
-  testImplementation(libs.truth)
 }
 
 tasks.withType<Test> { useJUnitPlatform() }

@@ -1,7 +1,7 @@
 package xyz.alaniz.aaron.ui.foundation
 
-import com.google.common.truth.Truth.assertThat
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class TextWrapperTest {
 
@@ -9,7 +9,7 @@ class TextWrapperTest {
   fun `wrap does not wrap short lines`() {
     val input = "Short line"
     val expected = listOf("Short line")
-    assertThat(TextWrapper.wrap(input, 20)).isEqualTo(expected)
+    assertEquals(expected, TextWrapper.wrap(input, 20))
   }
 
   @Test
@@ -18,14 +18,14 @@ class TextWrapperTest {
     val expected = listOf("This is a long line", "that should be", "wrapped")
     // "This is a long line" is 19 chars.
     // "that should be" is 14 chars.
-    assertThat(TextWrapper.wrap(input, 20)).isEqualTo(expected)
+    assertEquals(expected, TextWrapper.wrap(input, 20))
   }
 
   @Test
   fun `wrap preserves existing newlines`() {
     val input = "Line 1\nLine 2"
     val expected = listOf("Line 1", "Line 2")
-    assertThat(TextWrapper.wrap(input, 20)).isEqualTo(expected)
+    assertEquals(expected, TextWrapper.wrap(input, 20))
   }
 
   @Test
@@ -37,14 +37,14 @@ class TextWrapperTest {
     // "five six" (8)
     // "seven" (5)
     val expected = listOf("One two", "three four", "five six", "seven")
-    assertThat(TextWrapper.wrap(input, 10)).isEqualTo(expected)
+    assertEquals(expected, TextWrapper.wrap(input, 10))
   }
 
   @Test
   fun `wrap forces break if no space found`() {
     val input = "abcdefghijklmnopqrstuvwxyz"
     val expected = listOf("abcdefghij", "klmnopqrst", "uvwxyz")
-    assertThat(TextWrapper.wrap(input, 10)).isEqualTo(expected)
+    assertEquals(expected, TextWrapper.wrap(input, 10))
   }
 
   @Test
@@ -57,6 +57,6 @@ class TextWrapperTest {
     // "Line two is" (11)
     // "short" (5)
     val expected = listOf("Line one is", "long enough to", "wrap", "Line two is", "short")
-    assertThat(TextWrapper.wrap(input, 15)).isEqualTo(expected)
+    assertEquals(expected, TextWrapper.wrap(input, 15))
   }
 }

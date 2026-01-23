@@ -1,9 +1,9 @@
 package xyz.alaniz.aaron.ui.game
 
 import androidx.compose.ui.Modifier as ComposeModifier
-import com.google.common.truth.Truth.assertThat
 import com.jakewharton.mosaic.testing.runMosaicTest
 import kotlin.test.Test
+import kotlin.test.assertContains
 import kotlinx.coroutines.test.runTest
 
 class GameScreenUiRenderingTest {
@@ -41,8 +41,8 @@ class GameScreenUiRenderingTest {
       val expectedFilled = "█".repeat(12)
       val expectedEmpty = "░".repeat(8)
 
-      assertThat(snapshot).contains(expectedFilled)
-      assertThat(snapshot).contains(expectedEmpty)
+      assertContains(snapshot, expectedFilled)
+      assertContains(snapshot, expectedEmpty)
     }
   }
 
@@ -73,7 +73,7 @@ class GameScreenUiRenderingTest {
       val snapshot = awaitSnapshot()
 
       // We expect the space cursor to be rendered as a middle dot '·'
-      assertThat(snapshot).contains("·")
+      assertContains(snapshot, "·")
     }
   }
 }

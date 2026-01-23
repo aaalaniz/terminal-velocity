@@ -1,10 +1,12 @@
 package xyz.alaniz.aaron.ui.game
 
-import com.google.common.truth.Truth.assertThat
 import com.slack.circuit.test.FakeNavigator
 import com.slack.circuit.test.test
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 import kotlinx.coroutines.test.runTest
-import org.junit.jupiter.api.Test
 import xyz.alaniz.aaron.data.WordRepository
 
 class GamePresenterTest {
@@ -26,8 +28,8 @@ class GamePresenterTest {
         state = awaitItem() as GameState.State
       }
 
-      assertThat(state.status).isEqualTo(GameStatus.PLAYING)
-      assertThat(state.currentWord).isEqualTo("kotlin")
+      assertEquals(GameStatus.PLAYING, state.status)
+      assertEquals("kotlin", state.currentWord)
     }
   }
 
@@ -50,15 +52,15 @@ class GamePresenterTest {
       while (state.userInput != "k" && !state.isError) {
         state = awaitItem() as GameState.State
       }
-      assertThat(state.userInput).isEqualTo("k")
-      assertThat(state.isError).isFalse()
+      assertEquals("k", state.userInput)
+      assertFalse(state.isError)
 
       // Type 'o'
       state.eventSink(GameEvent.LetterTyped('o'))
       while (state.userInput != "ko" && !state.isError) {
         state = awaitItem() as GameState.State
       }
-      assertThat(state.userInput).isEqualTo("ko")
+      assertEquals("ko", state.userInput)
     }
   }
 
@@ -79,8 +81,8 @@ class GamePresenterTest {
       while (!state.isError) {
         state = awaitItem() as GameState.State
       }
-      assertThat(state.isError).isTrue()
-      assertThat(state.userInput).isEmpty()
+      assertTrue(state.isError)
+      assertTrue(state.userInput.isEmpty())
     }
   }
 
@@ -114,8 +116,8 @@ class GamePresenterTest {
             }
           }
 
-      assertThat(state.status).isEqualTo(GameStatus.GAME_OVER)
-      assertThat(state.score).isEqualTo(1)
+      assertEquals(GameStatus.GAME_OVER, state.status)
+      assertEquals(1, state.score)
     }
   }
 
@@ -148,9 +150,9 @@ class GamePresenterTest {
         state = awaitItem() as GameState.State
       }
 
-      assertThat(state.status).isEqualTo(GameStatus.PLAYING)
-      assertThat(state.userInput).isEmpty()
-      assertThat(state.score).isEqualTo(0)
+      assertEquals(GameStatus.PLAYING, state.status)
+      assertTrue(state.userInput.isEmpty())
+      assertEquals(0, state.score)
     }
   }
 }

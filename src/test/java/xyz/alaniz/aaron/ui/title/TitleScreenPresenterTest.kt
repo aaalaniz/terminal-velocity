@@ -1,10 +1,10 @@
 package xyz.alaniz.aaron.ui.title
 
-import com.google.common.truth.Truth.assertThat
 import com.slack.circuit.test.FakeNavigator
 import com.slack.circuit.test.test
+import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlinx.coroutines.test.runTest
-import org.junit.jupiter.api.Test
 import xyz.alaniz.aaron.ui.game.GameScreen
 import xyz.alaniz.aaron.ui.settings.SettingsScreen
 
@@ -16,9 +16,9 @@ class TitleScreenPresenterTest {
 
     presenter.test {
       val initialState = awaitItem()
-      assertThat(initialState.selectedTitleScreenOptionIndex).isEqualTo(0)
-      assertThat(initialState.selectableOptions).hasSize(3)
-      assertThat(initialState.selectableOptions[0]).isEqualTo(TitleScreenOption.StartGame)
+      assertEquals(0, initialState.selectedTitleScreenOptionIndex)
+      assertEquals(3, initialState.selectableOptions.size)
+      assertEquals(TitleScreenOption.StartGame, initialState.selectableOptions[0])
     }
   }
 
@@ -30,7 +30,7 @@ class TitleScreenPresenterTest {
     presenter.test {
       val initialState = awaitItem()
       initialState.onEvent(TitleScreenEvent.NextTitleOption)
-      assertThat(awaitItem().selectedTitleScreenOptionIndex).isEqualTo(1)
+      assertEquals(1, awaitItem().selectedTitleScreenOptionIndex)
     }
   }
 
@@ -53,7 +53,7 @@ class TitleScreenPresenterTest {
       state.onEvent(TitleScreenEvent.NextTitleOption)
       expectNoEvents()
 
-      assertThat(state.selectedTitleScreenOptionIndex).isEqualTo(2)
+      assertEquals(2, state.selectedTitleScreenOptionIndex)
     }
   }
 
@@ -68,7 +68,7 @@ class TitleScreenPresenterTest {
       state = awaitItem() // Consume index 1
 
       state.onEvent(TitleScreenEvent.PreviousTitleOption)
-      assertThat(awaitItem().selectedTitleScreenOptionIndex).isEqualTo(0)
+      assertEquals(0, awaitItem().selectedTitleScreenOptionIndex)
     }
   }
 
@@ -85,7 +85,7 @@ class TitleScreenPresenterTest {
       // If it doesn't emit, awaitItem will timeout.
       // In the presenter, if index is 0, (0-1).coerceAtLeast(0) is 0. No change.
       expectNoEvents()
-      assertThat(state.selectedTitleScreenOptionIndex).isEqualTo(0)
+      assertEquals(0, state.selectedTitleScreenOptionIndex)
     }
   }
 
@@ -97,7 +97,7 @@ class TitleScreenPresenterTest {
     presenter.test {
       val initialState = awaitItem()
       initialState.onEvent(TitleScreenEvent.TitleOptionSelected(TitleScreenOption.StartGame))
-      assertThat(navigator.awaitNextScreen()).isEqualTo(GameScreen)
+      assertEquals(GameScreen, navigator.awaitNextScreen())
     }
   }
 
@@ -109,7 +109,7 @@ class TitleScreenPresenterTest {
     presenter.test {
       val initialState = awaitItem()
       initialState.onEvent(TitleScreenEvent.TitleOptionSelected(TitleScreenOption.Settings))
-      assertThat(navigator.awaitNextScreen()).isEqualTo(SettingsScreen)
+      assertEquals(SettingsScreen, navigator.awaitNextScreen())
     }
   }
 
