@@ -70,8 +70,8 @@ class TextWrapperControlCharTest {
 
   @Test
   fun `wrap removes multiple control characters`() {
-      val input = "\u0001Start\u0002 \u0003End\u0004"
-      val expected = listOf("Start End")
-      assertThat(TextWrapper.wrap(input)).isEqualTo(expected)
+    val input = "\u0001Start\u0002 \u0003End\u0004"
+    val expected = listOf("Start End")
+    assertThat(TextWrapper.wrap(input)).isEqualTo(expected)
   }
 }
