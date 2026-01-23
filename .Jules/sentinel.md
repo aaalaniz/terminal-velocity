@@ -12,3 +12,8 @@
 **Vulnerability:** `MarkdownWordRepository` used `readText()` to load passage files, which reads the entire file into memory at once. A malicious or accidentally large file in `passages/` could cause an `OutOfMemoryError` (DoS).
 **Learning:** Even "trusted" local resources should be treated with suspicion regarding size, as they can be modified or point to unexpected targets.
 **Prevention:** Implement streaming reads with an explicit character/byte limit (`MAX_PASSAGE_SIZE`) for all file loading operations.
+
+## 2026-01-24 - Incomplete Terminal Injection Sanitization
+**Vulnerability:** `TextWrapper` stripped ANSI codes but allowed other control characters (e.g., Bell `\a`, Backspace `\b`). This allowed "weak" terminal injection (beep spam, text overwriting) even after ANSI sanitization.
+**Learning:** Stripping ANSI codes (`\u001B...`) is necessary but not sufficient for TUI security; all non-printable control characters (ASCII 0-31, 127) must be sanitized unless explicitly needed (like newline).
+**Prevention:** Use a comprehensive regex to strip all unwanted control characters (`[\x00-\x1F\x7F]`) in addition to ANSI sequences.
