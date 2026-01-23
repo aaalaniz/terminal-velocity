@@ -1,15 +1,13 @@
 package xyz.alaniz.aaron.ui.foundation
 
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class TextWrapperControlCharTest {
 
   @Test
   fun `wrap removes control characters`() {
     val input = "Hello\u0007 World\u0008!"
-    // Currently, this will fail because they are NOT removed.
-    // Expected behavior after fix: "Hello World!"
     val expected = listOf("Hello World!")
     val actual = TextWrapper.wrap(input)
     assertEquals(expected, actual)

@@ -1,10 +1,11 @@
 package xyz.alaniz.aaron.ui.title
 
-import com.google.common.truth.Truth.assertThat
 import com.jakewharton.mosaic.terminal.KeyboardEvent
 import com.jakewharton.mosaic.testing.runMosaicTest
 import dev.zacsweers.metro.createGraphFactory
 import kotlin.test.Test
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 import kotlinx.coroutines.test.runTest
 import xyz.alaniz.aaron.CircuitApp
 import xyz.alaniz.aaron.di.ApplicationGraph
@@ -19,18 +20,18 @@ class TitleScreenIntegrationTest {
 
       // Initial State: Title Screen
       var snapshot = awaitSnapshot()
-      assertThat(snapshot).contains("Start game")
-      assertThat(snapshot).contains("> Start game")
+      assertTrue(snapshot.contains("Start game"), "Should show Start Game option")
+      assertTrue(snapshot.contains("> Start game"), "Start Game should be selected initially")
 
       // Move down to Settings using 'j'
       sendKeyEvent(KeyboardEvent('j'.code))
       snapshot = awaitSnapshot()
-      assertThat(snapshot).contains("> Settings")
+      assertTrue(snapshot.contains("> Settings"), "Settings should be selected after moving down")
 
       // Move up to Start Game using 'k'
       sendKeyEvent(KeyboardEvent('k'.code))
       snapshot = awaitSnapshot()
-      assertThat(snapshot).contains("> Start game")
+      assertTrue(snapshot.contains("> Start game"), "Start Game should be selected after moving up")
 
       // Select Start Game using Enter (13 - CR)
       sendKeyEvent(KeyboardEvent(13))
@@ -38,7 +39,7 @@ class TitleScreenIntegrationTest {
       // Wait for navigation
       snapshot = awaitSnapshot()
       // TODO Validate the game screen content
-      assertThat(snapshot).isNotEmpty()
+      assertFalse(snapshot.isEmpty())
     }
   }
 }
