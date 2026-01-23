@@ -1,51 +1,49 @@
 package xyz.alaniz.aaron.ui.foundation
 
-import kotlin.test.assertEquals
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
+import com.google.common.truth.Truth.assertThat
 import org.junit.jupiter.api.Test
 
 class KeyEventsTest {
 
   @Test
   fun `Enter key event is correct`() {
-    assertEquals("Enter", KeyEvents.Enter.key)
-    assertFalse(KeyEvents.Enter.ctrl)
+    assertThat(KeyEvents.Enter.key).isEqualTo("Enter")
+    assertThat(KeyEvents.Enter.ctrl).isFalse()
   }
 
   @Test
   fun `ArrowUp key event is correct`() {
-    assertEquals("ArrowUp", KeyEvents.ArrowUp.key)
-    assertFalse(KeyEvents.ArrowUp.ctrl)
+    assertThat(KeyEvents.ArrowUp.key).isEqualTo("ArrowUp")
+    assertThat(KeyEvents.ArrowUp.ctrl).isFalse()
   }
 
   @Test
   fun `k key event is correct`() {
-    assertEquals("k", KeyEvents.k.key)
-    assertFalse(KeyEvents.k.ctrl)
+    assertThat(KeyEvents.k.key).isEqualTo("k")
+    assertThat(KeyEvents.k.ctrl).isFalse()
   }
 
   @Test
   fun `ArrowDown key event is correct`() {
-    assertEquals("ArrowDown", KeyEvents.ArrowDown.key)
-    assertFalse(KeyEvents.ArrowDown.ctrl)
+    assertThat(KeyEvents.ArrowDown.key).isEqualTo("ArrowDown")
+    assertThat(KeyEvents.ArrowDown.ctrl).isFalse()
   }
 
   @Test
   fun `j key event is correct`() {
-    assertEquals("j", KeyEvents.j.key)
-    assertFalse(KeyEvents.j.ctrl)
+    assertThat(KeyEvents.j.key).isEqualTo("j")
+    assertThat(KeyEvents.j.ctrl).isFalse()
   }
 
   @Test
   fun `b key event is correct`() {
-    assertEquals("b", KeyEvents.b.key)
-    assertFalse(KeyEvents.b.ctrl)
+    assertThat(KeyEvents.b.key).isEqualTo("b")
+    assertThat(KeyEvents.b.ctrl).isFalse()
   }
 
   @Test
   fun `CtrlC key event is correct`() {
-    assertEquals("c", KeyEvents.CtrlC.key)
-    assertTrue(KeyEvents.CtrlC.ctrl)
+    assertThat(KeyEvents.CtrlC.key).isEqualTo("c")
+    assertThat(KeyEvents.CtrlC.ctrl).isTrue()
   }
 }

@@ -33,6 +33,7 @@ dependencies {
   testImplementation(libs.circuit.test)
   testImplementation(libs.coroutines.test)
   testImplementation(libs.mosaic.testing)
+  testImplementation(libs.truth)
 }
 
 tasks.withType<Test> { useJUnitPlatform() }
