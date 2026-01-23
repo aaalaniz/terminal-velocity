@@ -114,8 +114,8 @@ fun GameScreenUi(state: GameState, modifier: androidx.compose.ui.Modifier) {
               val emptyCount = barWidth - filledCount
 
               Text("▕", textStyle = TextStyle.Dim)
-              Text("█".repeat(filledCount), color = Color.Green)
-              Text("░".repeat(emptyCount), color = Color.Green, textStyle = TextStyle.Dim)
+              Text(getFilledBar(filledCount), color = Color.Green)
+              Text(getEmptyBar(emptyCount), color = Color.Green, textStyle = TextStyle.Dim)
               Text("▏", textStyle = TextStyle.Dim)
             }
             Spacer(Modifier.height(1))
@@ -190,6 +190,18 @@ fun GameScreenUi(state: GameState, modifier: androidx.compose.ui.Modifier) {
           }
         }
   }
+}
+
+// Pre-computed progress bar strings to avoid repeated allocation during rendering loop (hot path)
+private val FILLED_BARS = Array(21) { "█".repeat(it) }
+private val EMPTY_BARS = Array(21) { "░".repeat(it) }
+
+private fun getFilledBar(count: Int): String {
+  return if (count in FILLED_BARS.indices) FILLED_BARS[count] else "█".repeat(count)
+}
+
+private fun getEmptyBar(count: Int): String {
+  return if (count in EMPTY_BARS.indices) EMPTY_BARS[count] else "░".repeat(count)
 }
 
 // Extracted to avoid reallocation on every recomposition/keystroke
