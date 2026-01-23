@@ -143,10 +143,14 @@ fun GameScreenUi(state: GameState, modifier: androidx.compose.ui.Modifier) {
                     } else {
                       val cursorChar = remaining.take(1)
                       val afterCursor = remaining.drop(1)
-                      Text(
-                          cursorChar,
-                          textStyle = TextStyle.Bold,
-                          underlineStyle = UnderlineStyle.Straight)
+                      if (cursorChar == " ") {
+                        Text("·", textStyle = TextStyle.Bold)
+                      } else {
+                        Text(
+                            cursorChar,
+                            textStyle = TextStyle.Bold,
+                            underlineStyle = UnderlineStyle.Straight)
+                      }
                       Text(afterCursor, textStyle = TextStyle.Dim)
                     }
                   }
