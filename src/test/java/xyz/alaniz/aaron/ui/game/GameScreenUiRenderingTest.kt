@@ -19,32 +19,34 @@ class GameScreenUiRenderingTest {
       // filledCount = 0.6 * 20 = 12
       // emptyCount = 20 - 12 = 8
 
-      val state = GameState.State(
-        currentWord = currentWord,
-        userInput = userInput,
-        score = 0,
-        status = GameStatus.PLAYING,
-        isError = false,
-        wpm = 0.0,
-        accuracy = 100.0,
-        elapsedTime = 0,
-        passage = passage,
-        currentLineIndex = 0,
-        countdownStage = 0,
-        eventSink = {}
-      )
+      val state =
+          GameState.State(
+              currentWord = currentWord,
+              userInput = userInput,
+              score = 0,
+              status = GameStatus.PLAYING,
+              isError = false,
+              wpm = 0.0,
+              accuracy = 100.0,
+              elapsedTime = 0,
+              passage = passage,
+              currentLineIndex = 0,
+              countdownStage = 0,
+              eventSink = {})
 
-      setContent {
-        GameScreenUi(state, ComposeModifier)
-      }
+      setContent { GameScreenUi(state, ComposeModifier) }
 
       val snapshot = awaitSnapshot()
       // filledCount = 12, emptyCount = 8
       val expectedFilled = "█".repeat(12)
       val expectedEmpty = "░".repeat(8)
 
-      assertTrue(snapshot.contains(expectedFilled), "Snapshot should contain 12 filled blocks: $expectedFilled\nSnapshot:\n$snapshot")
-      assertTrue(snapshot.contains(expectedEmpty), "Snapshot should contain 8 empty blocks: $expectedEmpty\nSnapshot:\n$snapshot")
+      assertTrue(
+          snapshot.contains(expectedFilled),
+          "Snapshot should contain 12 filled blocks: $expectedFilled\nSnapshot:\n$snapshot")
+      assertTrue(
+          snapshot.contains(expectedEmpty),
+          "Snapshot should contain 8 empty blocks: $expectedEmpty\nSnapshot:\n$snapshot")
     }
   }
 }
