@@ -1,8 +1,8 @@
 package xyz.alaniz.aaron.ci
 
 import java.io.File
+import kotlin.test.Test
 import kotlin.test.assertTrue
-import org.junit.jupiter.api.Test
 
 class CiPipelineTest {
   @Test

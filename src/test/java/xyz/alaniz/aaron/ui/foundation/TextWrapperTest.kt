@@ -1,7 +1,7 @@
 package xyz.alaniz.aaron.ui.foundation
 
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class TextWrapperTest {
 

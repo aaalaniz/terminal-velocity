@@ -2,9 +2,9 @@ package xyz.alaniz.aaron.ui.game
 
 import com.slack.circuit.test.FakeNavigator
 import com.slack.circuit.test.test
+import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlinx.coroutines.test.runTest
-import org.junit.jupiter.api.Test
 import xyz.alaniz.aaron.data.WordRepository
 
 class PassageGamePresenterTest {

@@ -1,9 +1,9 @@
 package xyz.alaniz.aaron.ui.foundation
 
+import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
-import org.junit.jupiter.api.Test
 
 class KeyEventsTest {
 
