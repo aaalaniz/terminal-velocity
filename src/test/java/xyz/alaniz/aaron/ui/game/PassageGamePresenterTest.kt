@@ -1,10 +1,9 @@
 package xyz.alaniz.aaron.ui.game
 
+import com.google.common.truth.Truth.assertThat
 import com.slack.circuit.test.FakeNavigator
 import com.slack.circuit.test.test
 import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 import kotlinx.coroutines.test.runTest
 import xyz.alaniz.aaron.data.WordRepository
 
@@ -27,7 +26,7 @@ class PassageGamePresenterTest {
         state = awaitItem() as GameState.State
       }
 
-      assertEquals("First line.", state.currentWord)
+      assertThat(state.currentWord).isEqualTo("First line.")
     }
   }
 
@@ -62,8 +61,8 @@ class PassageGamePresenterTest {
             }
           }
 
-      assertEquals("Second line.", state.currentWord)
-      assertTrue(state.userInput.isEmpty())
+      assertThat(state.currentWord).isEqualTo("Second line.")
+      assertThat(state.userInput).isEmpty()
     }
   }
 }

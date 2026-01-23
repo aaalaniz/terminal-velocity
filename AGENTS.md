@@ -45,7 +45,7 @@
 - **Policy:** For objects controlled by the app, contribute the instance directly from the class declaration using `@ContributesBinding`. Only use modules for objects not controlled by the app (e.g. `IO dispatcher`).
 
 ### Testing (Mosaic & Circuit)
-- **Unit Tests:** Use standard [Kotlin Test](https://kotlinlang.org/api/latest/kotlin.test/) for assertions.
+- **Unit Tests:** Use **Kotlin Test** for test structure (annotations) and **Google Truth** for assertions.
 - **Presenter Tests:** Use `circuit-test` to test Presenter logic in isolation.
 - **Integration Tests:** Use `mosaic-testing` for end-to-end UI verification.
     - `runMosaicTest`: Sets up the test environment.

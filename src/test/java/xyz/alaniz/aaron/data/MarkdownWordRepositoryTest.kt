@@ -1,9 +1,9 @@
 package xyz.alaniz.aaron.data
 
+import com.google.common.truth.Truth.assertThat
 import java.io.ByteArrayInputStream
 import java.io.InputStream
 import kotlin.test.Test
-import kotlin.test.assertEquals
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -44,7 +44,7 @@ class MarkdownWordRepositoryTest {
     val repository = MarkdownWordRepository(FakeSettingsRepository(), reader, testDispatcher)
     val passage = repository.getPassage()
 
-    assertEquals(listOf("This is a test passage."), passage)
+    assertThat(passage).isEqualTo(listOf("This is a test passage."))
   }
 
   @Test
@@ -75,7 +75,7 @@ class MarkdownWordRepositoryTest {
     // Should always return kotlin code
     repeat(5) {
       val passage = repository.getPassage()
-      assertEquals(listOf("fun main() {}"), passage)
+      assertThat(passage).isEqualTo(listOf("fun main() {}"))
     }
   }
 
@@ -102,7 +102,7 @@ class MarkdownWordRepositoryTest {
     // If the fix works, we should NEVER see "SECRET".
     repeat(20) {
       val result = repository.getPassage()
-      assertEquals(listOf("Safe content."), result)
+      assertThat(result).containsExactly("Safe content.")
     }
   }
 
@@ -120,6 +120,6 @@ class MarkdownWordRepositoryTest {
     val repository = MarkdownWordRepository(FakeSettingsRepository(), reader, testDispatcher)
 
     val result = repository.getPassage()
-    assertEquals(listOf("Error: Passage too large: passages/large_passage.md"), result)
+    assertThat(result).containsExactly("Error: Passage too large: passages/large_passage.md")
   }
 }
