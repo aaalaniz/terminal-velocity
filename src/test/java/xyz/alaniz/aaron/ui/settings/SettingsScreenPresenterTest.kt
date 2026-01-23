@@ -1,11 +1,9 @@
 package xyz.alaniz.aaron.ui.settings
 
+import com.google.common.truth.Truth.assertThat
 import com.slack.circuit.test.FakeNavigator
 import com.slack.circuit.test.test
 import kotlinx.coroutines.test.runTest
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertFalse
-import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import xyz.alaniz.aaron.data.CodeSnippetSettings
 import xyz.alaniz.aaron.data.InMemorySettingsRepository
@@ -19,10 +17,10 @@ class SettingsScreenPresenterTest {
 
     presenter.test {
       val state = awaitItem()
-      assertEquals(1, state.items.size) // Only "Enable Code Snippets" initially
-      assertEquals("Enable Code Snippets", state.items[0].label)
-      assertFalse(state.items[0].isChecked)
-      assertEquals(0, state.focusedIndex)
+      assertThat(state.items).hasSize(1) // Only "Enable Code Snippets" initially
+      assertThat(state.items[0].label).isEqualTo("Enable Code Snippets")
+      assertThat(state.items[0].isChecked).isFalse()
+      assertThat(state.focusedIndex).isEqualTo(0)
     }
   }
 
@@ -36,11 +34,11 @@ class SettingsScreenPresenterTest {
       initialState.onEvent(SettingsScreenEvent.ToggleCurrentItem)
 
       val newState = awaitItem()
-      assertTrue(newState.items[0].isChecked)
-      assertTrue(newState.items.size > 1) // Should have languages now
+      assertThat(newState.items[0].isChecked).isTrue()
+      assertThat(newState.items.size).isGreaterThan(1) // Should have languages now
 
       val kotlinItem = newState.items.find { it.label == "Kotlin" }
-      assertTrue(kotlinItem != null)
+      assertThat(kotlinItem).isNotNull()
     }
   }
 
@@ -54,15 +52,15 @@ class SettingsScreenPresenterTest {
 
     presenter.test {
       val state = awaitItem()
-      assertEquals(0, state.focusedIndex)
+      assertThat(state.focusedIndex).isEqualTo(0)
 
       state.onEvent(SettingsScreenEvent.MoveFocusDown)
       val stateAfterDown = awaitItem()
-      assertEquals(1, stateAfterDown.focusedIndex)
+      assertThat(stateAfterDown.focusedIndex).isEqualTo(1)
 
       stateAfterDown.onEvent(SettingsScreenEvent.MoveFocusUp)
       val stateAfterUp = awaitItem()
-      assertEquals(0, stateAfterUp.focusedIndex)
+      assertThat(stateAfterUp.focusedIndex).isEqualTo(0)
     }
   }
 
@@ -83,18 +81,18 @@ class SettingsScreenPresenterTest {
       state.onEvent(SettingsScreenEvent.MoveFocusDown) // Focus 2
 
       val stateFocused = awaitItem()
-      assertEquals(2, stateFocused.focusedIndex)
-      assertEquals("Kotlin", stateFocused.items[2].label)
-      assertFalse(stateFocused.items[2].isChecked)
+      assertThat(stateFocused.focusedIndex).isEqualTo(2)
+      assertThat(stateFocused.items[2].label).isEqualTo("Kotlin")
+      assertThat(stateFocused.items[2].isChecked).isFalse()
 
       stateFocused.onEvent(SettingsScreenEvent.ToggleCurrentItem)
 
       val stateToggled = awaitItem()
-      assertTrue(stateToggled.items[2].isChecked)
+      assertThat(stateToggled.items[2].isChecked).isTrue()
       val settings = repository.settings.value.codeSnippetSettings
-      assertTrue(settings is CodeSnippetSettings.Enabled)
-      assertTrue(
-          (settings as CodeSnippetSettings.Enabled).selectedLanguages.contains(Language.KOTLIN))
+      assertThat(settings).isInstanceOf(CodeSnippetSettings.Enabled::class.java)
+      assertThat((settings as CodeSnippetSettings.Enabled).selectedLanguages)
+          .contains(Language.KOTLIN)
     }
   }
 
@@ -112,17 +110,17 @@ class SettingsScreenPresenterTest {
       state.onEvent(SettingsScreenEvent.MoveFocusDown) // Focus 1
 
       val stateFocused = awaitItem()
-      assertEquals(1, stateFocused.focusedIndex)
-      assertEquals("Only Code Snippets", stateFocused.items[1].label)
-      assertFalse(stateFocused.items[1].isChecked)
+      assertThat(stateFocused.focusedIndex).isEqualTo(1)
+      assertThat(stateFocused.items[1].label).isEqualTo("Only Code Snippets")
+      assertThat(stateFocused.items[1].isChecked).isFalse()
 
       stateFocused.onEvent(SettingsScreenEvent.ToggleCurrentItem)
 
       val stateToggled = awaitItem()
-      assertTrue(stateToggled.items[1].isChecked)
+      assertThat(stateToggled.items[1].isChecked).isTrue()
       val settings = repository.settings.value.codeSnippetSettings
-      assertTrue(settings is CodeSnippetSettings.Enabled)
-      assertTrue((settings as CodeSnippetSettings.Enabled).onlyCodeSnippets)
+      assertThat(settings).isInstanceOf(CodeSnippetSettings.Enabled::class.java)
+      assertThat((settings as CodeSnippetSettings.Enabled).onlyCodeSnippets).isTrue()
     }
   }
 }
