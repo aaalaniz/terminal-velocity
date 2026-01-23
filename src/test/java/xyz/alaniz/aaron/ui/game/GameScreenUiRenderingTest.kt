@@ -49,4 +49,37 @@ class GameScreenUiRenderingTest {
           "Snapshot should contain 8 empty blocks: $expectedEmpty\nSnapshot:\n$snapshot")
     }
   }
+
+  @Test
+  fun testSpaceCursorRendering() = runTest {
+    runMosaicTest {
+      val passage = listOf("hello world")
+      val currentWord = "hello world"
+      val userInput = "hello" // 5 chars typed. Next is space.
+
+      val state =
+          GameState.State(
+              currentWord = currentWord,
+              userInput = userInput,
+              score = 0,
+              status = GameStatus.PLAYING,
+              isError = false,
+              wpm = 0.0,
+              accuracy = 100.0,
+              elapsedTime = 0,
+              passage = passage,
+              currentLineIndex = 0,
+              countdownStage = 0,
+              eventSink = {})
+
+      setContent { GameScreenUi(state, ComposeModifier) }
+
+      val snapshot = awaitSnapshot()
+
+      // We expect the space cursor to be rendered as a middle dot '·'
+      assertTrue(
+          snapshot.contains("·"),
+          "Snapshot should contain middle dot '·' for space cursor.\nSnapshot:\n$snapshot")
+    }
+  }
 }
