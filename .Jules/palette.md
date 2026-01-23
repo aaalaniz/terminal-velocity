@@ -23,3 +23,7 @@
 ## 2024-10-27 - Visual Progress in TUI
 **Learning:** Text-only progress (e.g., "12/45") is hard to parse at a glance in a terminal.
 **Action:** Enhance stats with visual bars (ASCII/Unicode) to provide instant feedback on completion status, even in a text-based environment. Use distinct styles (Bold/Dim) to separate labels from values.
+
+## 2026-01-23 - Space Cursor Visibility
+**Learning:** In terminal UIs, relying on underlining a space character for the cursor is often ineffective as it renders invisibly in many environments.
+**Action:** Replace the space cursor with a distinct, visible character (like a middle dot '·') to provide unambiguous position feedback.
