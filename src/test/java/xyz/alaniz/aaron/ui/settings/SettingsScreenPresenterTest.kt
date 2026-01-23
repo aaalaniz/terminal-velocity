@@ -3,8 +3,8 @@ package xyz.alaniz.aaron.ui.settings
 import com.google.common.truth.Truth.assertThat
 import com.slack.circuit.test.FakeNavigator
 import com.slack.circuit.test.test
+import kotlin.test.Test
 import kotlinx.coroutines.test.runTest
-import org.junit.jupiter.api.Test
 import xyz.alaniz.aaron.data.CodeSnippetSettings
 import xyz.alaniz.aaron.data.InMemorySettingsRepository
 import xyz.alaniz.aaron.data.Language

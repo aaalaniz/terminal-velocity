@@ -3,8 +3,8 @@ package xyz.alaniz.aaron.ui.title
 import com.google.common.truth.Truth.assertThat
 import com.slack.circuit.test.FakeNavigator
 import com.slack.circuit.test.test
+import kotlin.test.Test
 import kotlinx.coroutines.test.runTest
-import org.junit.jupiter.api.Test
 import xyz.alaniz.aaron.ui.game.GameScreen
 import xyz.alaniz.aaron.ui.settings.SettingsScreen
 

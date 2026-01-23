@@ -3,12 +3,12 @@ package xyz.alaniz.aaron.data
 import com.google.common.truth.Truth.assertThat
 import java.io.ByteArrayInputStream
 import java.io.InputStream
+import kotlin.test.Test
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
-import org.junit.jupiter.api.Test
 
 class MarkdownWordRepositoryTest {
 

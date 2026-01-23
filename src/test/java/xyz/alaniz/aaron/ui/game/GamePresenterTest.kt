@@ -3,8 +3,8 @@ package xyz.alaniz.aaron.ui.game
 import com.google.common.truth.Truth.assertThat
 import com.slack.circuit.test.FakeNavigator
 import com.slack.circuit.test.test
+import kotlin.test.Test
 import kotlinx.coroutines.test.runTest
-import org.junit.jupiter.api.Test
 import xyz.alaniz.aaron.data.WordRepository
 
 class GamePresenterTest {
