@@ -76,4 +76,47 @@ class GameScreenUiRenderingTest {
       assertThat(snapshot).contains("·")
     }
   }
+
+  @Test
+  fun testBordersRendering() = runTest {
+    runMosaicTest {
+      val passage = listOf("Line 1", "Line 2", "Line 3", "Line 4", "Line 5")
+      val currentWord = "Line 1"
+      val userInput = ""
+
+      val state =
+          GameState.State(
+              currentWord = currentWord,
+              userInput = userInput,
+              score = 0,
+              status = GameStatus.PLAYING,
+              isError = false,
+              wpm = 0.0,
+              accuracy = 100.0,
+              elapsedTime = 0,
+              passage = passage,
+              currentLineIndex = 0,
+              countdownStage = 0,
+              eventSink = {})
+
+      setContent { GameScreenUi(state, ComposeModifier) }
+
+      val snapshot = awaitSnapshot()
+
+      // Check for borders
+      // Use unicode escapes to avoid encoding issues
+      assertThat(snapshot).contains("\u250F") // ┏
+      assertThat(snapshot).contains("\u2513") // ┓
+      assertThat(snapshot).contains("\u2517") // ┗
+      assertThat(snapshot).contains("\u251B") // ┛
+      assertThat(snapshot).contains("\u2503") // ┃
+
+      // Check for titles
+      assertThat(snapshot).contains("Stats")
+      assertThat(snapshot).contains("Passage")
+
+      // Check content is inside
+      assertThat(snapshot).contains("Line 1")
+    }
+  }
 }
