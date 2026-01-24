@@ -17,6 +17,7 @@ import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.zacsweers.metro.AppScope
 import kotlin.system.exitProcess
 import kotlinx.coroutines.delay
+import xyz.alaniz.aaron.ui.foundation.BorderedTitledContent
 import xyz.alaniz.aaron.ui.foundation.Footer
 import xyz.alaniz.aaron.ui.foundation.FooterOption
 import xyz.alaniz.aaron.ui.foundation.KeyEvents.CtrlC
@@ -89,34 +90,36 @@ fun GameScreenUi(state: GameState, modifier: androidx.compose.ui.Modifier) {
             Spacer(Modifier.height(1))
             Footer(options = countdownFooterOptions)
           } else if (state.status == GameStatus.PLAYING) {
-            Row {
-              Text("WPM: ", textStyle = TextStyle.Dim)
-              Text("${state.wpm.toInt()}  ", textStyle = TextStyle.Bold)
+            BorderedTitledContent(title = "Stats", width = 82, height = 1) {
+              Row {
+                Text("WPM: ", textStyle = TextStyle.Dim)
+                Text("${state.wpm.toInt()}  ", textStyle = TextStyle.Bold)
 
-              Text("Accuracy: ", textStyle = TextStyle.Dim)
-              Text("${state.accuracy.toInt()}%  ", textStyle = TextStyle.Bold)
+                Text("Accuracy: ", textStyle = TextStyle.Dim)
+                Text("${state.accuracy.toInt()}%  ", textStyle = TextStyle.Bold)
 
-              Text("Progress: ", textStyle = TextStyle.Dim)
-              Text(
-                  "${state.currentLineIndex + 1}/${state.passage.size}  ",
-                  textStyle = TextStyle.Bold)
+                Text("Progress: ", textStyle = TextStyle.Dim)
+                Text(
+                    "${state.currentLineIndex + 1}/${state.passage.size}  ",
+                    textStyle = TextStyle.Bold)
 
-              val lineProgress =
-                  if (state.currentWord.isNotEmpty()) {
-                    state.userInput.length.toFloat() / state.currentWord.length
-                  } else {
-                    0f
-                  }
-              val totalProgress =
-                  (state.currentLineIndex + lineProgress) / state.passage.size.coerceAtLeast(1)
-              val barWidth = 20
-              val filledCount = (totalProgress * barWidth).toInt().coerceIn(0, barWidth)
-              val emptyCount = barWidth - filledCount
+                val lineProgress =
+                    if (state.currentWord.isNotEmpty()) {
+                      state.userInput.length.toFloat() / state.currentWord.length
+                    } else {
+                      0f
+                    }
+                val totalProgress =
+                    (state.currentLineIndex + lineProgress) / state.passage.size.coerceAtLeast(1)
+                val barWidth = 20
+                val filledCount = (totalProgress * barWidth).toInt().coerceIn(0, barWidth)
+                val emptyCount = barWidth - filledCount
 
-              Text("▕", textStyle = TextStyle.Dim)
-              Text(getFilledBar(filledCount), color = Color.Green)
-              Text(getEmptyBar(emptyCount), color = Color.Green, textStyle = TextStyle.Dim)
-              Text("▏", textStyle = TextStyle.Dim)
+                Text("▕", textStyle = TextStyle.Dim)
+                Text(getFilledBar(filledCount), color = Color.Green)
+                Text(getEmptyBar(emptyCount), color = Color.Green, textStyle = TextStyle.Dim)
+                Text("▏", textStyle = TextStyle.Dim)
+              }
             }
             Spacer(Modifier.height(1))
 
@@ -126,41 +129,45 @@ fun GameScreenUi(state: GameState, modifier: androidx.compose.ui.Modifier) {
             val startIndex = (state.currentLineIndex - halfWindow).coerceAtLeast(0)
             val endIndex = (startIndex + windowSize).coerceAtMost(state.passage.size)
 
-            for (i in startIndex until endIndex) {
-              if (i == state.currentLineIndex) {
-                Row {
-                  Text(state.userInput)
-                  val remaining = state.currentWord.drop(state.userInput.length)
-                  if (remaining.isNotEmpty()) {
-                    if (state.isError) {
-                      val errorChar = remaining.take(1)
-                      if (errorChar == " ") {
-                        Text("_", color = Color.Red)
-                      } else {
-                        Text(errorChar, color = Color.Red)
+            BorderedTitledContent(title = "Passage", width = 82, height = 5) {
+              Column {
+                for (i in startIndex until endIndex) {
+                  if (i == state.currentLineIndex) {
+                    Row {
+                      Text(state.userInput)
+                      val remaining = state.currentWord.drop(state.userInput.length)
+                      if (remaining.isNotEmpty()) {
+                        if (state.isError) {
+                          val errorChar = remaining.take(1)
+                          if (errorChar == " ") {
+                            Text("_", color = Color.Red)
+                          } else {
+                            Text(errorChar, color = Color.Red)
+                          }
+                          Text(remaining.drop(1), textStyle = TextStyle.Dim)
+                        } else {
+                          val cursorChar = remaining.take(1)
+                          val afterCursor = remaining.drop(1)
+                          if (cursorChar == " ") {
+                            Text("·", textStyle = TextStyle.Bold)
+                          } else {
+                            Text(
+                                cursorChar,
+                                textStyle = TextStyle.Bold,
+                                underlineStyle = UnderlineStyle.Straight)
+                          }
+                          Text(afterCursor, textStyle = TextStyle.Dim)
+                        }
                       }
-                      Text(remaining.drop(1), textStyle = TextStyle.Dim)
-                    } else {
-                      val cursorChar = remaining.take(1)
-                      val afterCursor = remaining.drop(1)
-                      if (cursorChar == " ") {
-                        Text("·", textStyle = TextStyle.Bold)
-                      } else {
-                        Text(
-                            cursorChar,
-                            textStyle = TextStyle.Bold,
-                            underlineStyle = UnderlineStyle.Straight)
-                      }
-                      Text(afterCursor, textStyle = TextStyle.Dim)
                     }
+                  } else if (i < state.currentLineIndex) {
+                    // Completed lines
+                    Text(state.passage[i])
+                  } else {
+                    // Future lines
+                    Text(state.passage[i], textStyle = TextStyle.Dim)
                   }
                 }
-              } else if (i < state.currentLineIndex) {
-                // Completed lines
-                Text(state.passage[i])
-              } else {
-                // Future lines
-                Text(state.passage[i], textStyle = TextStyle.Dim)
               }
             }
             Spacer(Modifier.height(1))
