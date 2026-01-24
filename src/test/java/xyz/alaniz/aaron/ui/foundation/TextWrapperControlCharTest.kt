@@ -74,4 +74,11 @@ class TextWrapperControlCharTest {
     val expected = listOf("Start End")
     assertThat(TextWrapper.wrap(input)).isEqualTo(expected)
   }
+
+  @Test
+  fun `wrap removes mixed ansi and control characters`() {
+    val input = "Color\u001B[31mRed\u001B[0m\u0007Bell"
+    val expected = listOf("ColorRedBell")
+    assertThat(TextWrapper.wrap(input)).isEqualTo(expected)
+  }
 }
