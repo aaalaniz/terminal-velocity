@@ -2,7 +2,9 @@ package xyz.alaniz.aaron.ui.foundation
 
 object TextWrapper {
   private val ANSI_REGEX = Regex("\\u001B(?:[@-Z\\\\-_]|\\[[0-?]*[ -/]*[@-~])")
-  private val CONTROL_CHAR_REGEX = Regex("[\\u0000-\\u0008\\u000B\\u000C\\u000E-\\u001F\\u007F]")
+  // Sentinel: Added C1 control characters (\u0080-\u009F) to sanitization
+  private val CONTROL_CHAR_REGEX =
+      Regex("[\\u0000-\\u0008\\u000B\\u000C\\u000E-\\u001F\\u007F\\u0080-\\u009F]")
 
   fun wrap(text: String, width: Int = 80): List<String> {
     require(width > 0) { "Width must be > 0" }

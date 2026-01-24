@@ -12,3 +12,8 @@
 **Vulnerability:** `MarkdownWordRepository` used `readText()` to load passage files, which reads the entire file into memory at once. A malicious or accidentally large file in `passages/` could cause an `OutOfMemoryError` (DoS).
 **Learning:** Even "trusted" local resources should be treated with suspicion regarding size, as they can be modified or point to unexpected targets.
 **Prevention:** Implement streaming reads with an explicit character/byte limit (`MAX_PASSAGE_SIZE`) for all file loading operations.
+
+## 2026-01-24 - C1 Control Character Injection
+**Vulnerability:** `TextWrapper` sanitized C0 control characters and standard ANSI sequences but missed C1 control characters (`\u0080`-`\u009F`), which can initiate escape sequences in 8-bit terminals.
+**Learning:** Standard ANSI regexes often overlook C1 controls (8-bit), focusing only on 7-bit ESC sequences, leaving a gap for terminal injection.
+**Prevention:** Explicitly include the C1 control range `[\u0080-\u009F]` in sanitization regexes for TUI applications.
