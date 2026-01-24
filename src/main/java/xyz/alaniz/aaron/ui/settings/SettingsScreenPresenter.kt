@@ -103,10 +103,12 @@ class SettingsScreenPresenter(
       when (event) {
         SettingsScreenEvent.OnBack -> navigator.pop()
         SettingsScreenEvent.MoveFocusUp -> {
-          focusedIndex = (focusedIndex - 1).coerceAtLeast(0)
+          val prev = focusedIndex - 1
+          focusedIndex = if (prev < 0) items.lastIndex else prev
         }
         SettingsScreenEvent.MoveFocusDown -> {
-          focusedIndex = (focusedIndex + 1).coerceAtMost(items.lastIndex)
+          val next = focusedIndex + 1
+          focusedIndex = if (next > items.lastIndex) 0 else next
         }
         SettingsScreenEvent.ToggleCurrentItem -> {
           val currentItem = items.getOrNull(focusedIndex) ?: return@SettingsScreenState

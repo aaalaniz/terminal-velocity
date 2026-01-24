@@ -74,7 +74,8 @@ class TitleScreenPresenter(@Assisted private val navigator: Navigator) :
                   selectedTitleScreenOptionIndex.nextIndex(TITLE_SCREEN_OPTIONS)
             }
             TitleScreenEvent.PreviousTitleOption -> {
-              selectedTitleScreenOptionIndex = selectedTitleScreenOptionIndex.previousIndex()
+              selectedTitleScreenOptionIndex =
+                  selectedTitleScreenOptionIndex.previousIndex(TITLE_SCREEN_OPTIONS)
             }
             TitleScreenEvent.Quit -> navigator.pop()
             is TitleScreenEvent.TitleOptionSelected ->
@@ -87,7 +88,13 @@ class TitleScreenPresenter(@Assisted private val navigator: Navigator) :
         }
   }
 
-  private fun Int.nextIndex(list: List<*>): Int = (this + 1).coerceAtMost(list.size - 1)
+  private fun Int.nextIndex(list: List<*>): Int {
+    val next = this + 1
+    return if (next >= list.size) 0 else next
+  }
 
-  private fun Int.previousIndex(): Int = (this - 1).coerceAtLeast(0)
+  private fun Int.previousIndex(list: List<*>): Int {
+    val prev = this - 1
+    return if (prev < 0) list.lastIndex else prev
+  }
 }
