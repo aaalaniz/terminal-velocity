@@ -27,3 +27,7 @@
 ## 2026-01-23 - Space Cursor Visibility
 **Learning:** In terminal UIs, relying on underlining a space character for the cursor is often ineffective as it renders invisibly in many environments.
 **Action:** Replace the space cursor with a distinct, visible character (like a middle dot '·') to provide unambiguous position feedback.
+
+## 2026-01-24 - Wrap-Around Navigation
+**Learning:** In small TUI menus, clamping navigation at the top/bottom feels restrictive and slows down access to the last item (often "Quit" or "Back").
+**Action:** Implement wrap-around navigation (top -> bottom, bottom -> top) for lists to make traversal faster and more fluid.

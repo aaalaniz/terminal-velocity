@@ -35,7 +35,7 @@ class TitleScreenPresenterTest {
   }
 
   @Test
-  fun `NextTitleOption is clamped at the end`() = runTest {
+  fun `NextTitleOption wraps to start`() = runTest {
     val navigator = FakeNavigator(TitleScreen)
     val presenter = TitleScreenPresenter(navigator)
 
@@ -49,11 +49,11 @@ class TitleScreenPresenterTest {
       state.onEvent(TitleScreenEvent.NextTitleOption)
       state = awaitItem()
 
-      // Further events should not emit new state
+      // Should wrap to 0
       state.onEvent(TitleScreenEvent.NextTitleOption)
-      expectNoEvents()
+      state = awaitItem()
 
-      assertThat(state.selectedTitleScreenOptionIndex).isEqualTo(2)
+      assertThat(state.selectedTitleScreenOptionIndex).isEqualTo(0)
     }
   }
 
@@ -73,19 +73,17 @@ class TitleScreenPresenterTest {
   }
 
   @Test
-  fun `PreviousTitleOption is clamped at 0`() = runTest {
+  fun `PreviousTitleOption wraps to end`() = runTest {
     val navigator = FakeNavigator(TitleScreen)
     val presenter = TitleScreenPresenter(navigator)
 
     presenter.test {
       var state = awaitItem()
       state.onEvent(TitleScreenEvent.PreviousTitleOption)
-      // Should still be 0, but no new item might be emitted if state didn't change.
-      // Actually it might emit the same state or not emit at all if using mutableStateOf.
-      // If it doesn't emit, awaitItem will timeout.
-      // In the presenter, if index is 0, (0-1).coerceAtLeast(0) is 0. No change.
-      expectNoEvents()
-      assertThat(state.selectedTitleScreenOptionIndex).isEqualTo(0)
+
+      // Should wrap to last index (2)
+      state = awaitItem()
+      assertThat(state.selectedTitleScreenOptionIndex).isEqualTo(2)
     }
   }
 

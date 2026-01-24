@@ -123,4 +123,31 @@ class SettingsScreenPresenterTest {
       assertThat((settings as CodeSnippetSettings.Enabled).onlyCodeSnippets).isTrue()
     }
   }
+
+  @Test
+  fun `navigation wraps around`() = runTest {
+    val repository = InMemorySettingsRepository()
+    // Enable snippets by default for this test to have more items
+    repository.updateSettings { it.copy(codeSnippetSettings = CodeSnippetSettings.Enabled()) }
+
+    val presenter = SettingsScreenPresenter(FakeNavigator(SettingsScreen), repository)
+
+    presenter.test {
+      val state = awaitItem()
+      // Index 0: Enable Code Snippets
+      // Index 1: Only Code Snippets
+
+      // Initial is 0. Move Up -> Should wrap to last
+      state.onEvent(SettingsScreenEvent.MoveFocusUp)
+      val stateAfterUp = awaitItem()
+      assertThat(stateAfterUp.focusedIndex).isEqualTo(stateAfterUp.items.lastIndex)
+      assertThat(stateAfterUp.focusedIndex)
+          .isGreaterThan(1) // Verify we actually have multiple items
+
+      // Move Down -> Should wrap to first (0)
+      stateAfterUp.onEvent(SettingsScreenEvent.MoveFocusDown)
+      val stateAfterDown = awaitItem()
+      assertThat(stateAfterDown.focusedIndex).isEqualTo(0)
+    }
+  }
 }
