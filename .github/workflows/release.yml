@@ -1,0 +1,140 @@
+name: Release
+
+on:
+  push:
+    branches: [ main ]
+
+permissions:
+  contents: write
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.bump_version.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Bump Version
+        id: bump_version
+        run: |
+          current_version=$(cat src/main/resources/VERSION)
+          echo "Current version: $current_version"
+          IFS='.' read -r major minor patch <<< "$current_version"
+          new_patch=$((patch + 1))
+          new_version="$major.$minor.$new_patch"
+          echo "New version: $new_version"
+          echo "$new_version" > src/main/resources/VERSION
+
+          git add src/main/resources/VERSION
+          git commit -m "Bump version to $new_version [skip ci]"
+          git push origin main
+          git tag "v$new_version"
+          git push origin "v$new_version"
+
+          echo "version=$new_version" >> $GITHUB_OUTPUT
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.bump_version.outputs.version }}
+          name: v${{ steps.bump_version.outputs.version }}
+          draft: false
+          prerelease: false
+          make_latest: true
+
+  build:
+    needs: prepare
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: v${{ needs.prepare.outputs.version }}
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+
+      - name: Build and Package
+        shell: bash
+        run: |
+          ./gradlew installDist
+
+          VERSION="${{ needs.prepare.outputs.version }}"
+          NAME="terminal-velocity"
+
+          if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
+            OS_TYPE="windows"
+            MAIN_JAR="terminal-velocity-$VERSION.jar"
+            INPUT_DIR="build/install/terminal-velocity/lib"
+            DEST="build/dist"
+          elif [[ "${{ matrix.os }}" == "macos-latest" ]]; then
+            OS_TYPE="mac"
+            MAIN_JAR="terminal-velocity-$VERSION.jar"
+            INPUT_DIR="build/install/terminal-velocity/lib"
+            DEST="build/dist"
+          else
+            OS_TYPE="linux"
+            MAIN_JAR="terminal-velocity-$VERSION.jar"
+            INPUT_DIR="build/install/terminal-velocity/lib"
+            DEST="build/dist"
+          fi
+
+          mkdir -p "$DEST"
+
+          echo "Running jpackage..."
+          jpackage \
+            --input "$INPUT_DIR" \
+            --name "$NAME" \
+            --main-jar "$MAIN_JAR" \
+            --main-class "xyz.alaniz.aaron.Main" \
+            --type "app-image" \
+            --dest "$DEST" \
+            --app-version "$VERSION"
+
+          echo "Packaging artifact..."
+          cd "$DEST"
+
+          if [[ "$OS_TYPE" == "windows" ]]; then
+            # Windows output is a directory named $NAME
+            # Use PowerShell to zip it to preserve permissions/structure better than 'zip' sometimes,
+            # but 'zip' is available in bash.
+            # However, 'Compress-Archive' is cleaner for Windows users.
+            powershell "Compress-Archive -Path '$NAME' -DestinationPath '../$NAME-$OS_TYPE.zip'"
+            ARTIFACT_PATH="../$NAME-$OS_TYPE.zip"
+          else
+            # Linux/Mac output is a directory (or .app on Mac)
+            # Tar it up.
+            tar -czf "../$NAME-$OS_TYPE.tar.gz" "$NAME"*
+            ARTIFACT_PATH="../$NAME-$OS_TYPE.tar.gz"
+          fi
+
+          # Output for next step
+          # Needs to be absolute path or relative to workspace root?
+          # softprops/action-gh-release expects paths relative to root or absolute.
+          # We are in build/dist.
+          # Let's move it to workspace root to be safe and easier.
+          mv "$ARTIFACT_PATH" ../../
+
+          echo "artifact_name=$(basename "$ARTIFACT_PATH")" >> $GITHUB_ENV
+
+      - name: Upload Release Asset
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ needs.prepare.outputs.version }}
+          files: ${{ env.artifact_name }}
