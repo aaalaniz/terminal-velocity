@@ -13,7 +13,7 @@ interface AppVersion {
 @SingleIn(AppScope::class)
 @Inject
 class ResourceAppVersion(
-  private val resourceReader: ResourceReader,
+    private val resourceReader: ResourceReader,
 ) : AppVersion {
   override val version: String by lazy {
     resourceReader.open("VERSION").bufferedReader().use { it.readText().trim() }
