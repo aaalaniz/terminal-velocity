@@ -41,18 +41,24 @@ fun SettingsScreenUi(
       settingsScreenState.items.forEachIndexed { index, item ->
         val isFocused = index == settingsScreenState.focusedIndex
         val prefix = if (isFocused) "> " else "  "
-        val checkbox = if (item.isChecked) "[x]" else "[ ]"
         val indent = "  ".repeat(item.indentLevel)
 
         Row {
           val color = Color.Unspecified
           val style = if (isFocused) TextStyle.Bold else TextStyle.Dim
           val underline = if (isFocused) UnderlineStyle.Straight else UnderlineStyle.None
-          val checkboxColor = if (item.isChecked) Color.Green else Color.Unspecified
 
           Text(prefix, color = color, textStyle = style, underlineStyle = underline)
           Text(indent)
-          Text(checkbox, color = checkboxColor, textStyle = style, underlineStyle = underline)
+
+          Text("[", color = color, textStyle = style, underlineStyle = underline)
+          if (item.isChecked) {
+            Text("✓", color = Color.Green, textStyle = TextStyle.Bold, underlineStyle = underline)
+          } else {
+            Text(" ", color = color, textStyle = style, underlineStyle = underline)
+          }
+          Text("]", color = color, textStyle = style, underlineStyle = underline)
+
           Text(" ", underlineStyle = underline)
           Text(item.label, color = color, textStyle = style, underlineStyle = underline)
         }
