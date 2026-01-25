@@ -16,10 +16,6 @@ class ResourceAppVersion(
   private val resourceReader: ResourceReader,
 ) : AppVersion {
   override val version: String by lazy {
-    try {
-      resourceReader.open("VERSION").bufferedReader().use { it.readText().trim() }
-    } catch (e: Exception) {
-      "Unknown"
-    }
+    resourceReader.open("VERSION").bufferedReader().use { it.readText().trim() }
   }
 }

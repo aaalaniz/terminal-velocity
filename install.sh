@@ -1,4 +1,13 @@
 #!/bin/bash
+#
+# Terminal Velocity Installer
+#
+# This script downloads the latest release of Terminal Velocity from GitHub,
+# extracts the standalone executable, and installs it to ~/.local/share/terminal-velocity.
+# It also creates a symlink in ~/.local/bin for easy access.
+#
+# If the application is already installed, this script will update it to the latest version.
+#
 set -e
 
 REPO="aaalaniz/terminal-velocity"
