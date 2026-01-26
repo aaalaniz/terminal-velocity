@@ -2,7 +2,8 @@ package xyz.alaniz.aaron.ui.foundation
 
 object TextWrapper {
   private val ANSI_REGEX = Regex("\\u001B(?:[@-Z\\\\-_]|\\[[0-?]*[ -/]*[@-~])")
-  private val CONTROL_CHAR_REGEX = Regex("[\\u0000-\\u0008\\u000B\\u000C\\u000E-\\u001F\\u007F]")
+  // Include C0 (0x00-0x1F excluding tabs/newlines) and C1 (0x80-0x9F) control characters
+  private val CONTROL_CHAR_REGEX = Regex("[\\u0000-\\u0008\\u000B\\u000C\\u000E-\\u001F\\u007F\\u0080-\\u009F]")
   // Combine regexes to allow single-pass replacement. ANSI must be first to correctly consume
   // escape sequences that start with control characters (like ESC).
   private val SANITIZATION_REGEX =
