@@ -47,24 +47,26 @@ jobs:
         run: |
           ./gradlew installDist
 
-          VERSION="${{ needs.prepare.outputs.version }}"
+          # Sanitize version just in case
+          VERSION=$(echo "${{ needs.prepare.outputs.version }}" | tr -d '\r' | tr -d '\n')
           NAME="terminal-velocity"
 
+          # Use absolute paths to avoid confusion in mixed environments (e.g. Git Bash on Windows)
+          BASE_DIR="$PWD"
+          INPUT_DIR="$BASE_DIR/build/install/terminal-velocity/lib"
+          DEST="$BASE_DIR/build/dist"
+          MAIN_JAR="terminal-velocity-$VERSION.jar"
+
+          # Determine OS-specific variables
           if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
             OS_TYPE="windows"
-            MAIN_JAR="terminal-velocity-$VERSION.jar"
-            INPUT_DIR="build/install/terminal-velocity/lib"
-            DEST="build/dist"
+            ARTIFACT_EXT="zip"
           elif [[ "${{ matrix.os }}" == "macos-latest" ]]; then
             OS_TYPE="mac"
-            MAIN_JAR="terminal-velocity-$VERSION.jar"
-            INPUT_DIR="build/install/terminal-velocity/lib"
-            DEST="build/dist"
+            ARTIFACT_EXT="tar.gz"
           else
             OS_TYPE="linux"
-            MAIN_JAR="terminal-velocity-$VERSION.jar"
-            INPUT_DIR="build/install/terminal-velocity/lib"
-            DEST="build/dist"
+            ARTIFACT_EXT="tar.gz"
           fi
 
           mkdir -p "$DEST"
@@ -82,16 +84,19 @@ jobs:
           echo "Packaging artifact..."
           cd "$DEST"
 
+          OUTPUT_FILE="../$NAME-$OS_TYPE.$ARTIFACT_EXT"
+
           if [[ "$OS_TYPE" == "windows" ]]; then
-            powershell "Compress-Archive -Path '$NAME' -DestinationPath '../$NAME-$OS_TYPE.zip'"
-            ARTIFACT_PATH="../$NAME-$OS_TYPE.zip"
+             # Use jar to create zip on Windows to avoid PowerShell dependency and path issues
+             # -c: create, -M: no manifest, -f: file
+             jar -cMf "$OUTPUT_FILE" "$NAME"
           else
-            tar -czf "../$NAME-$OS_TYPE.tar.gz" "$NAME"*
-            ARTIFACT_PATH="../$NAME-$OS_TYPE.tar.gz"
+             # Preserve permissions and symlinks on Unix
+             tar -czf "$OUTPUT_FILE" "$NAME"*
           fi
 
           # Move to workspace root for upload
-          mv "$ARTIFACT_PATH" ../../
+          mv "$OUTPUT_FILE" "$BASE_DIR/"
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
