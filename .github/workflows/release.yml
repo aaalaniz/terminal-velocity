@@ -8,58 +8,29 @@ permissions:
   contents: write
 
 jobs:
-  prepare:
-    runs-on: ubuntu-latest
-    outputs:
-      version: ${{ steps.bump_version.outputs.version }}
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Configure Git
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
-      - name: Bump Version
-        id: bump_version
-        run: |
-          current_version=$(cat src/main/resources/VERSION)
-          echo "Current version: $current_version"
-          IFS='.' read -r major minor patch <<< "$current_version"
-          new_patch=$((patch + 1))
-          new_version="$major.$minor.$new_patch"
-          echo "New version: $new_version"
-          echo "$new_version" > src/main/resources/VERSION
-
-          git add src/main/resources/VERSION
-          git commit -m "Bump version to $new_version [skip ci]"
-          git push origin main
-          git tag "v$new_version"
-          git push origin "v$new_version"
-
-          echo "version=$new_version" >> $GITHUB_OUTPUT
-
-      - name: Create Release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: v${{ steps.bump_version.outputs.version }}
-          name: v${{ steps.bump_version.outputs.version }}
-          draft: false
-          prerelease: false
-          make_latest: true
-
   build:
-    needs: prepare
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-    runs-on: ${{ matrix.os }}
+    outputs:
+      version: ${{ steps.calc_version.outputs.version }}
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: v${{ needs.prepare.outputs.version }}
+
+      - name: Calculate Version
+        id: calc_version
+        shell: bash
+        run: |
+          current_version=$(cat src/main/resources/VERSION)
+          IFS='.' read -r major minor patch <<< "$current_version"
+          new_patch=$((patch + 1))
+          new_version="$major.$minor.$new_patch"
+          echo "Calculated version: $new_version"
+          echo "version=$new_version" >> $GITHUB_OUTPUT
+
+          # Update local file for the build
+          echo "$new_version" > src/main/resources/VERSION
 
       - name: Set up JDK 21
         uses: actions/setup-java@v4
@@ -75,7 +46,7 @@ jobs:
         run: |
           ./gradlew installDist
 
-          VERSION="${{ needs.prepare.outputs.version }}"
+          VERSION="${{ steps.calc_version.outputs.version }}"
           NAME="terminal-velocity"
 
           if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
@@ -111,30 +82,69 @@ jobs:
           cd "$DEST"
 
           if [[ "$OS_TYPE" == "windows" ]]; then
-            # Windows output is a directory named $NAME
-            # Use PowerShell to zip it to preserve permissions/structure better than 'zip' sometimes,
-            # but 'zip' is available in bash.
-            # However, 'Compress-Archive' is cleaner for Windows users.
             powershell "Compress-Archive -Path '$NAME' -DestinationPath '../$NAME-$OS_TYPE.zip'"
             ARTIFACT_PATH="../$NAME-$OS_TYPE.zip"
           else
-            # Linux/Mac output is a directory (or .app on Mac)
-            # Tar it up.
             tar -czf "../$NAME-$OS_TYPE.tar.gz" "$NAME"*
             ARTIFACT_PATH="../$NAME-$OS_TYPE.tar.gz"
           fi
 
-          # Output for next step
-          # Needs to be absolute path or relative to workspace root?
-          # softprops/action-gh-release expects paths relative to root or absolute.
-          # We are in build/dist.
-          # Let's move it to workspace root to be safe and easier.
+          # Move to workspace root for upload
           mv "$ARTIFACT_PATH" ../../
 
-          echo "artifact_name=$(basename "$ARTIFACT_PATH")" >> $GITHUB_ENV
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifacts-${{ matrix.os }}
+          path: terminal-velocity-*
+          retention-days: 1
 
-      - name: Upload Release Asset
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Download Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+
+      - name: Bump Version & Tag
+        id: bump_version
+        run: |
+          # Re-calculate version to ensure consistency (or pass it from build job,
+          # but passing from matrix is tricky, easier to just re-read and increment)
+          current_version=$(cat src/main/resources/VERSION)
+          IFS='.' read -r major minor patch <<< "$current_version"
+          new_patch=$((patch + 1))
+          new_version="$major.$minor.$new_patch"
+
+          echo "Bumping version to: $new_version"
+          echo "$new_version" > src/main/resources/VERSION
+
+          git add src/main/resources/VERSION
+          git commit -m "Bump version to $new_version [skip ci]"
+          git push origin main
+          git tag "v$new_version"
+          git push origin "v$new_version"
+
+          echo "version=$new_version" >> $GITHUB_OUTPUT
+
+      - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v${{ needs.prepare.outputs.version }}
-          files: ${{ env.artifact_name }}
+          tag_name: v${{ steps.bump_version.outputs.version }}
+          name: v${{ steps.bump_version.outputs.version }}
+          draft: false
+          prerelease: false
+          make_latest: true
+          files: artifacts/*
