@@ -20,7 +20,12 @@ application {
   applicationDefaultJvmArgs = listOf("--enable-native-access=ALL-UNNAMED")
 }
 
-version = "1.0.0-SNAPSHOT"
+version =
+    providers
+        .fileContents(layout.projectDirectory.file("src/main/resources/VERSION"))
+        .asText
+        .get()
+        .trim()
 
 dependencies {
   implementation(libs.mosaic)
