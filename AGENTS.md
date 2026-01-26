@@ -11,6 +11,13 @@
 
 ## Development Workflow
 
+### Setup
+- **Install Git Hooks:**
+  ```bash
+  ./scripts/install-git-hooks.sh
+  ```
+  This installs a pre-commit hook that automatically formats code using `ktfmt`.
+
 ### Build & Run
 - **Build & Install Distribution:**
   ```bash
@@ -84,7 +91,8 @@ The game's typing passages are stored as external resources to support lazy load
 ## Code Style & Formatting
 - This project uses `ktfmt` for code formatting.
 - **Before submitting changes:**
-  - Run `./gradlew ktfmtFormat` to ensure all code is properly formatted.
+  - If you have installed the git hooks, the pre-commit hook will run `ktfmtFormat` automatically.
+  - However, you should still run `./gradlew ktfmtFormat` manually to ensure all code is properly formatted and included in your commit.
   - Verify with `./gradlew ktfmtCheck`.
 
 ## Workflow & Concurrency
