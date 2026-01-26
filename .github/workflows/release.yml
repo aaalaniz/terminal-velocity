@@ -51,23 +51,26 @@ jobs:
           VERSION=$(echo "${{ needs.prepare.outputs.version }}" | tr -d '\r' | tr -d '\n')
           NAME="terminal-velocity"
 
-          # Use absolute paths to avoid confusion in mixed environments (e.g. Git Bash on Windows)
-          BASE_DIR="$PWD"
-          INPUT_DIR="$BASE_DIR/build/install/terminal-velocity/lib"
-          DEST="$BASE_DIR/build/dist"
           MAIN_JAR="terminal-velocity-$VERSION.jar"
 
           # Determine OS-specific variables
           if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
             OS_TYPE="windows"
             ARTIFACT_EXT="zip"
+            # Use Windows-style absolute path to avoid MSYS2 path conversion issues
+            BASE_DIR=$(pwd -W)
           elif [[ "${{ matrix.os }}" == "macos-latest" ]]; then
             OS_TYPE="mac"
             ARTIFACT_EXT="tar.gz"
+            BASE_DIR="."
           else
             OS_TYPE="linux"
             ARTIFACT_EXT="tar.gz"
+            BASE_DIR="."
           fi
+
+          INPUT_DIR="$BASE_DIR/build/install/terminal-velocity/lib"
+          DEST="$BASE_DIR/build/dist"
 
           mkdir -p "$DEST"
 
