@@ -7,6 +7,16 @@ A casual typing game played entirely within your terminal.
 > [!NOTE]
 > This project is currently in early development. Features and gameplay mechanics are actively being built and refined.
 
+## 🚀 Getting Started
+
+To play the game, you can install the latest version directly from your terminal:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/aaalaniz/terminal-velocity/main/install.sh | bash
+```
+
+Alternatively, you can download standalone executables for Linux, macOS, and Windows from the [Releases](https://github.com/aaalaniz/terminal-velocity/releases) page.
+
 ## 🛠️ Built With
 
 This project is built in Kotlin using: 
