@@ -5,14 +5,16 @@ object TextWrapper {
   private val CONTROL_CHAR_REGEX = Regex("[\\u0000-\\u0008\\u000B\\u000C\\u000E-\\u001F\\u007F]")
   // Combine regexes to allow single-pass replacement. ANSI must be first to correctly consume
   // escape sequences that start with control characters (like ESC).
-  private val SANITIZATION_REGEX = Regex("(${ANSI_REGEX.pattern})|(${CONTROL_CHAR_REGEX.pattern})")
+  private val SANITIZATION_REGEX =
+      Regex("(${ANSI_REGEX.pattern})|(${CONTROL_CHAR_REGEX.pattern})|(\\t)")
 
   fun wrap(text: String, width: Int = 80): List<String> {
     require(width > 0) { "Width must be > 0" }
     val lines = mutableListOf<String>()
     // Sanitize control characters and expand tabs to spaces (prevent TUI spoofing)
-    val sanitizedText = text.replace(SANITIZATION_REGEX, "").replace("\t", "  ")
-    sanitizedText.lines().forEach { line ->
+    val sanitizedText =
+        text.replace(SANITIZATION_REGEX) { result -> if (result.value == "\t") "  " else "" }
+    sanitizedText.lineSequence().forEach { line ->
       if (line.length <= width) {
         lines.add(line)
       } else {
