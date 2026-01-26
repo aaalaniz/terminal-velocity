@@ -10,7 +10,8 @@ object TextWrapper {
   fun wrap(text: String, width: Int = 80): List<String> {
     require(width > 0) { "Width must be > 0" }
     val lines = mutableListOf<String>()
-    val sanitizedText = text.replace(SANITIZATION_REGEX, "")
+    // Sanitize control characters and expand tabs to spaces (prevent TUI spoofing)
+    val sanitizedText = text.replace(SANITIZATION_REGEX, "").replace("\t", "  ")
     sanitizedText.lines().forEach { line ->
       if (line.length <= width) {
         lines.add(line)
