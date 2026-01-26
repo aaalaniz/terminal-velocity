@@ -38,10 +38,17 @@ fun TitleScreenUi(titleScreenState: TitleScreenState, modifier: androidx.compose
           }
       val textStyle =
           if (index != titleScreenState.selectedTitleScreenOptionIndex) TextStyle.Dim
-          else TextStyle.Unspecified
+          else TextStyle.Bold
+      val color =
+          if (index == titleScreenState.selectedTitleScreenOptionIndex) Color.Green
+          else Color.Unspecified
 
       val prefix = if (index == titleScreenState.selectedTitleScreenOptionIndex) "> " else "  "
-      Text(value = prefix + option.label, underlineStyle = underlineStyle, textStyle = textStyle)
+      Text(
+          value = prefix + option.label,
+          underlineStyle = underlineStyle,
+          textStyle = textStyle,
+          color = color)
     }
 
     Spacer(Modifier.height(2))

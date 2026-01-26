@@ -44,7 +44,7 @@ fun SettingsScreenUi(
         val indent = "  ".repeat(item.indentLevel)
 
         Row {
-          val color = Color.Unspecified
+          val color = if (isFocused) Color.Green else Color.Unspecified
           val style = if (isFocused) TextStyle.Bold else TextStyle.Dim
           val underline = if (isFocused) UnderlineStyle.Straight else UnderlineStyle.None
 
