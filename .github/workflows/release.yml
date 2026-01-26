@@ -118,33 +118,32 @@ jobs:
           path: artifacts
           merge-multiple: true
 
-      - name: Bump Version & Tag
-        id: bump_version
+      - name: Calculate Release Version
+        id: calc_version
         run: |
-          # Re-calculate version to ensure consistency (or pass it from build job,
-          # but passing from matrix is tricky, easier to just re-read and increment)
           current_version=$(cat src/main/resources/VERSION)
           IFS='.' read -r major minor patch <<< "$current_version"
           new_patch=$((patch + 1))
           new_version="$major.$minor.$new_patch"
-
-          echo "Bumping version to: $new_version"
-          echo "$new_version" > src/main/resources/VERSION
-
-          git add src/main/resources/VERSION
-          git commit -m "Bump version to $new_version [skip ci]"
-          git push origin main
-          git tag "v$new_version"
-          git push origin "v$new_version"
-
+          echo "Release version: $new_version"
           echo "version=$new_version" >> $GITHUB_OUTPUT
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v${{ steps.bump_version.outputs.version }}
-          name: v${{ steps.bump_version.outputs.version }}
+          tag_name: v${{ steps.calc_version.outputs.version }}
+          name: v${{ steps.calc_version.outputs.version }}
           draft: false
           prerelease: false
           make_latest: true
           files: artifacts/*
+
+      - name: Bump Version
+        run: |
+          new_version="${{ steps.calc_version.outputs.version }}"
+          echo "Updating source to version $new_version"
+          echo "$new_version" > src/main/resources/VERSION
+
+          git add src/main/resources/VERSION
+          git commit -m "Bump version to $new_version [skip ci]"
+          git push origin main
