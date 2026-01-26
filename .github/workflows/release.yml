@@ -19,11 +19,8 @@ jobs:
         id: calc_version
         run: |
           current_version=$(cat src/main/resources/VERSION)
-          IFS='.' read -r major minor patch <<< "$current_version"
-          new_patch=$((patch + 1))
-          new_version="$major.$minor.$new_patch"
-          echo "Release version: $new_version"
-          echo "version=$new_version" >> $GITHUB_OUTPUT
+          echo "Release version: $current_version"
+          echo "version=$current_version" >> $GITHUB_OUTPUT
 
   build:
     needs: prepare
@@ -34,11 +31,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set Release Version
-        shell: bash
-        run: |
-          new_version="${{ needs.prepare.outputs.version }}"
-          echo "$new_version" > src/main/resources/VERSION
+      # No need to set version, as we use the one checked out
 
       - name: Set up JDK 21
         uses: actions/setup-java@v4
@@ -138,10 +131,14 @@ jobs:
 
       - name: Bump Version
         run: |
-          new_version="${{ needs.prepare.outputs.version }}"
-          echo "Updating source to version $new_version"
-          echo "$new_version" > src/main/resources/VERSION
+          current_version="${{ needs.prepare.outputs.version }}"
+          IFS='.' read -r major minor patch <<< "$current_version"
+          new_patch=$((patch + 1))
+          next_version="$major.$minor.$new_patch"
+
+          echo "Bumping version from $current_version to $next_version"
+          echo "$next_version" > src/main/resources/VERSION
 
           git add src/main/resources/VERSION
-          git commit -m "Bump version to $new_version [skip ci]"
+          git commit -m "Bump version to $next_version [skip ci]"
           git push origin main
