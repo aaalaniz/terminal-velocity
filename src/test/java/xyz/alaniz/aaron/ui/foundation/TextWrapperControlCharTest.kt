@@ -41,10 +41,10 @@ class TextWrapperControlCharTest {
   }
 
   @Test
-  fun `wrap preserves tab character`() {
-    // Note: TextWrapper doesn't expand tabs, just preserves them in the string.
+  fun `wrap expands tab character`() {
+    // Note: TextWrapper expands tabs to spaces to avoid TUI layout issues.
     val input = "Tab\tChar"
-    val expected = listOf("Tab\tChar")
+    val expected = listOf("Tab  Char")
     assertThat(TextWrapper.wrap(input)).isEqualTo(expected)
   }
 
