@@ -31,3 +31,7 @@
 ## 2026-01-24 - Wrap-Around Navigation
 **Learning:** In small TUI menus, clamping navigation at the top/bottom feels restrictive and slows down access to the last item (often "Quit" or "Back").
 **Action:** Implement wrap-around navigation (top -> bottom, bottom -> top) for lists to make traversal faster and more fluid.
+
+## 2026-02-12 - Unified Focus State
+**Learning:** In TUI menus, varying styles for "focus" (just a cursor `> ` vs bold text vs colors) creates a disjointed experience.
+**Action:** Unify focus indicators across the app (e.g., always use `Color.Green` + `Bold` for the currently selected item) to establish a strong visual vocabulary for navigation.
