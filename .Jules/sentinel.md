@@ -12,3 +12,8 @@
 **Vulnerability:** `MarkdownWordRepository` used `readText()` to load passage files, which reads the entire file into memory at once. A malicious or accidentally large file in `passages/` could cause an `OutOfMemoryError` (DoS).
 **Learning:** Even "trusted" local resources should be treated with suspicion regarding size, as they can be modified or point to unexpected targets.
 **Prevention:** Implement streaming reads with an explicit character/byte limit (`MAX_PASSAGE_SIZE`) for all file loading operations.
+
+## 2026-01-24 - Incomplete ANSI Sanitization
+**Vulnerability:** The regex used to strip ANSI escape sequences missed variable-length sequences like OSC (`ESC ] ... BEL/ST`), allowing potential terminal injection or display corruption.
+**Learning:** Standard "ANSI regexes" often only cover CSI (`ESC [`) and simple Fe sequences, missing the more complex but powerful sequences defined in ECMA-48.
+**Prevention:** Use a comprehensive regex that accounts for CSI, OSC, DCS, PM, and APC sequences, explicitly handling their terminators (`BEL` or `ST`).
