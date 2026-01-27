@@ -21,6 +21,7 @@ class TitleScreenIntegrationTest {
       var snapshot = awaitSnapshot()
       assertThat(snapshot).contains("Start game")
       assertThat(snapshot).contains("> Start game")
+      assertThat(snapshot).contains("v0.0.1")
 
       // Move down to Settings using 'j'
       sendKeyEvent(KeyboardEvent('j'.code))
