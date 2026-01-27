@@ -14,9 +14,10 @@ object TextWrapper {
     require(width > 0) { "Width must be > 0" }
     val lines = mutableListOf<String>()
     // Sanitize control characters and expand tabs to spaces (prevent TUI spoofing)
-    val sanitizedText =
-        text.replace(SANITIZATION_REGEX) { result -> if (result.value == "\t") "  " else "" }
-    sanitizedText.lineSequence().forEach { line ->
+    // Optimize: Process line by line to avoid allocating a full sanitized copy of text
+    text.lineSequence().forEach { rawLine ->
+      val line =
+          rawLine.replace(SANITIZATION_REGEX) { result -> if (result.value == "\t") "  " else "" }
       if (line.length <= width) {
         lines.add(line)
       } else {
