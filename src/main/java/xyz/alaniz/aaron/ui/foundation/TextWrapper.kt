@@ -21,10 +21,14 @@ object TextWrapper {
   fun wrap(text: String, width: Int = 80): List<String> {
     require(width > 0) { "Width must be > 0" }
     val lines = mutableListOf<String>()
-    // Sanitize control characters and expand tabs to spaces (prevent TUI spoofing)
-    val sanitizedText =
-        text.replace(SANITIZATION_REGEX) { result -> if (result.value == "\t") "  " else "" }
-    sanitizedText.lineSequence().forEach { line ->
+    // Optimize: Process line by line to avoid allocating a full sanitized string copy.
+    // This relies on the assumption that valid sanitization targets (ANSI codes, control chars)
+    // do not span across lines in the input text for this application's use case.
+    text.lineSequence().forEach { rawLine ->
+      // Sanitize control characters and expand tabs to spaces (prevent TUI spoofing)
+      val line =
+          rawLine.replace(SANITIZATION_REGEX) { result -> if (result.value == "\t") "  " else "" }
+
       if (line.length <= width) {
         lines.add(line)
       } else {
