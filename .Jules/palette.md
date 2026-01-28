@@ -35,3 +35,7 @@
 ## 2026-02-12 - Unified Focus State
 **Learning:** In TUI menus, varying styles for "focus" (just a cursor `> ` vs bold text vs colors) creates a disjointed experience.
 **Action:** Unify focus indicators across the app (e.g., always use `Color.Green` + `Bold` for the currently selected item) to establish a strong visual vocabulary for navigation.
+
+## 2026-02-12 - Context Awareness in TUIs
+**Learning:** Unlike GUI apps with standardized "About" dialogs, TUIs lack a standard place for metadata. Users running CLI tools often have multiple versions (distro package vs local build).
+**Action:** Explicitly render version metadata on the start screen to reduce ambiguity, using low-contrast styles to avoid visual noise.

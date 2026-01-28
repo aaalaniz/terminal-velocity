@@ -13,6 +13,7 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
+import xyz.alaniz.aaron.data.AppVersion
 import xyz.alaniz.aaron.ui.game.GameScreen
 import xyz.alaniz.aaron.ui.settings.SettingsScreen
 
@@ -45,6 +46,7 @@ sealed interface TitleScreenEvent {
 data class TitleScreenState(
     val selectedTitleScreenOptionIndex: Int,
     val selectableOptions: List<TitleScreenOption>,
+    val version: String,
     val onEvent: (TitleScreenEvent) -> Unit,
 ) : CircuitUiState
 
@@ -52,8 +54,10 @@ private val TITLE_SCREEN_OPTIONS =
     listOf(TitleScreenOption.StartGame, TitleScreenOption.Settings, TitleScreenOption.Quit)
 
 @AssistedInject
-class TitleScreenPresenter(@Assisted private val navigator: Navigator) :
-    Presenter<TitleScreenState> {
+class TitleScreenPresenter(
+    @Assisted private val navigator: Navigator,
+    private val appVersion: AppVersion,
+) : Presenter<TitleScreenState> {
 
   @AssistedFactory
   @CircuitInject(TitleScreen::class, AppScope::class)
@@ -67,7 +71,9 @@ class TitleScreenPresenter(@Assisted private val navigator: Navigator) :
 
     return TitleScreenState(
         selectedTitleScreenOptionIndex = selectedTitleScreenOptionIndex,
-        selectableOptions = TITLE_SCREEN_OPTIONS) { titleScreenEvent ->
+        selectableOptions = TITLE_SCREEN_OPTIONS,
+        version = appVersion.version,
+    ) { titleScreenEvent ->
           when (titleScreenEvent) {
             TitleScreenEvent.NextTitleOption -> {
               selectedTitleScreenOptionIndex =
