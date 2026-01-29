@@ -131,42 +131,49 @@ fun GameScreenUi(state: GameState, modifier: androidx.compose.ui.Modifier) {
 
             BorderedTitledContent(title = "Passage", width = 82, height = 5) {
               Column {
-                for (i in startIndex until endIndex) {
-                  if (i == state.currentLineIndex) {
-                    Row {
-                      Text(state.userInput)
-                      val remaining = state.currentWord.drop(state.userInput.length)
-                      if (remaining.isNotEmpty()) {
-                        if (state.isError) {
-                          val errorChar = remaining.take(1)
-                          if (errorChar == " ") {
-                            Text("_", color = Color.Red)
-                          } else {
-                            Text(errorChar, color = Color.Red)
-                          }
-                          Text(remaining.drop(1), textStyle = TextStyle.Dim)
+                // Optimization: Combine multiple lines into single Text nodes to reduce Mosaic node
+                // count
+                val completedEnd = state.currentLineIndex.coerceAtMost(endIndex)
+                if (startIndex < completedEnd) {
+                  val text =
+                      (startIndex until completedEnd).joinToString("\n") { state.passage[it] }
+                  Text(text)
+                }
+
+                if (state.currentLineIndex in startIndex until endIndex) {
+                  Row {
+                    Text(state.userInput)
+                    val remaining = state.currentWord.drop(state.userInput.length)
+                    if (remaining.isNotEmpty()) {
+                      if (state.isError) {
+                        val errorChar = remaining.take(1)
+                        if (errorChar == " ") {
+                          Text("_", color = Color.Red)
                         } else {
-                          val cursorChar = remaining.take(1)
-                          val afterCursor = remaining.drop(1)
-                          if (cursorChar == " ") {
-                            Text("·", textStyle = TextStyle.Bold)
-                          } else {
-                            Text(
-                                cursorChar,
-                                textStyle = TextStyle.Bold,
-                                underlineStyle = UnderlineStyle.Straight)
-                          }
-                          Text(afterCursor, textStyle = TextStyle.Dim)
+                          Text(errorChar, color = Color.Red)
                         }
+                        Text(remaining.drop(1), textStyle = TextStyle.Dim)
+                      } else {
+                        val cursorChar = remaining.take(1)
+                        val afterCursor = remaining.drop(1)
+                        if (cursorChar == " ") {
+                          Text("·", textStyle = TextStyle.Bold)
+                        } else {
+                          Text(
+                              cursorChar,
+                              textStyle = TextStyle.Bold,
+                              underlineStyle = UnderlineStyle.Straight)
+                        }
+                        Text(afterCursor, textStyle = TextStyle.Dim)
                       }
                     }
-                  } else if (i < state.currentLineIndex) {
-                    // Completed lines
-                    Text(state.passage[i])
-                  } else {
-                    // Future lines
-                    Text(state.passage[i], textStyle = TextStyle.Dim)
                   }
+                }
+
+                val futureStart = (state.currentLineIndex + 1).coerceAtLeast(startIndex)
+                if (futureStart < endIndex) {
+                  val text = (futureStart until endIndex).joinToString("\n") { state.passage[it] }
+                  Text(text, textStyle = TextStyle.Dim)
                 }
               }
             }
