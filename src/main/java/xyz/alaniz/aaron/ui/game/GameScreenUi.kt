@@ -180,22 +180,31 @@ fun GameScreenUi(state: GameState, modifier: androidx.compose.ui.Modifier) {
             Text(COMPLETE_ART, color = Color.Green)
             Spacer(Modifier.height(1))
 
-            Row {
-              Column {
-                Text("Final WPM", textStyle = TextStyle.Dim)
-                Text("${state.wpm.toInt()}", textStyle = TextStyle.Bold, color = Color.Green)
-              }
-              Spacer(Modifier.width(4))
-              Column {
-                Text("Accuracy", textStyle = TextStyle.Dim)
-                Text("${state.accuracy.toInt()}%", textStyle = TextStyle.Bold, color = Color.Green)
-              }
-              Spacer(Modifier.width(4))
-              Column {
-                Text("Time", textStyle = TextStyle.Dim)
-                Text("${minutes}m ${seconds}s", textStyle = TextStyle.Bold, color = Color.Green)
-              }
-            }
+            BorderedTitledContent(
+                title = "Results", width = 82, height = 2, color = Color.Green) {
+                  Row {
+                    Column {
+                      Text("Final WPM", textStyle = TextStyle.Dim)
+                      Text("${state.wpm.toInt()}", textStyle = TextStyle.Bold, color = Color.Green)
+                    }
+                    Spacer(Modifier.width(4))
+                    Column {
+                      Text("Accuracy", textStyle = TextStyle.Dim)
+                      Text(
+                          "${state.accuracy.toInt()}%",
+                          textStyle = TextStyle.Bold,
+                          color = Color.Green)
+                    }
+                    Spacer(Modifier.width(4))
+                    Column {
+                      Text("Time", textStyle = TextStyle.Dim)
+                      Text(
+                          "${minutes}m ${seconds}s",
+                          textStyle = TextStyle.Bold,
+                          color = Color.Green)
+                    }
+                  }
+                }
             Spacer(Modifier.height(1))
             Footer(options = gameOverFooterOptions)
           }
