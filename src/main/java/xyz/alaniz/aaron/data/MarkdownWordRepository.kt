@@ -60,24 +60,25 @@ class MarkdownWordRepository(
       try {
         withContext(ioDispatcher) {
           val indexStream = resourceReader.open(indexFile)
-          val lines = indexStream.bufferedReader().useLines { it.toList() }
-
           val loadedIndex = mutableListOf<PassageMetadata>()
-          for (line in lines) {
-            if (line.isBlank()) continue
-            val parts = line.split(",").map { it.trim() }
-            if (parts.isNotEmpty()) {
-              val filename = parts[0]
-              // Security: Prevent path traversal by ignoring malformed filenames
-              if (filename.contains("..") ||
-                  filename.startsWith("/") ||
-                  filename.startsWith("\\")) {
-                continue
-              }
 
-              val tags = parts.drop(1).toSet()
-              val fullPath = passagesDir + filename
-              loadedIndex.add(PassageMetadata(filename = fullPath, tags = tags))
+          indexStream.bufferedReader().useLines { lines ->
+            for (line in lines) {
+              if (line.isBlank()) continue
+              val parts = line.split(",").map { it.trim() }
+              if (parts.isNotEmpty()) {
+                val filename = parts[0]
+                // Security: Prevent path traversal by ignoring malformed filenames
+                if (filename.contains("..") ||
+                    filename.startsWith("/") ||
+                    filename.startsWith("\\")) {
+                  continue
+                }
+
+                val tags = parts.drop(1).toSet()
+                val fullPath = passagesDir + filename
+                loadedIndex.add(PassageMetadata(filename = fullPath, tags = tags))
+              }
             }
           }
           index = loadedIndex
