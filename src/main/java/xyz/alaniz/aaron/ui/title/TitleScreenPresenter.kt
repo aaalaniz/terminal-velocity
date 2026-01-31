@@ -13,6 +13,7 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
+import xyz.alaniz.aaron.data.AppVersion
 import xyz.alaniz.aaron.ui.game.GameScreen
 import xyz.alaniz.aaron.ui.settings.SettingsScreen
 
@@ -45,6 +46,7 @@ sealed interface TitleScreenEvent {
 data class TitleScreenState(
     val selectedTitleScreenOptionIndex: Int,
     val selectableOptions: List<TitleScreenOption>,
+    val appVersion: String,
     val onEvent: (TitleScreenEvent) -> Unit,
 ) : CircuitUiState
 
@@ -52,8 +54,10 @@ private val TITLE_SCREEN_OPTIONS =
     listOf(TitleScreenOption.StartGame, TitleScreenOption.Settings, TitleScreenOption.Quit)
 
 @AssistedInject
-class TitleScreenPresenter(@Assisted private val navigator: Navigator) :
-    Presenter<TitleScreenState> {
+class TitleScreenPresenter(
+    @Assisted private val navigator: Navigator,
+    private val appVersion: AppVersion,
+) : Presenter<TitleScreenState> {
 
   @AssistedFactory
   @CircuitInject(TitleScreen::class, AppScope::class)
@@ -67,25 +71,27 @@ class TitleScreenPresenter(@Assisted private val navigator: Navigator) :
 
     return TitleScreenState(
         selectedTitleScreenOptionIndex = selectedTitleScreenOptionIndex,
-        selectableOptions = TITLE_SCREEN_OPTIONS) { titleScreenEvent ->
-          when (titleScreenEvent) {
-            TitleScreenEvent.NextTitleOption -> {
-              selectedTitleScreenOptionIndex =
-                  selectedTitleScreenOptionIndex.nextIndex(TITLE_SCREEN_OPTIONS)
-            }
-            TitleScreenEvent.PreviousTitleOption -> {
-              selectedTitleScreenOptionIndex =
-                  selectedTitleScreenOptionIndex.previousIndex(TITLE_SCREEN_OPTIONS)
-            }
-            TitleScreenEvent.Quit -> navigator.pop()
-            is TitleScreenEvent.TitleOptionSelected ->
-                when (titleScreenEvent.titleScreenOption) {
-                  is TitleScreenOption.StartGame -> navigator.goTo(GameScreen)
-                  is TitleScreenOption.Settings -> navigator.goTo(SettingsScreen)
-                  is TitleScreenOption.Quit -> navigator.pop()
-                }
-          }
+        selectableOptions = TITLE_SCREEN_OPTIONS,
+        appVersion = appVersion.version,
+    ) { titleScreenEvent ->
+      when (titleScreenEvent) {
+        TitleScreenEvent.NextTitleOption -> {
+          selectedTitleScreenOptionIndex =
+              selectedTitleScreenOptionIndex.nextIndex(TITLE_SCREEN_OPTIONS)
         }
+        TitleScreenEvent.PreviousTitleOption -> {
+          selectedTitleScreenOptionIndex =
+              selectedTitleScreenOptionIndex.previousIndex(TITLE_SCREEN_OPTIONS)
+        }
+        TitleScreenEvent.Quit -> navigator.pop()
+        is TitleScreenEvent.TitleOptionSelected ->
+            when (titleScreenEvent.titleScreenOption) {
+              is TitleScreenOption.StartGame -> navigator.goTo(GameScreen)
+              is TitleScreenOption.Settings -> navigator.goTo(SettingsScreen)
+              is TitleScreenOption.Quit -> navigator.pop()
+            }
+      }
+    }
   }
 
   private fun Int.nextIndex(list: List<*>): Int {

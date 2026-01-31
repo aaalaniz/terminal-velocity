@@ -35,3 +35,7 @@
 ## 2026-02-12 - Unified Focus State
 **Learning:** In TUI menus, varying styles for "focus" (just a cursor `> ` vs bold text vs colors) creates a disjointed experience.
 **Action:** Unify focus indicators across the app (e.g., always use `Color.Green` + `Bold` for the currently selected item) to establish a strong visual vocabulary for navigation.
+
+## 2026-02-13 - Version Visibility
+**Learning:** Users often need to know the application version for troubleshooting or verifying updates, but this information is frequently hidden in settings or completely absent in TUI apps.
+**Action:** Display the version number unobtrusively (e.g., dimmed text) on the main entry screen (Title Screen) to provide immediate context without cluttering the UI.

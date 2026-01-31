@@ -5,6 +5,7 @@ import com.slack.circuit.test.FakeNavigator
 import com.slack.circuit.test.test
 import kotlin.test.Test
 import kotlinx.coroutines.test.runTest
+import xyz.alaniz.aaron.data.AppVersion
 import xyz.alaniz.aaron.ui.game.GameScreen
 import xyz.alaniz.aaron.ui.settings.SettingsScreen
 
@@ -12,7 +13,7 @@ class TitleScreenPresenterTest {
   @Test
   fun `initial state is correct`() = runTest {
     val navigator = FakeNavigator(TitleScreen)
-    val presenter = TitleScreenPresenter(navigator)
+    val presenter = TitleScreenPresenter(navigator, FakeAppVersion())
 
     presenter.test {
       val initialState = awaitItem()
@@ -23,9 +24,20 @@ class TitleScreenPresenterTest {
   }
 
   @Test
+  fun `initial state contains app version`() = runTest {
+    val navigator = FakeNavigator(TitleScreen)
+    val presenter = TitleScreenPresenter(navigator, FakeAppVersion(version = "1.2.3"))
+
+    presenter.test {
+      val initialState = awaitItem()
+      assertThat(initialState.appVersion).isEqualTo("1.2.3")
+    }
+  }
+
+  @Test
   fun `NextTitleOption increments index`() = runTest {
     val navigator = FakeNavigator(TitleScreen)
-    val presenter = TitleScreenPresenter(navigator)
+    val presenter = TitleScreenPresenter(navigator, FakeAppVersion())
 
     presenter.test {
       val initialState = awaitItem()
@@ -37,7 +49,7 @@ class TitleScreenPresenterTest {
   @Test
   fun `NextTitleOption wraps to start`() = runTest {
     val navigator = FakeNavigator(TitleScreen)
-    val presenter = TitleScreenPresenter(navigator)
+    val presenter = TitleScreenPresenter(navigator, FakeAppVersion())
 
     presenter.test {
       var state = awaitItem()
@@ -60,7 +72,7 @@ class TitleScreenPresenterTest {
   @Test
   fun `PreviousTitleOption decrements index`() = runTest {
     val navigator = FakeNavigator(TitleScreen)
-    val presenter = TitleScreenPresenter(navigator)
+    val presenter = TitleScreenPresenter(navigator, FakeAppVersion())
 
     presenter.test {
       var state = awaitItem()
@@ -75,7 +87,7 @@ class TitleScreenPresenterTest {
   @Test
   fun `PreviousTitleOption wraps to end`() = runTest {
     val navigator = FakeNavigator(TitleScreen)
-    val presenter = TitleScreenPresenter(navigator)
+    val presenter = TitleScreenPresenter(navigator, FakeAppVersion())
 
     presenter.test {
       var state = awaitItem()
@@ -90,7 +102,7 @@ class TitleScreenPresenterTest {
   @Test
   fun `TitleOptionSelected StartGame navigates to GameScreen`() = runTest {
     val navigator = FakeNavigator(TitleScreen)
-    val presenter = TitleScreenPresenter(navigator)
+    val presenter = TitleScreenPresenter(navigator, FakeAppVersion())
 
     presenter.test {
       val initialState = awaitItem()
@@ -102,7 +114,7 @@ class TitleScreenPresenterTest {
   @Test
   fun `TitleOptionSelected Settings navigates to SettingsScreen`() = runTest {
     val navigator = FakeNavigator(TitleScreen)
-    val presenter = TitleScreenPresenter(navigator)
+    val presenter = TitleScreenPresenter(navigator, FakeAppVersion())
 
     presenter.test {
       val initialState = awaitItem()
@@ -114,7 +126,7 @@ class TitleScreenPresenterTest {
   @Test
   fun `TitleOptionSelected Quit pops navigation`() = runTest {
     val navigator = FakeNavigator(TitleScreen)
-    val presenter = TitleScreenPresenter(navigator)
+    val presenter = TitleScreenPresenter(navigator, FakeAppVersion())
 
     presenter.test {
       val initialState = awaitItem()
@@ -123,3 +135,5 @@ class TitleScreenPresenterTest {
     }
   }
 }
+
+private class FakeAppVersion(override val version: String = "v1.0.0") : AppVersion
