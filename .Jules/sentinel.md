@@ -17,3 +17,8 @@
 **Vulnerability:** The regex used to strip ANSI escape sequences missed variable-length sequences like OSC (`ESC ] ... BEL/ST`), allowing potential terminal injection or display corruption.
 **Learning:** Standard "ANSI regexes" often only cover CSI (`ESC [`) and simple Fe sequences, missing the more complex but powerful sequences defined in ECMA-48.
 **Prevention:** Use a comprehensive regex that accounts for CSI, OSC, DCS, PM, and APC sequences, explicitly handling their terminators (`BEL` or `ST`).
+
+## 2026-01-31 - ReDoS in ANSI Sanitization
+**Vulnerability:** The regex for variable-length ANSI sequences (`[\\s\\S]*?`) was unbounded, allowing potential ReDoS or excessive processing if the terminator was missing in a large input.
+**Learning:** Non-greedy quantifiers (`*?`) in regexes are still dangerous if the matching range is unbounded and the terminator is not found, especially when processing untrusted input.
+**Prevention:** Use bounded quantifiers (e.g., `{0,N}?`) for variable-length content matching to enforce a maximum length and fail fast.
