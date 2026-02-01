@@ -2,6 +2,7 @@ package xyz.alaniz.aaron.ui.game
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import com.jakewharton.mosaic.layout.height
 import com.jakewharton.mosaic.layout.onKeyEvent
 import com.jakewharton.mosaic.layout.width
@@ -135,8 +136,11 @@ fun GameScreenUi(state: GameState, modifier: androidx.compose.ui.Modifier) {
                 // count
                 val completedEnd = state.currentLineIndex.coerceAtMost(endIndex)
                 if (startIndex < completedEnd) {
+                  // Optimization: Memoize completed text to avoid string allocation on every frame
                   val text =
-                      (startIndex until completedEnd).joinToString("\n") { state.passage[it] }
+                      remember(startIndex, completedEnd, state.passage) {
+                        (startIndex until completedEnd).joinToString("\n") { state.passage[it] }
+                      }
                   Text(text)
                 }
 
@@ -172,7 +176,11 @@ fun GameScreenUi(state: GameState, modifier: androidx.compose.ui.Modifier) {
 
                 val futureStart = (state.currentLineIndex + 1).coerceAtLeast(startIndex)
                 if (futureStart < endIndex) {
-                  val text = (futureStart until endIndex).joinToString("\n") { state.passage[it] }
+                  // Optimization: Memoize future text to avoid string allocation on every frame
+                  val text =
+                      remember(futureStart, endIndex, state.passage) {
+                        (futureStart until endIndex).joinToString("\n") { state.passage[it] }
+                      }
                   Text(text, textStyle = TextStyle.Dim)
                 }
               }
