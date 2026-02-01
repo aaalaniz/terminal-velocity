@@ -26,22 +26,36 @@ object TextWrapper {
         text.replace(SANITIZATION_REGEX) { result -> if (result.value == "\t") "  " else "" }
     sanitizedText.lineSequence().forEach { line ->
       if (line.length <= width) {
-        lines.add(line)
+        val trimmed = line.trimEnd()
+        if (trimmed.isNotEmpty()) {
+          lines.add(trimmed)
+        }
       } else {
         var remaining = line
         while (remaining.isNotEmpty()) {
           if (remaining.length <= width) {
-            lines.add(remaining)
+            val trimmed = remaining.trimEnd()
+            if (trimmed.isNotEmpty()) {
+              lines.add(trimmed)
+            }
             remaining = ""
           } else {
             var breakPoint = remaining.lastIndexOf(' ', width)
             if (breakPoint == -1) {
               // Force break
               breakPoint = width
-              lines.add(remaining.take(breakPoint))
+              val chunk = remaining.take(breakPoint)
+              val trimmed = chunk.trimEnd()
+              if (trimmed.isNotEmpty()) {
+                lines.add(trimmed)
+              }
               remaining = remaining.drop(breakPoint)
             } else {
-              lines.add(remaining.take(breakPoint))
+              val chunk = remaining.take(breakPoint)
+              val trimmed = chunk.trimEnd()
+              if (trimmed.isNotEmpty()) {
+                lines.add(trimmed)
+              }
               remaining = remaining.drop(breakPoint).trimStart()
             }
           }

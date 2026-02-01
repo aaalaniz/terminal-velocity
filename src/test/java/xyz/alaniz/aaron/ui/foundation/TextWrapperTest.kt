@@ -59,4 +59,25 @@ class TextWrapperTest {
     val expected = listOf("Line one is", "long enough to", "wrap", "Line two is", "short")
     assertThat(TextWrapper.wrap(input, 15)).isEqualTo(expected)
   }
+
+  @Test
+  fun `wrap removes trailing whitespace`() {
+    val input = "Hello \nWorld"
+    val result = TextWrapper.wrap(input)
+    assertThat(result).containsExactly("Hello", "World").inOrder()
+  }
+
+  @Test
+  fun `wrap removes empty lines`() {
+    val input = "Hello\n\nWorld"
+    val result = TextWrapper.wrap(input)
+    assertThat(result).containsExactly("Hello", "World").inOrder()
+  }
+
+  @Test
+  fun `wrap removes whitespace only lines`() {
+    val input = "Hello\n   \nWorld"
+    val result = TextWrapper.wrap(input)
+    assertThat(result).containsExactly("Hello", "World").inOrder()
+  }
 }
