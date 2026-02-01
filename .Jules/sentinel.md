@@ -17,3 +17,8 @@
 **Vulnerability:** The regex used to strip ANSI escape sequences missed variable-length sequences like OSC (`ESC ] ... BEL/ST`), allowing potential terminal injection or display corruption.
 **Learning:** Standard "ANSI regexes" often only cover CSI (`ESC [`) and simple Fe sequences, missing the more complex but powerful sequences defined in ECMA-48.
 **Prevention:** Use a comprehensive regex that accounts for CSI, OSC, DCS, PM, and APC sequences, explicitly handling their terminators (`BEL` or `ST`).
+
+## 2026-02-14 - Unbounded ANSI Regex
+**Vulnerability:** Regex for variable-length ANSI sequences was unbounded (`*?`), allowing DoS via long inputs.
+**Learning:** Even non-greedy quantifiers can be dangerous if the terminator is missing or far away in a large input.
+**Prevention:** Always bound regex quantifiers for untrusted input parsing, e.g., `{0,N}?`.
