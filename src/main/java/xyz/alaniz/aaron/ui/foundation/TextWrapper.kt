@@ -5,7 +5,7 @@ object TextWrapper {
   private const val CSI_REGEX = "\\[[0-?]*[ -/]*[@-~]"
   // Variable length Fe: OSC (ESC ]), DCS (ESC P), PM (ESC ^), APC (ESC _)
   // Terminated by BEL or ST (ESC \)
-  private const val FE_VAR_REGEX = "[P\\]^_][\\s\\S]*?(?:\\u0007|\\u001B\\\\)"
+  private const val FE_VAR_REGEX = "[P\\]^_][\\s\\S]{0,4096}?(?:\\u0007|\\u001B\\\\)"
   // Single char Fe: @-Z excluding [, P, ], ^, _
   private const val FE_SINGLE_REGEX = "[@-OQ-Z\\\\]"
 
