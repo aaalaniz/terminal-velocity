@@ -78,6 +78,44 @@ class GameScreenUiRenderingTest {
   }
 
   @Test
+  fun testCompletedLinesRendering() = runTest {
+    runMosaicTest {
+      val passage = listOf("Completed 1", "Completed 2", "Current", "Future 1", "Future 2")
+      val currentWord = "Current"
+      val userInput = ""
+      val currentLineIndex = 2 // 0 and 1 are completed
+
+      val state =
+          GameState.State(
+              currentWord = currentWord,
+              userInput = userInput,
+              score = 0,
+              status = GameStatus.PLAYING,
+              isError = false,
+              wpm = 0.0,
+              accuracy = 100.0,
+              elapsedTime = 0,
+              passage = passage,
+              currentLineIndex = currentLineIndex,
+              countdownStage = 0,
+              eventSink = {})
+
+      setContent { GameScreenUi(state, ComposeModifier) }
+
+      val snapshot = awaitSnapshot()
+
+      // Check for completed lines
+      assertThat(snapshot).contains("Completed 1")
+      assertThat(snapshot).contains("Completed 2")
+      // Check for current line
+      assertThat(snapshot).contains("Current")
+      // Check for future lines
+      assertThat(snapshot).contains("Future 1")
+      assertThat(snapshot).contains("Future 2")
+    }
+  }
+
+  @Test
   fun testBordersRendering() = runTest {
     runMosaicTest {
       val passage = listOf("Line 1", "Line 2", "Line 3", "Line 4", "Line 5")
