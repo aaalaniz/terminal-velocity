@@ -16,10 +16,20 @@ SHARE_DIR="$HOME/.local/share/terminal-velocity"
 BINARY_NAME="terminal-velocity"
 
 echo "Finding latest release for $REPO..."
-LATEST_TAG=$(curl -s "https://api.github.com/repos/$REPO/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
+LATEST_URL=$(curl -s -L -I -o /dev/null -w '%{url_effective}' "https://github.com/$REPO/releases/latest")
+
+case "$LATEST_URL" in
+  *"/tag/"*) ;;
+  *)
+    echo "Error: Could not find latest release (no tag found in URL)."
+    exit 1
+    ;;
+esac
+
+LATEST_TAG=$(basename "$LATEST_URL")
 
 if [ -z "$LATEST_TAG" ]; then
-  echo "Error: Could not find latest release."
+  echo "Error: Could not determine latest version."
   exit 1
 fi
 
