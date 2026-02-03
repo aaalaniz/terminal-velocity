@@ -16,7 +16,9 @@ SHARE_DIR="$HOME/.local/share/terminal-velocity"
 BINARY_NAME="terminal-velocity"
 
 echo "Finding latest release for $REPO..."
-LATEST_TAG=$(curl -s "https://api.github.com/repos/$REPO/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
+# Resolve latest version via redirect to avoid GitHub API rate limits (60/hr)
+# and brittle JSON parsing.
+LATEST_TAG=$(curl -sI "https://github.com/$REPO/releases/latest" | grep -i "location:" | sed -E 's/.*\/tag\/(.*)/\1/' | tr -d '\r')
 
 if [ -z "$LATEST_TAG" ]; then
   echo "Error: Could not find latest release."

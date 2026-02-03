@@ -22,3 +22,8 @@
 **Vulnerability:** Regex for variable-length ANSI sequences was unbounded (`*?`), allowing DoS via long inputs.
 **Learning:** Even non-greedy quantifiers can be dangerous if the terminator is missing or far away in a large input.
 **Prevention:** Always bound regex quantifiers for untrusted input parsing, e.g., `{0,N}?`.
+
+## 2026-02-15 - GitHub API Rate Limits in Installers
+**Vulnerability:** `install.sh` used unauthenticated GitHub API calls, subject to strict IP-based rate limits (60/hr), creating a DoS risk for installation.
+**Learning:** Distribution scripts should not rely on unauthenticated APIs that have low rate limits.
+**Prevention:** Use `curl -I` and `Location` header redirection to resolve release tags, as this uses standard web request limits.
