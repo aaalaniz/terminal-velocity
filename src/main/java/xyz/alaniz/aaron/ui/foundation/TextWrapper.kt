@@ -24,39 +24,62 @@ object TextWrapper {
     // Sanitize control characters and expand tabs to spaces (prevent TUI spoofing)
     val sanitizedText =
         text.replace(SANITIZATION_REGEX) { result -> if (result.value == "\t") "  " else "" }
+
+    // Optimization: Use lineSequence to process lines lazily, and index-based slicing
+    // to avoid O(N^2) string copying behavior for long lines.
     sanitizedText.lineSequence().forEach { line ->
-      if (line.length <= width) {
+      val len = line.length
+      if (len <= width) {
         val trimmed = line.trimEnd()
         if (trimmed.isNotEmpty()) {
           lines.add(trimmed)
         }
       } else {
-        var remaining = line
-        while (remaining.isNotEmpty()) {
-          if (remaining.length <= width) {
-            val trimmed = remaining.trimEnd()
+        var start = 0
+        while (start < len) {
+          val remainingLength = len - start
+          if (remainingLength <= width) {
+            val trimmed = line.substring(start).trimEnd()
             if (trimmed.isNotEmpty()) {
               lines.add(trimmed)
             }
-            remaining = ""
+            start = len // Done
           } else {
-            var breakPoint = remaining.lastIndexOf(' ', width)
+            // Find last space within the width limit
+            var breakPoint = -1
+            val searchLimit = start + width
+            val candidateBreak = line.lastIndexOf(' ', searchLimit)
+
+            if (candidateBreak >= start) {
+              breakPoint = candidateBreak
+            }
+
             if (breakPoint == -1) {
-              // Force break
-              breakPoint = width
-              val chunk = remaining.take(breakPoint)
-              val trimmed = chunk.trimEnd()
-              if (trimmed.isNotEmpty()) {
-                lines.add(trimmed)
+              // Force break at width
+              val end = start + width
+              val chunk = line.substring(start, end).trimEnd()
+              if (chunk.isNotEmpty()) {
+                lines.add(chunk)
               }
-              remaining = remaining.drop(breakPoint)
+              start += width
             } else {
-              val chunk = remaining.take(breakPoint)
-              val trimmed = chunk.trimEnd()
-              if (trimmed.isNotEmpty()) {
-                lines.add(trimmed)
+              // Break at space
+              val chunk = line.substring(start, breakPoint).trimEnd()
+              if (chunk.isNotEmpty()) {
+                lines.add(chunk)
               }
-              remaining = remaining.drop(breakPoint).trimStart()
+              // Skip the break space and any subsequent leading spaces for the next line
+              // roughly equivalent to remaining.drop(breakPoint).trimStart()
+              // drop(breakPoint) effectively keeps the char at breakPoint (if we took up to
+              // breakPoint)
+              // wait: original code: remaining.take(breakPoint) -> excludes breakPoint char
+              // remaining.drop(breakPoint) -> includes breakPoint char
+              // trimStart -> removes leading spaces
+
+              start = breakPoint
+              while (start < len && line[start] == ' ') {
+                start++
+              }
             }
           }
         }
