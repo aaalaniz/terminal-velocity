@@ -46,4 +46,13 @@ class TextWrapperRedosTest {
 
     assertThat(result).containsExactly(expectedText)
   }
+
+  @Test
+  fun `wrap limits csi sequence matching`() {
+    val params = "0".repeat(1025)
+    val input = "\u001B[$params@Content"
+    val result = TextWrapper.wrap(input, Int.MAX_VALUE)
+    val expectedText = "[$params@Content"
+    assertThat(result).containsExactly(expectedText)
+  }
 }
