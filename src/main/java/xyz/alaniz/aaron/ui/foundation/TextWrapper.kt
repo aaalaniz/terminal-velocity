@@ -2,7 +2,7 @@ package xyz.alaniz.aaron.ui.foundation
 
 object TextWrapper {
   // CSI: Control Sequence Introducer (ESC [ ...)
-  private const val CSI_REGEX = "\\[[0-?]*[ -/]*[@-~]"
+  private const val CSI_REGEX = "\\[[0-?]{0,1024}[ -/]{0,1024}[@-~]"
   // Variable length Fe: OSC (ESC ]), DCS (ESC P), PM (ESC ^), APC (ESC _)
   // Terminated by BEL or ST (ESC \)
   private const val FE_VAR_REGEX = "[P\\]^_][\\s\\S]{0,4096}?(?:\\u0007|\\u001B\\\\)"

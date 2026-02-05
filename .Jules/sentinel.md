@@ -22,3 +22,8 @@
 **Vulnerability:** Regex for variable-length ANSI sequences was unbounded (`*?`), allowing DoS via long inputs.
 **Learning:** Even non-greedy quantifiers can be dangerous if the terminator is missing or far away in a large input.
 **Prevention:** Always bound regex quantifiers for untrusted input parsing, e.g., `{0,N}?`.
+
+## 2026-10-18 - Unbounded CSI Regex
+**Vulnerability:** The CSI regex (`ESC [ ...`) used unbounded quantifiers `*`, allowing ReDoS/resource exhaustion with long malicious sequences.
+**Learning:** Bounded quantifiers must be applied to *all* components of a regex that match repeated characters, especially in complex ANSI parsers where different sequence types exist.
+**Prevention:** Audit all regex components for `*` or `+` quantifiers and replace them with `{0,N}` limits where N is a safe upper bound.
