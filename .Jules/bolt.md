@@ -17,3 +17,7 @@
 ## 2024-05-24 - Mosaic Text Node Memoization
 **Learning:** In Mosaic (and Compose), constructing strings for `Text` nodes inside a frequently recomposed scope (like a game loop or typing input) creates significant allocation pressure.
 **Action:** Use `remember` to cache string construction (e.g., `joinToString`) for static parts of the UI (like completed or future text blocks) that only change when state thresholds are crossed, rather than on every frame.
+
+## 2026-02-05 - String.lastIndexOf Performance Trap
+**Learning:** `String.lastIndexOf(char, fromIndex)` searches backwards from `fromIndex` to the *beginning of the string* (index 0), not to a specific lower bound. This can lead to O(N^2) complexity when processing strings in chunks if the character is not found, as it repeatedly rescans the prefix.
+**Action:** When searching for a character within a specific range (start to end), use a manual loop `for (i in end downTo start)` or `lastIndexOf` only if you know the character exists in the range.

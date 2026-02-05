@@ -47,11 +47,13 @@ object TextWrapper {
           } else {
             // Find last space within the width limit
             var breakPoint = -1
-            val searchLimit = start + width
-            val candidateBreak = line.lastIndexOf(' ', searchLimit)
-
-            if (candidateBreak >= start) {
-              breakPoint = candidateBreak
+            val searchLimit = (start + width).coerceAtMost(len - 1)
+            // Manual backward scan to avoid O(N^2) behavior of lastIndexOf scanning back to 0
+            for (i in searchLimit downTo start) {
+              if (line[i] == ' ') {
+                breakPoint = i
+                break
+              }
             }
 
             if (breakPoint == -1) {
