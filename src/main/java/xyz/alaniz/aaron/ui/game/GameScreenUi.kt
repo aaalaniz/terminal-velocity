@@ -147,24 +147,25 @@ fun GameScreenUi(state: GameState, modifier: androidx.compose.ui.Modifier) {
                 if (state.currentLineIndex in startIndex until endIndex) {
                   Row {
                     Text(state.userInput)
-                    val remaining = state.currentWord.drop(state.userInput.length)
-                    if (remaining.isNotEmpty()) {
+                    val inputLen = state.userInput.length
+                    if (inputLen < state.currentWord.length) {
+                      // Optimization: Avoid string allocation for 'remaining' by using index access
+                      val charAtCursor = state.currentWord[inputLen]
+                      val afterCursor = state.currentWord.substring(inputLen + 1)
+
                       if (state.isError) {
-                        val errorChar = remaining.take(1)
-                        if (errorChar == " ") {
+                        if (charAtCursor == ' ') {
                           Text("_", color = Color.Red)
                         } else {
-                          Text(errorChar, color = Color.Red)
+                          Text(charAtCursor.toString(), color = Color.Red)
                         }
-                        Text(remaining.drop(1), textStyle = TextStyle.Dim)
+                        Text(afterCursor, textStyle = TextStyle.Dim)
                       } else {
-                        val cursorChar = remaining.take(1)
-                        val afterCursor = remaining.drop(1)
-                        if (cursorChar == " ") {
+                        if (charAtCursor == ' ') {
                           Text("·", textStyle = TextStyle.Bold)
                         } else {
                           Text(
-                              cursorChar,
+                              charAtCursor.toString(),
                               textStyle = TextStyle.Bold,
                               underlineStyle = UnderlineStyle.Straight)
                         }
