@@ -1,0 +1,153 @@
+name: Release
+
+on:
+  push:
+    branches: [ main ]
+
+permissions:
+  contents: write
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.calc_version.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Calculate Release Version
+        id: calc_version
+        run: |
+          current_version=$(cat src/main/resources/VERSION)
+          echo "Release version: $current_version"
+          echo "version=$current_version" >> $GITHUB_OUTPUT
+
+  build:
+    needs: prepare
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+
+      - name: Build with Gradle
+        run: ./gradlew installDist
+
+      - name: Create Bundle with jpackage
+        shell: bash
+        run: |
+          VERSION="${{ needs.prepare.outputs.version }}"
+          NAME="terminal-velocity"
+
+          # Define paths based on OS
+          if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
+            INPUT_DIR="build/install/terminal-velocity/lib"
+            DEST="build/dist"
+            MAIN_JAR="terminal-velocity-$VERSION.jar"
+            OS_TYPE="windows"
+          elif [[ "${{ matrix.os }}" == "macos-latest" ]]; then
+            INPUT_DIR="build/install/terminal-velocity/lib"
+            DEST="build/dist"
+            MAIN_JAR="terminal-velocity-$VERSION.jar"
+            OS_TYPE="mac"
+          else # Linux
+            INPUT_DIR="build/install/terminal-velocity/lib"
+            DEST="build/dist"
+            MAIN_JAR="terminal-velocity-$VERSION.jar"
+            OS_TYPE="linux"
+          fi
+
+          mkdir -p "$DEST"
+
+          echo "Running jpackage..."
+          jpackage \
+            --input "$INPUT_DIR" \
+            --name "$NAME" \
+            --main-jar "$MAIN_JAR" \
+            --main-class "xyz.alaniz.aaron.Main" \
+            --type "app-image" \
+            --dest "$DEST" \
+            --app-version "$VERSION" \
+            --java-options "--enable-native-access=ALL-UNNAMED"
+
+          echo "Packaging artifact..."
+          cd "$DEST"
+
+          if [[ "$OS_TYPE" == "windows" ]]; then
+            powershell "Compress-Archive -Path '$NAME' -DestinationPath '../$NAME-$OS_TYPE.zip'"
+            ARTIFACT_PATH="../$NAME-$OS_TYPE.zip"
+          elif [[ "$OS_TYPE" == "mac" ]]; then
+            # On macOS, jpackage creates terminal-velocity.app
+            tar -czf "../$NAME-$OS_TYPE.tar.gz" "$NAME.app"
+            ARTIFACT_PATH="../$NAME-$OS_TYPE.tar.gz"
+          else
+            # On Linux, it creates a directory named terminal-velocity
+            tar -czf "../$NAME-$OS_TYPE.tar.gz" "$NAME"
+            ARTIFACT_PATH="../$NAME-$OS_TYPE.tar.gz"
+          fi
+
+          # Move artifact to a known location for upload
+          mv "$ARTIFACT_PATH" ../../
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifacts-${{ matrix.os }}
+          path: terminal-velocity-*
+          retention-days: 1
+
+  release:
+    needs: [prepare, build]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ needs.prepare.outputs.version }}
+          name: v${{ needs.prepare.outputs.version }}
+          draft: false
+          prerelease: false
+          make_latest: true
+          files: artifacts/*
+
+  bump_version:
+    needs: [prepare, release]
+    runs-on: ubuntu-latest
+    if: success()
+    steps:
+      - uses: actions/checkout@v4
+        with:
+            token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Bump Version
+        run: |
+          current_version="${{ needs.prepare.outputs.version }}"
+          IFS='.' read -r major minor patch <<< "$current_version"
+          new_patch=$((patch + 1))
+          next_version="$major.$minor.$new_patch"
+
+          echo "Bumping version from $current_version to $next_version"
+          echo "$next_version" > src/main/resources/VERSION
+
+          git add src/main/resources/VERSION
+          git commit -m "Bump version to $next_version [skip ci]"
+          git push
