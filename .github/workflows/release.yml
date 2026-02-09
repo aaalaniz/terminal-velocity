@@ -122,7 +122,9 @@ jobs:
           draft: false
           prerelease: false
           make_latest: true
-          files: artifacts/*
+          files: |
+            artifacts/*
+            install.sh
 
   bump_version:
     needs: [prepare, release]
@@ -131,7 +133,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-            token: ${{ secrets.GITHUB_TOKEN }}
+            token: ${{ secrets.RELEASE_TOKEN }}
 
       - name: Configure Git
         run: |
