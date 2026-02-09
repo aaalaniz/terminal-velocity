@@ -15,6 +15,16 @@ To play the game, you can install the latest version directly from your terminal
 curl -fsSL https://raw.githubusercontent.com/aaalaniz/terminal-velocity/main/install.sh | bash
 ```
 
+### Manual Installation
+
+You can also run the install script directly from the repository:
+
+```bash
+./install.sh
+```
+
+> **Note:** The `install.sh` script downloads and installs the latest *released* version from GitHub, not the local source code.
+
 Alternatively, you can download standalone executables for Linux, macOS, and Windows from the [Releases](https://github.com/aaalaniz/terminal-velocity/releases) page.
 
 ## 🛠️ Built With
