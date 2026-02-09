@@ -12,7 +12,7 @@ A casual typing game played entirely within your terminal.
 To play the game, you can install the latest version directly from your terminal:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/aaalaniz/terminal-velocity/main/install.sh | bash
+curl -fsSL https://github.com/aaalaniz/terminal-velocity/releases/latest/download/install.sh | bash
 ```
 
 ### Manual Installation
