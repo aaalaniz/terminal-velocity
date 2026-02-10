@@ -26,6 +26,7 @@ import xyz.alaniz.aaron.ui.foundation.KeyEvents.Enter
 import xyz.alaniz.aaron.ui.foundation.KeyEvents.Esc
 import xyz.alaniz.aaron.ui.foundation.KeyEvents.R
 import xyz.alaniz.aaron.ui.foundation.KeyEvents.r
+import xyz.alaniz.aaron.ui.foundation.TextWrapper
 
 @Composable
 @CircuitInject(screen = GameScreen::class, scope = AppScope::class)
@@ -48,6 +49,9 @@ fun GameScreenUi(state: GameState, modifier: androidx.compose.ui.Modifier) {
                 Enter -> {
                   if (state.status == GameStatus.GAME_OVER) {
                     state.eventSink(GameEvent.NewGame)
+                  } else if (state.status == GameStatus.PLAYING) {
+                    // Allow typing newlines for code snippets or multi-line chunks
+                    state.eventSink(GameEvent.LetterTyped('\n'))
                   }
                   true
                 }
@@ -124,64 +128,68 @@ fun GameScreenUi(state: GameState, modifier: androidx.compose.ui.Modifier) {
             }
             Spacer(Modifier.height(1))
 
-            // Show a window of 5 lines
-            val windowSize = 5
-            val halfWindow = windowSize / 2
-            val startIndex = (state.currentLineIndex - halfWindow).coerceAtLeast(0)
-            val endIndex = (startIndex + windowSize).coerceAtMost(state.passage.size)
+            val currentChunk = state.passage.getOrElse(state.currentLineIndex) { "" }
+            // Wrap the current chunk for display
+            val displayLines = remember(currentChunk) { TextWrapper.displayWrap(currentChunk, 80) }
+            // Calculate height dynamically based on wrapped lines
+            val contentHeight = displayLines.size.coerceAtLeast(1)
 
-            BorderedTitledContent(title = "Passage", width = 82, height = 5) {
+            BorderedTitledContent(title = "Passage", width = 82, height = contentHeight) {
               Column {
-                // Optimization: Combine multiple lines into single Text nodes to reduce Mosaic node
-                // count
-                val completedEnd = state.currentLineIndex.coerceAtMost(endIndex)
-                if (startIndex < completedEnd) {
-                  // Optimization: Memoize completed text to avoid string allocation on every frame
-                  val text =
-                      remember(startIndex, completedEnd, state.passage) {
-                        (startIndex until completedEnd).joinToString("\n") { state.passage[it] }
-                      }
-                  Text(text)
-                }
+                var currentGlobalIndex = 0
+                val userInputLen = state.userInput.length
 
-                if (state.currentLineIndex in startIndex until endIndex) {
+                displayLines.forEach { line ->
                   Row {
-                    Text(state.userInput)
-                    val remaining = state.currentWord.drop(state.userInput.length)
-                    if (remaining.isNotEmpty()) {
-                      if (state.isError) {
-                        val errorChar = remaining.take(1)
-                        if (errorChar == " ") {
-                          Text("_", color = Color.Red)
-                        } else {
-                          Text(errorChar, color = Color.Red)
-                        }
-                        Text(remaining.drop(1), textStyle = TextStyle.Dim)
-                      } else {
-                        val cursorChar = remaining.take(1)
-                        val afterCursor = remaining.drop(1)
-                        if (cursorChar == " ") {
-                          Text("·", textStyle = TextStyle.Bold)
-                        } else {
-                          Text(
-                              cursorChar,
-                              textStyle = TextStyle.Bold,
-                              underlineStyle = UnderlineStyle.Straight)
-                        }
-                        Text(afterCursor, textStyle = TextStyle.Dim)
-                      }
-                    }
-                  }
-                }
+                    val lineLen = line.length
+                    val lineStart = currentGlobalIndex
+                    val lineEnd = lineStart + lineLen
 
-                val futureStart = (state.currentLineIndex + 1).coerceAtLeast(startIndex)
-                if (futureStart < endIndex) {
-                  // Optimization: Memoize future text to avoid string allocation on every frame
-                  val text =
-                      remember(futureStart, endIndex, state.passage) {
-                        (futureStart until endIndex).joinToString("\n") { state.passage[it] }
+                    if (userInputLen >= lineEnd) {
+                      // Entire line is typed correctly
+                      Text(line.replace("\n", ""))
+                    } else if (userInputLen >= lineStart) {
+                      // Partial line typed (or cursor at start)
+                      val localCursor = userInputLen - lineStart
+                      val typedPart = line.substring(0, localCursor)
+                      Text(typedPart.replace("\n", ""))
+
+                      val remainingInLine = line.substring(localCursor)
+                      if (remainingInLine.isNotEmpty()) {
+                        val nextChar = remainingInLine.take(1)
+                        val rest = remainingInLine.drop(1)
+
+                        if (state.isError) {
+                          // Error on this character
+                          if (nextChar == " ") {
+                            Text("_", color = Color.Red)
+                          } else if (nextChar == "\n") {
+                            Text("⏎", color = Color.Red)
+                          } else {
+                            Text(nextChar, color = Color.Red)
+                          }
+                        } else {
+                          // Cursor is here
+                          if (nextChar == " ") {
+                            Text("·", textStyle = TextStyle.Bold)
+                          } else if (nextChar == "\n") {
+                            Text("⏎", textStyle = TextStyle.Dim)
+                          } else {
+                            Text(
+                                nextChar,
+                                textStyle = TextStyle.Bold,
+                                underlineStyle = UnderlineStyle.Straight)
+                          }
+                        }
+                        // Rest of the line (untyped)
+                        Text(rest.replace("\n", ""), textStyle = TextStyle.Dim)
                       }
-                  Text(text, textStyle = TextStyle.Dim)
+                    } else {
+                      // Future line
+                      Text(line.replace("\n", ""), textStyle = TextStyle.Dim)
+                    }
+                    currentGlobalIndex += lineLen
+                  }
                 }
               }
             }

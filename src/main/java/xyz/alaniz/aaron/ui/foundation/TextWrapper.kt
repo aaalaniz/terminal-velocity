@@ -18,12 +18,76 @@ object TextWrapper {
   private val SANITIZATION_REGEX =
       Regex("(${ANSI_REGEX.pattern})|(${CONTROL_CHAR_REGEX.pattern})|(\\t)")
 
+  // Lookbehind for .!? followed by whitespace or end of string.
+  private val SENTENCE_SPLIT_REGEX = Regex("(?<=[.!?])\\s+")
+
+  fun sanitize(text: String): String {
+    // Sanitize control characters and expand tabs to spaces (prevent TUI spoofing)
+    return text.replace(SANITIZATION_REGEX) { result -> if (result.value == "\t") "  " else "" }
+  }
+
+  fun sentenceSplit(text: String): List<String> {
+    val sanitized = sanitize(text)
+    // Split by sentence terminators followed by space.
+    // Filter empty strings in case of trailing spaces.
+    return sanitized.split(SENTENCE_SPLIT_REGEX).filter { it.isNotEmpty() }
+  }
+
+  /**
+   * wraps text for display purposes, preserving all characters. Splits into lines of length <=
+   * width. Breaks on whitespace if possible, otherwise forces break. Does NOT trim lines or remove
+   * characters (except potentially splitting space to next line? No, must preserve).
+   */
+  fun displayWrap(text: String, width: Int): List<String> {
+    require(width > 0) { "Width must be > 0" }
+    val lines = mutableListOf<String>()
+    val len = text.length
+    var start = 0
+
+    while (start < len) {
+      val remainingLength = len - start
+      if (remainingLength <= width) {
+        // If remaining fits, check for internal newlines
+        val newlineIndex = text.indexOf('\n', start)
+        if (newlineIndex != -1) {
+          val splitIndex = newlineIndex + 1
+          lines.add(text.substring(start, splitIndex))
+          start = splitIndex
+        } else {
+          lines.add(text.substring(start))
+          start = len
+        }
+      } else {
+        // Try to break at a space within limits
+        var splitIndex = -1
+        val limit = start + width
+
+        val newlineIndex = text.indexOf('\n', start)
+        if (newlineIndex != -1 && newlineIndex < limit) {
+          splitIndex = newlineIndex + 1
+        } else {
+          val lastSpace = text.lastIndexOf(' ', limit - 1)
+          if (lastSpace >= start) {
+            splitIndex = lastSpace + 1
+          }
+        }
+
+        if (splitIndex == -1 || splitIndex <= start) {
+          // No good break point found, forced break
+          splitIndex = start + width
+        }
+
+        lines.add(text.substring(start, splitIndex))
+        start = splitIndex
+      }
+    }
+    return lines
+  }
+
   fun wrap(text: String, width: Int = 80): List<String> {
     require(width > 0) { "Width must be > 0" }
     val lines = mutableListOf<String>()
-    // Sanitize control characters and expand tabs to spaces (prevent TUI spoofing)
-    val sanitizedText =
-        text.replace(SANITIZATION_REGEX) { result -> if (result.value == "\t") "  " else "" }
+    val sanitizedText = sanitize(text)
 
     // Optimization: Use lineSequence to process lines lazily, and index-based slicing
     // to avoid O(N^2) string copying behavior for long lines.
@@ -69,13 +133,6 @@ object TextWrapper {
                 lines.add(chunk)
               }
               // Skip the break space and any subsequent leading spaces for the next line
-              // roughly equivalent to remaining.drop(breakPoint).trimStart()
-              // drop(breakPoint) effectively keeps the char at breakPoint (if we took up to
-              // breakPoint)
-              // wait: original code: remaining.take(breakPoint) -> excludes breakPoint char
-              // remaining.drop(breakPoint) -> includes breakPoint char
-              // trimStart -> removes leading spaces
-
               start = breakPoint
               while (start < len && line[start] == ' ') {
                 start++
