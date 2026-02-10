@@ -144,7 +144,8 @@ class GameScreenUiRenderingTest {
       val snapshot = awaitSnapshot()
 
       // Check for each line of the multi-line chunk
-      // Mosaic might render each line independently in its layout, or concatenated depending on how we print.
+      // Mosaic might render each line independently in its layout, or concatenated depending on how
+      // we print.
       // But we expect the text content to be visible.
       // Since we wrap with displayWrap, each line is rendered separately.
 
