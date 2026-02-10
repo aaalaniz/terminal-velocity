@@ -70,8 +70,6 @@ class TextWrapperSentenceTest {
     val input = "Supercalifragilisticexpialidocious"
     val lines = TextWrapper.displayWrap(input, 10)
     assertThat(lines.joinToString("")).isEqualTo(input)
-    lines.forEach {
-      assertThat(it.length).isAtMost(10)
-    }
+    lines.forEach { assertThat(it.length).isAtMost(10) }
   }
 }

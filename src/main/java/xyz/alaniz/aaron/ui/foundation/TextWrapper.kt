@@ -34,10 +34,9 @@ object TextWrapper {
   }
 
   /**
-   * wraps text for display purposes, preserving all characters.
-   * Splits into lines of length <= width.
-   * Breaks on whitespace if possible, otherwise forces break.
-   * Does NOT trim lines or remove characters (except potentially splitting space to next line? No, must preserve).
+   * wraps text for display purposes, preserving all characters. Splits into lines of length <=
+   * width. Breaks on whitespace if possible, otherwise forces break. Does NOT trim lines or remove
+   * characters (except potentially splitting space to next line? No, must preserve).
    */
   fun displayWrap(text: String, width: Int): List<String> {
     require(width > 0) { "Width must be > 0" }
@@ -51,12 +50,12 @@ object TextWrapper {
         // If remaining fits, check for internal newlines
         val newlineIndex = text.indexOf('\n', start)
         if (newlineIndex != -1) {
-             val splitIndex = newlineIndex + 1
-             lines.add(text.substring(start, splitIndex))
-             start = splitIndex
+          val splitIndex = newlineIndex + 1
+          lines.add(text.substring(start, splitIndex))
+          start = splitIndex
         } else {
-             lines.add(text.substring(start))
-             start = len
+          lines.add(text.substring(start))
+          start = len
         }
       } else {
         // Try to break at a space within limits
@@ -65,17 +64,17 @@ object TextWrapper {
 
         val newlineIndex = text.indexOf('\n', start)
         if (newlineIndex != -1 && newlineIndex < limit) {
-           splitIndex = newlineIndex + 1
+          splitIndex = newlineIndex + 1
         } else {
-           val lastSpace = text.lastIndexOf(' ', limit - 1)
-           if (lastSpace >= start) {
-             splitIndex = lastSpace + 1
-           }
+          val lastSpace = text.lastIndexOf(' ', limit - 1)
+          if (lastSpace >= start) {
+            splitIndex = lastSpace + 1
+          }
         }
 
         if (splitIndex == -1 || splitIndex <= start) {
-             // No good break point found, forced break
-             splitIndex = start + width
+          // No good break point found, forced break
+          splitIndex = start + width
         }
 
         lines.add(text.substring(start, splitIndex))

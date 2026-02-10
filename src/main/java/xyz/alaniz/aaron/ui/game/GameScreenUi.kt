@@ -146,47 +146,47 @@ fun GameScreenUi(state: GameState, modifier: androidx.compose.ui.Modifier) {
                     val lineEnd = lineStart + lineLen
 
                     if (userInputLen >= lineEnd) {
-                        // Entire line is typed correctly
-                        Text(line.replace("\n", ""))
+                      // Entire line is typed correctly
+                      Text(line.replace("\n", ""))
                     } else if (userInputLen >= lineStart) {
-                        // Partial line typed (or cursor at start)
-                        val localCursor = userInputLen - lineStart
-                        val typedPart = line.substring(0, localCursor)
-                        Text(typedPart.replace("\n", ""))
+                      // Partial line typed (or cursor at start)
+                      val localCursor = userInputLen - lineStart
+                      val typedPart = line.substring(0, localCursor)
+                      Text(typedPart.replace("\n", ""))
 
-                        val remainingInLine = line.substring(localCursor)
-                        if (remainingInLine.isNotEmpty()) {
-                            val nextChar = remainingInLine.take(1)
-                            val rest = remainingInLine.drop(1)
+                      val remainingInLine = line.substring(localCursor)
+                      if (remainingInLine.isNotEmpty()) {
+                        val nextChar = remainingInLine.take(1)
+                        val rest = remainingInLine.drop(1)
 
-                            if (state.isError) {
-                                // Error on this character
-                                if (nextChar == " ") {
-                                    Text("_", color = Color.Red)
-                                } else if (nextChar == "\n") {
-                                    Text("⏎", color = Color.Red)
-                                } else {
-                                    Text(nextChar, color = Color.Red)
-                                }
-                            } else {
-                                // Cursor is here
-                                if (nextChar == " ") {
-                                    Text("·", textStyle = TextStyle.Bold)
-                                } else if (nextChar == "\n") {
-                                    Text("⏎", textStyle = TextStyle.Dim)
-                                } else {
-                                    Text(
-                                        nextChar,
-                                        textStyle = TextStyle.Bold,
-                                        underlineStyle = UnderlineStyle.Straight)
-                                }
-                            }
-                            // Rest of the line (untyped)
-                            Text(rest.replace("\n", ""), textStyle = TextStyle.Dim)
+                        if (state.isError) {
+                          // Error on this character
+                          if (nextChar == " ") {
+                            Text("_", color = Color.Red)
+                          } else if (nextChar == "\n") {
+                            Text("⏎", color = Color.Red)
+                          } else {
+                            Text(nextChar, color = Color.Red)
+                          }
+                        } else {
+                          // Cursor is here
+                          if (nextChar == " ") {
+                            Text("·", textStyle = TextStyle.Bold)
+                          } else if (nextChar == "\n") {
+                            Text("⏎", textStyle = TextStyle.Dim)
+                          } else {
+                            Text(
+                                nextChar,
+                                textStyle = TextStyle.Bold,
+                                underlineStyle = UnderlineStyle.Straight)
+                          }
                         }
+                        // Rest of the line (untyped)
+                        Text(rest.replace("\n", ""), textStyle = TextStyle.Dim)
+                      }
                     } else {
-                        // Future line
-                        Text(line.replace("\n", ""), textStyle = TextStyle.Dim)
+                      // Future line
+                      Text(line.replace("\n", ""), textStyle = TextStyle.Dim)
                     }
                     currentGlobalIndex += lineLen
                   }
