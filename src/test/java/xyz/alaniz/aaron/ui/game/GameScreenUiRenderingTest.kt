@@ -78,7 +78,7 @@ class GameScreenUiRenderingTest {
   }
 
   @Test
-  fun testCompletedLinesRendering() = runTest {
+  fun testOnlyCurrentChunkRendering() = runTest {
     runMosaicTest {
       val passage = listOf("Completed 1", "Completed 2", "Current", "Future 1", "Future 2")
       val currentWord = "Current"
@@ -104,14 +104,56 @@ class GameScreenUiRenderingTest {
 
       val snapshot = awaitSnapshot()
 
-      // Check for completed lines
-      assertThat(snapshot).contains("Completed 1")
-      assertThat(snapshot).contains("Completed 2")
-      // Check for current line
+      // Should contain the current line
       assertThat(snapshot).contains("Current")
-      // Check for future lines
-      assertThat(snapshot).contains("Future 1")
-      assertThat(snapshot).contains("Future 2")
+
+      // Should NOT contain previous or future lines
+      assertThat(snapshot).doesNotContain("Completed 1")
+      assertThat(snapshot).doesNotContain("Completed 2")
+      assertThat(snapshot).doesNotContain("Future 1")
+      assertThat(snapshot).doesNotContain("Future 2")
+    }
+  }
+
+  @Test
+  fun testMultiLineChunkRendering() = runTest {
+    runMosaicTest {
+      val chunk = "fun main() {\n  println()\n}"
+      val passage = listOf(chunk)
+      val currentWord = chunk
+      val userInput = ""
+      val currentLineIndex = 0
+
+      val state =
+          GameState.State(
+              currentWord = currentWord,
+              userInput = userInput,
+              score = 0,
+              status = GameStatus.PLAYING,
+              isError = false,
+              wpm = 0.0,
+              accuracy = 100.0,
+              elapsedTime = 0,
+              passage = passage,
+              currentLineIndex = currentLineIndex,
+              countdownStage = 0,
+              eventSink = {})
+
+      setContent { GameScreenUi(state, ComposeModifier) }
+
+      val snapshot = awaitSnapshot()
+
+      // Check for each line of the multi-line chunk
+      // Mosaic might render each line independently in its layout, or concatenated depending on how we print.
+      // But we expect the text content to be visible.
+      // Since we wrap with displayWrap, each line is rendered separately.
+
+      // "fun main() {"
+      assertThat(snapshot).contains("fun main() {")
+      // "  println()"
+      assertThat(snapshot).contains("  println()")
+      // "}"
+      assertThat(snapshot).contains("}")
     }
   }
 
