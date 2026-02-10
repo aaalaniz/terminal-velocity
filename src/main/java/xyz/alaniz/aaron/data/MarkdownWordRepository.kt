@@ -41,14 +41,14 @@ class MarkdownWordRepository(
       val proseFallback = index.filter { it.tags.contains("prose") }
       if (proseFallback.isNotEmpty()) {
         val fallback = proseFallback.random(Random)
-        return loadPassageContent(fallback.filename)
+        return loadPassageContent(fallback.filename, fallback.tags)
       }
       // Ultimate fallback
       return listOf("Error: No passages found.")
     }
 
     val selected = candidates.random(Random)
-    return loadPassageContent(selected.filename)
+    return loadPassageContent(selected.filename, selected.tags)
   }
 
   private suspend fun ensureIndexLoaded() {
@@ -140,7 +140,7 @@ class MarkdownWordRepository(
     return result
   }
 
-  private suspend fun loadPassageContent(filename: String): List<String> {
+  private suspend fun loadPassageContent(filename: String, tags: Set<String>): List<String> {
     return try {
       withContext(ioDispatcher) {
         val stream = resourceReader.open(filename)
@@ -160,8 +160,23 @@ class MarkdownWordRepository(
               }
               builder.toString()
             }
-        // No parsing needed, content is raw text
-        TextWrapper.wrap(content)
+
+        if (tags.contains("prose")) {
+          TextWrapper.sentenceSplit(content)
+        } else if (tags.contains("code")) {
+          // Keep code as a single chunk (snippet), but sanitize it.
+          // Also trim leading/trailing empty lines/whitespace if necessary,
+          // but preserve indentation.
+          val sanitized = TextWrapper.sanitize(content).trim()
+          if (sanitized.isNotEmpty()) {
+            listOf(sanitized)
+          } else {
+            emptyList()
+          }
+        } else {
+          // Default to sentence split if unknown
+          TextWrapper.sentenceSplit(content)
+        }
       }
     } catch (e: Exception) {
       listOf("Error: Could not load $filename")
