@@ -11,6 +11,7 @@
 - **Static Analysis:** Kotlin Symbol Processing (KSP) - Used for efficient code generation, specifically for Circuit and Metro.
 - **Distribution:** Gradle `application` plugin - Facilitates the creation of standalone executable distributions for macOS, Linux, and Windows.
 - **Testing:** [JUnit 5](https://junit.org/junit5/) and [Kotlin Test](https://kotlinlang.org/api/latest/kotlin.test/) - For unit and integration testing.
+  - [Google Truth](https://github.com/google/truth) - For fluent and readable assertions.
   - [Circuit Test](https://github.com/slackhq/circuit) - For testing Circuit Presenters.
   - [Mosaic Testing](https://github.com/JakeWharton/mosaic) - For end-to-end terminal UI integration testing.
   - [Kotlinx Coroutines Test](https://github.com/Kotlin/kotlinx.coroutines/tree/master/kotlinx-coroutines-test) - For testing coroutines.
