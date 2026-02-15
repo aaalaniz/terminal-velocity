@@ -12,9 +12,11 @@ import com.jakewharton.mosaic.runMosaic
 import dev.zacsweers.metro.createGraphFactory
 import kotlinx.coroutines.awaitCancellation
 import xyz.alaniz.aaron.di.ApplicationGraph
+import xyz.alaniz.aaron.ui.foundation.TerminalUtils
 import xyz.alaniz.aaron.ui.title.TitleScreen
 
 suspend fun main() {
+  TerminalUtils.clearScreen()
   runMosaic {
     val scope = rememberCoroutineScope()
     var exit by remember { mutableStateOf(false) }
