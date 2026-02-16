@@ -1,5 +1,18 @@
 # Terminal Velocity - Agent Context
 
+## 🚨 PRIMARY MANDATE: The Conductor Workflow
+**ALL development tasks must be managed via the Conductor extension.**
+
+When you receive a request:
+1.  **Check Status:** Run `/conductor:status` to see active tracks.
+2.  **Map to Track:**
+    *   **Existing Track:** If the request matches an active track, update its `plan.md` and proceed.
+    *   **New Feature:** Create a new track (e.g., `/conductor:create-track feature/audio`).
+    *   **Small Fix/Bug:** Add to the **Backlog** track (`conductor/tracks/backlog/plan.md`).
+3.  **Execute:** Follow the `plan.md` strictly. Mark tasks as done (`[x]`) and ensure every task has a Linear ID (`<!-- linear-issue: ID -->`).
+
+---
+
 ## Project Overview
 **Terminal Velocity** is a casual typing game played in the terminal. It is a Kotlin JVM application designed to run on macOS, Linux, and Windows.
 
