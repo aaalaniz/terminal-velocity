@@ -4,3 +4,4 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 - [ ] **Track:** Linear Integration [Plan](./tracks/linear-integration/plan.md)
 - [ ] **Track:** General Backlog [Plan](./tracks/backlog/plan.md)
+- [ ] **Track:** Audio Feedback [Plan](./tracks/audio-feedback/plan.md)
