@@ -1,0 +1,10 @@
+{
+  "track_id": "linear_integration",
+  "type": "infrastructure",
+  "status": "in_progress",
+  "created_at": "2026-02-15T00:00:00Z",
+  "updated_at": "2026-02-15T00:00:00Z",
+  "description": "Establish a seamless workflow integration between Conductor (repository-based project management) and Linear (visual project management).",
+  "linear_team_id": "TVELO",
+  "linear_project_id": "PROJ_TRIAL_RUN"
+}

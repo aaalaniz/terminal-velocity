@@ -64,6 +64,15 @@ This project is built in Kotlin using:
   ```
 - **Continuous Integration:** See [CI.md](./CI.md) for details on our automated pipeline.
 
+## 🛠️ Contributing
+
+To contribute to Terminal Velocity, ensure you have the following setup:
+
+- **Gemini CLI Conductor Extension:** This project uses the [Conductor extension](https://github.com/gemini-cli-extensions/conductor) for track and task management. Install it via:
+  ```bash
+  gemini extension install conductor
+  ```
+- **Linear Integration:** We use Linear for visual project management. For local agents to assist with issue syncing, configure the Linear MCP in your `.gemini/settings.json`.
 
 ## License
 
