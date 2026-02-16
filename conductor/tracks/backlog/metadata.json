@@ -1,0 +1,9 @@
+{
+  "track_id": "backlog",
+  "type": "maintenance",
+  "status": "active",
+  "created_at": "2026-02-15T00:00:00Z",
+  "updated_at": "2026-02-15T00:00:00Z",
+  "description": "General backlog for bugs, minor features, and research tasks that are not yet part of a dedicated project track.",
+  "linear_team_id": "TVELO"
+}

@@ -15,6 +15,8 @@ All tasks follow a strict lifecycle:
 
 ### Standard Task Workflow
 
+0. **Validate Linear ID:** Before selecting a task, ensure it has a `<!-- linear-issue: ID -->` comment. If it's missing, run the sync script or use the Linear MCP to create the issue and add the ID to the task in `plan.md`.
+
 1. **Select Task:** Choose the next available task from `plan.md` in sequential order
 
 2. **Mark In Progress:** Before beginning work, edit `plan.md` and change the task from `[ ]` to `[~]`
@@ -60,7 +62,8 @@ All tasks follow a strict lifecycle:
 
 10. **Get and Record Task Commit SHA:**
     - **Step 10.1: Update Plan:** Read `plan.md`, find the line for the completed task, update its status from `[~]` to `[x]`, and append the first 7 characters of the *just-completed commit's* commit hash.
-    - **Step 10.2: Write Plan:** Write the updated content back to `plan.md`.
+    - **Step 10.2: Sync with Linear:** If the task has a `<!-- linear-issue: ID -->` comment, ensure the corresponding Linear issue is moved to "Done".
+    - **Step 10.3: Write Plan:** Write the updated content back to `plan.md`.
 
 11. **Commit Plan Update:**
     - **Action:** Stage the modified `plan.md` file.
